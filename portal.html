@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal - Jos Medical College</title>
+    <meta name="description" content="Access the student portal for Jos Medical College.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                    <img src="assets/newlogo.png" alt="Jos Medical College Logo" class="logo-img">
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-label="Toggle navigation">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="about.html" class="nav-link">About</a></li>
+                    <li><a href="index.html#administration" class="nav-link">Administration</a></li>
+                    <li class="dropdown">
+                        <a href="programs.html" class="nav-link">Explore Programs <span class="arrow">▼</span></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-submenu">
+                                <a href="programs.html#degree" class="submenu-toggle">Degree Programs <span
+                                        class="arrow-right">▸</span></a>
+                                <ul class="submenu">
+                                    <li><a href="#">Nursing Sciences</a></li>
+                                    <li><a href="#">Medical Laboratory Sciences</a></li>
+                                    <li><a href="#">Pharmacy</a></li>
+                                    <li><a href="#">Public Health</a></li>
+                                    <li><a href="#">Health Information Management</a></li>
+                                    <li><a href="#">Biochemistry</a></li>
+                                    <li><a href="#">Microbiology</a></li>
+                                    <li><a href="#">Community Health</a></li>
+                                    <li><a href="#">Computer Sciences</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a href="programs.html#diploma" class="submenu-toggle">Diploma Programs <span
+                                        class="arrow-right">▸</span></a>
+                                <ul class="submenu">
+                                    <li><a href="#">Mass Communication</a></li>
+                                    <li><a href="#">Public Administration</a></li>
+                                    <li><a href="#">Business Administration</a></li>
+                                    <li><a href="#">Office and Hotel Management</a></li>
+                                    <li><a href="#">Computer Science</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="portal.html" class="nav-link active">Portal Access <span class="arrow">▼</span></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header-info">
+                                <p>Access your dedicated portal for students, staff, or administrators.</p>
+                            </li>
+                            <li>
+                                <a href="portal.html">Student Portal
+                                    <span class="dropdown-item-desc">Access course materials and results.</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="disabled-link" style="opacity: 0.6; cursor: not-allowed;">Staff
+                                    Portal
+                                    <span class="badge-nav badge-soon">Soon</span>
+                                    <span class="dropdown-item-desc">Teaching resources and staff tools.</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="disabled-link" style="opacity: 0.6; cursor: not-allowed;">Admin
+                                    Portal
+                                    <span class="badge-nav badge-restricted">Restricted</span>
+                                    <span class="dropdown-item-desc">Institutional system management.</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="admissions.html" class="nav-link">Admissions</a></li>
+                    <li><a href="index.html#news" class="nav-link">News & Events</a></li>
+                    <li><a href="contact.html" class="nav-link btn-contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-header"
+            style="background-color: var(--secondary-color); padding: 5rem 0; border-bottom: none; color: var(--white);">
+            <div class="container text-center">
+                <span class="section-label" style="color: var(--white); opacity: 0.8; letter-spacing: 2px;">Digital
+                    Access</span>
+                <h1 style="color: var(--white); font-size: 3.5rem; margin-bottom: 1rem; font-weight: 700;">Portal Access
+                </h1>
+                <p style="max-width: 700px; margin: 0 auto; color: #b0bdc9; font-size: 1.2rem; line-height: 1.6;">
+                    Access your dedicated portal for students, staff, or administrators. Our digital infrastructure is
+                    designed to support your academic and professional journey.
+                </p>
+            </div>
+        </section>
+
+        <section class="portal-selection" style="padding: 6rem 0;">
+            <div class="container">
+                <div class="portal-grid"
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 3rem;">
+
+                    <!-- Student Portal -->
+                    <div class="portal-card"
+                        style="background: var(--white); padding: 3.5rem 2.5rem; border-radius: 12px; box-shadow: var(--shadow-md); border: 1px solid var(--border-color); border-top: 6px solid var(--primary-color); text-align: center; transition: transform 0.3s ease;">
+                        <div class="portal-icon"
+                            style="font-size: 4rem; color: var(--primary-color); margin-bottom: 2rem;">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <h3 style="font-size: 1.8rem; color: var(--secondary-color); margin-bottom: 1rem;">Student
+                            Portal</h3>
+                        <p style="color: var(--text-light); margin-bottom: 2.5rem; line-height: 1.6;">Login to access
+                            course materials, results, and student services.</p>
+                        <a href="login.html" class="btn btn-primary"
+                            style="width: 100%; padding: 1rem; border-radius: 6px;">Login</a>
+                    </div>
+
+                    <!-- Staff Portal -->
+                    <div class="portal-card staff-card"
+                        style="background: var(--white); padding: 3.5rem 2.5rem; border-radius: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); border-top: 6px solid #b0bdc9; text-align: center; opacity: 0.85;">
+                        <div class="portal-icon" style="font-size: 4rem; color: #b0bdc9; margin-bottom: 2rem;">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <h3 style="font-size: 1.8rem; color: var(--secondary-color); margin-bottom: 1rem;">Staff Portal
+                        </h3>
+                        <div style="margin-bottom: 1rem;"><span class="badge"
+                                style="background: var(--bg-light); color: var(--text-light); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid var(--border-color);">Coming
+                                Soon</span></div>
+                        <p style="color: var(--text-light); margin-bottom: 2.5rem; line-height: 1.6;">Login to access
+                            teaching resources and internal staff tools.</p>
+                        <button class="btn btn-secondary" disabled
+                            style="width: 100%; padding: 1rem; border-radius: 6px; cursor: not-allowed; opacity: 0.6;">Login</button>
+                    </div>
+
+                    <!-- Admin Portal -->
+                    <div class="portal-card admin-card"
+                        style="background: var(--white); padding: 3.5rem 2.5rem; border-radius: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); border-top: 6px solid var(--secondary-color); text-align: center; opacity: 0.85;">
+                        <div class="portal-icon"
+                            style="font-size: 4rem; color: var(--secondary-color); margin-bottom: 2rem;">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3 style="font-size: 1.8rem; color: var(--secondary-color); margin-bottom: 1rem;">Admin Portal
+                        </h3>
+                        <div style="margin-bottom: 1rem;"><span class="badge"
+                                style="background: #fff0f0; color: #e53935; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid #ffcdd2;">Restricted
+                                Area</span></div>
+                        <p style="color: var(--text-light); margin-bottom: 2.5rem; line-height: 1.6;">Restricted access.
+                            Only administrators can login.</p>
+                        <button class="btn btn-secondary" disabled
+                            style="width: 100%; padding: 1rem; border-radius: 6px; cursor: not-allowed; opacity: 0.6;">Login</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-col brand-col">
+                <div class="footer-logo">
+                    <img src="assets/newlogo.png" alt="Jos Medical College" class="footer-logo-img">
+                </div>
+                <p>Let us help you help others</p>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html#about">About Us</a></li>
+                    <li><a href="programs.html">Academics</a></li>
+                    <li><a href="admissions.html">Admissions</a></li>
+                    <li><a href="index.html#news">News & Events</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Explore Programs</h3>
+                <ul>
+                    <li><a href="programs.html#degree">Nursing Sciences</a></li>
+                    <li><a href="programs.html#degree">Medical Laboratory Sciences</a></li>
+                    <li><a href="programs.html#degree">Pharmacy</a></li>
+                    <li><a href="programs.html#degree">Public Health</a></li>
+                    <li><a href="programs.html#degree">Biochemistry</a></li>
+                    <li><a href="programs.html#diploma">Mass Communication</a></li>
+                    <li><a href="programs.html#diploma">Business Administration</a></li>
+                </ul>
+            </div>
+            <div class="footer-col contact-col">
+                <h3>Contact Us</h3>
+                <address>
+                    <p>123 College Road, Jos</p>
+                    <p>Plateau State, Nigeria</p>
+                    <p><a href="mailto:info@josmed.edu.ng">info@josmed.edu.ng</a></p>
+                    <p><a href="tel:+2348001234567">+234 800 123 4567</a></p>
+                </address>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Jos Medical College. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jos Medical College - Excellence in Healthcare Education</title>
+    <meta name="description"
+        content="Jos Medical College is a premier institution dedicated to medical education, research, and healthcare excellence.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                    <img src="assets/newlogo.png" alt="Jos Medical College Logo" class="logo-img">
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-label="Toggle navigation">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link active">Home</a></li>
+                    <li><a href="about.html" class="nav-link">About</a></li>
+                    <li><a href="index.html#administration" class="nav-link">Administration</a></li>
+                    <li class="dropdown">
+                        <a href="programs.html" class="nav-link">Explore Programs <span class="arrow">▼</span></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-submenu">
+                                <a href="programs.html#degree" class="submenu-toggle">Degree Programs <span
+                                        class="arrow-right">▸</span></a>
+                                <ul class="submenu">
+                                    <li><a href="#">Nursing Sciences</a></li>
+                                    <li><a href="#">Medical Laboratory Sciences</a></li>
+                                    <li><a href="#">Pharmacy</a></li>
+                                    <li><a href="#">Public Health</a></li>
+                                    <li><a href="#">Health Information Management</a></li>
+                                    <li><a href="#">Biochemistry</a></li>
+                                    <li><a href="#">Microbiology</a></li>
+                                    <li><a href="#">Community Health</a></li>
+                                    <li><a href="#">Computer Sciences</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a href="programs.html#diploma" class="submenu-toggle">Diploma Programs <span
+                                        class="arrow-right">▸</span></a>
+                                <ul class="submenu">
+                                    <li><a href="#">Mass Communication</a></li>
+                                    <li><a href="#">Public Administration</a></li>
+                                    <li><a href="#">Business Administration</a></li>
+                                    <li><a href="#">Office and Hotel Management</a></li>
+                                    <li><a href="#">Computer Science</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="portal.html" class="nav-link">Portal Access <span class="arrow">▼</span></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header-info">
+                                <p>Access your dedicated portal for students, staff, or administrators.</p>
+                            </li>
+                            <li>
+                                <a href="portal.html">Student Portal
+                                    <span class="dropdown-item-desc">Access course materials and results.</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="disabled-link" style="opacity: 0.6; cursor: not-allowed;">Staff
+                                    Portal
+                                    <span class="badge-nav badge-soon">Soon</span>
+                                    <span class="dropdown-item-desc">Teaching resources and staff tools.</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="disabled-link" style="opacity: 0.6; cursor: not-allowed;">Admin
+                                    Portal
+                                    <span class="badge-nav badge-restricted">Restricted</span>
+                                    <span class="dropdown-item-desc">Institutional system management.</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="admissions.html" class="nav-link">Admissions</a></li>
+                    <li><a href="#news" class="nav-link">News & Events</a></li>
+                    <li><a href="contact.html" class="nav-link btn-contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section Placeholder for visual context -->
+        <section id="home" class="hero">
+            <div class="hero-slideshow">
+                <div class="hero-slide active" style="background-image: url('assets/hero1.jpg')"></div>
+                <div class="hero-slide" style="background-image: url('assets/hero2.jpg')"></div>
+                <div class="hero-slide" style="background-image: url('assets/hero3.jpg')"></div>
+            </div>
+            <div class="hero-overlay"></div>
+            <div class="container hero-content">
+                <img src="assets/newlogo.png" alt="College Logo" class="hero-logo">
+                <h1>Medical College of Health Science and Technology Jos</h1>
+                <div class="hero-buttons">
+                    <a href="#admissions" class="btn btn-primary">Apply Now</a>
+                    <div class="dropdown" style="display: inline-block;">
+                        <a href="programs.html" class="btn btn-secondary">Explore Programs <span
+                                class="arrow">▼</span></a>
+                        <ul class="dropdown-menu" style="text-align: left;">
+                            <li class="dropdown-submenu">
+                                <a href="programs.html#degree" class="submenu-toggle">Degree Programs <span
+                                        class="arrow-right">▸</span></a>
+                                <ul class="submenu">
+                                    <li><a href="#">Nursing Sciences</a></li>
+                                    <li><a href="#">Medical Laboratory Sciences</a></li>
+                                    <li><a href="#">Pharmacy</a></li>
+                                    <li><a href="#">Public Health</a></li>
+                                    <li><a href="#">Health Information Management</a></li>
+                                    <li><a href="#">Biochemistry</a></li>
+                                    <li><a href="#">Microbiology</a></li>
+                                    <li><a href="#">Community Health</a></li>
+                                    <li><a href="#">Computer Sciences</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a href="programs.html#diploma" class="submenu-toggle">Diploma Programs <span
+                                        class="arrow-right">▸</span></a>
+                                <ul class="submenu">
+                                    <li><a href="#">Mass Communication</a></li>
+                                    <li><a href="#">Public Administration</a></li>
+                                    <li><a href="#">Business Administration</a></li>
+                                    <li><a href="#">Office and Hotel Management</a></li>
+                                    <li><a href="#">Computer Science</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        </section>
+
+        <!-- About Us Preview Section -->
+        <section id="about-preview" class="section-home about-home">
+            <div class="container">
+                <div class="home-grid about-home-grid">
+                    <div class="home-text">
+                        <span class="section-label">Institutional Overview</span>
+                        <h2 class="home-section-title">Elevating Healthcare Standards in Jos</h2>
+                        <p>Medical Career College of Health Science and Technology, Jos is a premier institution
+                            dedicated to training highly skilled, competent, and ethically grounded health
+                            professionals. Our approach blends rigorous academic theory with intensive practical
+                            training to prepare you for the evolving challenges of global healthcare.</p>
+                        <a href="about.html" class="btn btn-primary">Read More About Us</a>
+                    </div>
+                    <div class="home-image">
+                        <img src="assets/hero2.jpg" alt="About Jos Medical College" class="img-rounded shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Administration Preview Section -->
+        <section id="administration-preview" class="section-home admin-home bg-alt">
+            <div class="container text-center">
+                <span class="section-label">Leadership & Governance</span>
+                <h2 class="home-section-title">Guided by Institutional Excellence</h2>
+                <p class="section-intro">Our leadership team is comprised of seasoned healthcare professionals and
+                    educators committed to maintaining the highest standards of academic integrity and student success.
+                </p>
+
+                <div class="admin-preview-card">
+                    <img src="assets/hero3.jpg" alt="Provost" class="admin-thumb">
+                    <div class="admin-preview-text">
+                        <h3>Dr. John Doe</h3>
+                        <p class="admin-title">Provost / Chief Academic Officer</p>
+                        <p class="admin-bio">With over 20 years of experience in medical education and clinical
+                            practice, Dr. Doe leads our faculty in delivering a curriculum that meets national and
+                            international standards.</p>
+                        <a href="#" class="btn btn-secondary">View Administration</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Departments Preview Section -->
+        <section id="departments-preview" class="section-home">
+            <div class="container text-center">
+                <span class="section-label">Academic Scopes</span>
+                <h2 class="home-section-title">Diverse Academic Departments</h2>
+                <p class="section-intro">Our institution is structured into specialised departments, each focused on
+                    delivering top-tier education and practical expertise in critical healthcare fields.</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>Nursing Sciences</h3>
+                        <p>Training compassionate and highly skilled nursing professionals.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Pharmacy</h3>
+                        <p>Advancing pharmaceutical knowledge and clinical skills.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Public Health</h3>
+                        <p>Focusing on community wellness and disease prevention.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Medical Lab Sc.</h3>
+                        <p>Excellence in diagnostic sciences and laboratory management.</p>
+                    </div>
+                </div>
+                <div class="text-center mt-large" style="margin-top: 3rem;">
+                    <a href="programs.html" class="btn btn-secondary">Explore All Departments</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Academics / Programs Preview Section -->
+        <section id="programs-preview" class="section-home bg-alt">
+            <div class="container text-center">
+                <span class="section-label">Our Programs</span>
+                <h2 class="home-section-title">Excellence in Medical Education</h2>
+                <p class="section-intro">We offer a range of Degree and Diploma programs designed to meet the
+                    highest
+                    educational standards and industry requirements.</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>Degree Programs</h3>
+                        <p>Full-time undergraduate courses across multiple health disciplines.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Diploma Programs</h3>
+                        <p>Fast-track vocational health training for specialised careers.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Certification Programs</h3>
+                        <p>Continuous professional development and short certificate courses.</p>
+                    </div>
+                </div>
+                <div class="text-center mt-large" style="margin-top: 3rem;">
+                    <a href="programs.html" class="btn btn-primary">View All Programs</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Admissions Preview Section -->
+        <section id="admissions-preview" class="section-home">
+            <div class="container">
+                <div class="home-grid admissions-home-grid">
+                    <div class="home-text">
+                        <span class="section-label">Join Us</span>
+                        <h2 class="home-section-title">Start Your Journey in Healthcare</h2>
+                        <ul class="admissions-list">
+                            <li><span class="check-icon">✔</span> High school/credits requirements</li>
+                            <li><span class="check-icon">✔</span> Direct online application portal</li>
+                            <li><span class="check-icon">✔</span> Transparent selection process</li>
+                        </ul>
+                        <div class="hero-buttons" style="justify-content: flex-start; margin-top: 2rem;">
+                            <a href="admissions.html" class="btn btn-primary">Apply Now</a>
+                            <a href="admissions.html" class="btn btn-secondary">Admission Details</a>
+                        </div>
+                    </div>
+                    <div class="home-text">
+                        <p>Our admission process is designed to identify passionate and capable individuals ready to
+                            make a difference in healthcare. We support our applicants at every step of the journey.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- Portal Access Section -->
+            <section id="portal-preview" class="section-home bg-alt">
+                <div class="container text-center">
+                    <span class="section-label">Digital Campus</span>
+                    <h2 class="home-section-title">Secure Portal Access</h2>
+                    <div class="portal-grid">
+                        <div class="portal-card">
+                            <div class="portal-icon">◆</div>
+                            <h3>Student Portal</h3>
+                            <p>Access your grades, schedules, and course materials.</p>
+                            <a href="portal.html" class="btn btn-primary" style="margin-top: 1.5rem;">Student Login</a>
+                        </div>
+                        <div class="portal-card staff">
+                            <div class="portal-icon">✧</div>
+                            <h3>Staff Portal</h3>
+                            <p>Manage courses, student records, and attendance.</p>
+                            <a href="portal.html" class="btn btn-secondary" style="margin-top: 1.5rem;">Staff Login</a>
+                        </div>
+                        <div class="portal-card admin">
+                            <div class="portal-icon">❖</div>
+                            <h3>Admin Login</h3>
+                            <p>System management and institutional oversight.</p>
+                            <a href="portal.html" class="btn btn-primary" style="margin-top: 1.5rem;">Admin Login</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Accreditation Preview Section -->
+            <section id="accreditation-preview" class="section-home">
+                <div class="container text-center">
+                    <span class="section-label">Trust & Excellence</span>
+                    <h2 class="home-section-title">Accredited & Government Approved</h2>
+                    <p class="section-intro">We operate in full compliance with national regulatory bodies, ensuring
+                        our
+                        graduates receive recognised and respected certifications.</p>
+
+                    <div class="accreditation-thumbs">
+                        <img src="assets/goverment1.jpeg" alt="Approval 1" class="thumb-mini">
+                        <img src="assets/government2.jpeg" alt="Approval 2" class="thumb-mini">
+                        <img src="assets/government3.jpeg" alt="Approval 3" class="thumb-mini">
+                    </div>
+
+                    <div class="text-center mt-large" style="margin-top: 3rem;">
+                        <a href="about.html#accreditation" class="btn btn-secondary">View All Approvals</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Affiliate Institutions Preview Section -->
+            <section id="affiliates-preview" class="section-home bg-alt">
+                <div class="container text-center">
+                    <span class="section-label">Global Partnerships</span>
+                    <h2 class="home-section-title">Our Affiliate Institutions</h2>
+                    <p class="section-intro">Collaborating with world-class academic entities to enhance our
+                        educational
+                        delivery and student opportunities.</p>
+
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h3>Evangel University</h3>
+                            <p>Academic mentoring and degree validation partner.</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>Ballsbridge University</h3>
+                            <p>International collaboration for global health standards.</p>
+                        </div>
+                        <div class="feature-card">
+                            <h3>Professional Bodies</h3>
+                            <p>Certified by major health professional regulatory councils.</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-large" style="margin-top: 3rem;">
+                        <a href="about.html#affiliates" class="btn btn-primary">Learn More</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- News & Events Section -->
+            <section id="news-preview" class="section-home">
+                <div class="container text-center">
+                    <span class="section-label">Updates</span>
+                    <h2 class="home-section-title">Latest News & Events</h2>
+
+                    <div class="feature-grid">
+                        <div class="feature-card" style="text-align: left;">
+                            <span class="date">May 15, 2026</span>
+                            <h3>2026 Admission Form Out</h3>
+                            <p>Applications are now open for all degree and diploma programs for the upcoming
+                                session.</p>
+                            <a href="#"
+                                style="color: var(--green-primary); font-weight: 600; margin-top: 1rem; display: inline-block;">Read
+                                More →</a>
+                        </div>
+                        <div class="feature-card" style="text-align: left;">
+                            <span class="date">June 02, 2026</span>
+                            <h3>New Clinical Lab Open</h3>
+                            <p>We have commissioned our state-of-the-art diagnostic wing for practical rotations.
+                            </p>
+                            <a href="#"
+                                style="color: var(--green-primary); font-weight: 600; margin-top: 1rem; display: inline-block;">Read
+                                More →</a>
+                        </div>
+                        <div class="feature-card" style="text-align: left;">
+                            <span class="date">June 20, 2026</span>
+                            <h3>Graduation Ceremony</h3>
+                            <p>Celebrating the success of our latest batch of nursing and pharmacy technicians.</p>
+                            <a href="#"
+                                style="color: var(--green-primary); font-weight: 600; margin-top: 1rem; display: inline-block;">Read
+                                More →</a>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-large" style="margin-top: 3rem;">
+                        <a href="#" class="btn btn-secondary">View All News</a>
+                    </div>
+                </div>
+            </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-col brand-col">
+                <div class="footer-logo">
+                    <img src="assets/newlogo.png" alt="Jos Medical College" class="footer-logo-img">
+                </div>
+                <p>Let us help you help others
+                </p>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#academics">Academics</a></li>
+                    <li><a href="#admissions">Admissions</a></li>
+                    <li><a href="#news">News & Events</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Explore Programs</h3>
+                <ul>
+                    <li><a href="programs.html#degree">Nursing Sciences</a></li>
+                    <li><a href="programs.html#degree">Medical Laboratory Sciences</a></li>
+                    <li><a href="programs.html#degree">Pharmacy</a></li>
+                    <li><a href="programs.html#degree">Public Health</a></li>
+                    <li><a href="programs.html#degree">Biochemistry</a></li>
+                    <li><a href="programs.html#diploma">Mass Communication</a></li>
+                    <li><a href="programs.html#diploma">Business Administration</a></li>
+                </ul>
+            </div>
+            <div class="footer-col contact-col">
+                <h3>Contact Us</h3>
+                <address>
+                    <p>123 College Road, Jos</p>
+                    <p>Plateau State, Nigeria</p>
+                    <p><a href="mailto:info@josmed.edu.ng">info@josmed.edu.ng</a></p>
+                    <p><a href="tel:+2348001234567">+234 800 123 4567</a></p>
+                </address>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Jos Medical College. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
