@@ -322,98 +322,123 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // --- TEACHING STAFF PORTAL LOGIC ---
-
-    // Initialize Mock Staff Data if empty
-    function initStaffData() {
-        const staff = JSON.parse(localStorage.getItem('jmc_staff') || '[]');
-        if (staff.length === 0) {
-            const mockStaff = [
-                {
-                    id: 'STF/2026/001',
-                    fullName: 'Dr. Samuel Ahmed',
-                    email: 's.ahmed@josmed.edu.ng',
-                    password: 'password123',
-                    tempPass: 'password123',
-                    dept: 'Nursing Sciences',
-                    phone: '08012345678',
-                    courses: ['NSG 301', 'ANA 201']
-                },
-                {
-                    id: 'STF/2026/002',
-                    fullName: 'Prof. Mary John',
-                    email: 'm.john@josmed.edu.ng',
-                    password: 'password123',
-                    tempPass: 'password123',
-                    dept: 'Anatomy',
-                    phone: '08087654321',
-                    courses: ['ANA 202', 'BIO 105']
+    try {
+        // Initialize Mock Staff Data if empty
+        function initStaffData() {
+            try {
+                const staffData = localStorage.getItem('jmc_staff');
+                const staff = JSON.parse(staffData || '[]');
+                if (!staff || staff.length === 0) {
+                    console.log('Initializing mock staff data...');
+                    const mockStaff = [
+                        {
+                            id: 'STF/2026/001',
+                            fullName: 'Dr. Samuel Ahmed',
+                            email: 's.ahmed@josmed.edu.ng',
+                            password: 'password123',
+                            tempPass: 'password123',
+                            dept: 'Nursing Sciences',
+                            phone: '08012345678',
+                            courses: ['NSG 301', 'ANA 201']
+                        },
+                        {
+                            id: 'STF/2026/002',
+                            fullName: 'Prof. Mary John',
+                            email: 'm.john@josmed.edu.ng',
+                            password: 'password123',
+                            tempPass: 'password123',
+                            dept: 'Anatomy',
+                            phone: '08087654321',
+                            courses: ['ANA 202', 'BIO 105']
+                        }
+                    ];
+                    localStorage.setItem('jmc_staff', JSON.stringify(mockStaff));
                 }
-            ];
-            localStorage.setItem('jmc_staff', JSON.stringify(mockStaff));
+            } catch (err) {
+                console.error('Error initializing staff data:', err);
+            }
         }
-    }
-    initStaffData();
+        initStaffData();
 
-    // Staff Login Handler
-    const staffLoginForm = document.getElementById('staffLoginForm');
-    if (staffLoginForm) {
-        console.log('Staff Login Form detected.');
-        staffLoginForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            console.log('Staff Login submitted.');
-            const email = document.getElementById('staffEmail').value;
-            const pass = document.getElementById('staffPassword').value;
+        // Staff Login Handler
+        const staffLoginForm = document.getElementById('staffLoginForm');
+        if (staffLoginForm) {
+            console.log('Attaching Staff Login listener.');
+            staffLoginForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                console.log('Staff Login form submitted.');
 
-            // Re-fetch staff to ensure we have latest from localStorage
-            const staffList = JSON.parse(localStorage.getItem('jmc_staff') || '[]');
-            console.log('Checking against staff list:', staffList.length, 'entries found.');
+                const emailEl = document.getElementById('staffEmail');
+                const passEl = document.getElementById('staffPassword');
 
-            const staff = staffList.find(s => s.email.toLowerCase() === email.toLowerCase());
+                if (!emailEl || !passEl) {
+                    alert('Technical Error: Login inputs not found.');
+                    return;
+                }
 
-            if (!staff) {
-                alert('Invalid Staff Email. Please use a registered staff account (e.g. s.ahmed@josmed.edu.ng).');
-                return;
-            }
+                const email = emailEl.value.trim().toLowerCase();
+                const pass = passEl.value;
 
-            if (staff.password === pass && pass === staff.tempPass) {
-                console.log('First-time login detected for:', staff.fullName);
-                window.tempStaff = staff;
-                const modal = document.getElementById('staffPasswordSetupModal');
-                if (modal) modal.style.display = 'flex';
-                else alert('Password Setup Modal not found in DOM.');
-            } else if (staff.password === pass) {
-                console.log('Successful login for:', staff.fullName);
-                localStorage.setItem('jmc_logged_staff', JSON.stringify(staff));
-                window.location.href = 'staff-dashboard.html';
-            } else {
-                alert('Incorrect password. Please try again.');
-            }
-        });
-    }
+                const staffList = JSON.parse(localStorage.getItem('jmc_staff') || '[]');
+                const staff = staffList.find(s => s.email.toLowerCase() === email);
 
-    // Staff Password Setup
-    const staffSetupForm = document.getElementById('staffPasswordSetupForm');
-    if (staffSetupForm) {
-        staffSetupForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const newPass = document.getElementById('staffNewPassword').value;
-            const confirmPass = document.getElementById('staffConfirmPassword').value;
+                if (!staff) {
+                    alert('Invalid Staff Email. Please ensure you are a registered teaching staff member.');
+                    return;
+                }
 
-            if (newPass !== confirmPass) {
-                alert('Passwords do not match.');
-                return;
-            }
+                if (staff.password === pass && pass === staff.tempPass) {
+                    console.log('First-time staff login.');
+                    window.tempStaff = staff;
+                    const modal = document.getElementById('staffPasswordSetupModal');
+                    if (modal) modal.style.display = 'flex';
+                    else alert('First-time setup modal missing. Please contact IT.');
+                } else if (staff.password === pass) {
+                    console.log('Successful staff login.');
+                    localStorage.setItem('jmc_logged_staff', JSON.stringify(staff));
+                    window.location.href = 'staff-dashboard.html';
+                } else {
+                    alert('Incorrect password. Please verify your credentials.');
+                }
+            });
+        }
 
-            const staffList = JSON.parse(localStorage.getItem('jmc_staff') || '[]');
-            const index = staffList.findIndex(s => s.id === window.tempStaff.id);
-            if (index !== -1) {
-                staffList[index].password = newPass;
-                localStorage.setItem('jmc_staff', JSON.stringify(staffList));
-                localStorage.setItem('jmc_logged_staff', JSON.stringify(staffList[index]));
-                alert('Staff password set successfully!');
-                window.location.href = 'staff-dashboard.html';
-            }
-        });
+        // Staff Password Setup
+        const staffSetupForm = document.getElementById('staffPasswordSetupForm');
+        if (staffSetupForm) {
+            staffSetupForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const newPassEl = document.getElementById('staffNewPassword');
+                const confirmPassEl = document.getElementById('staffConfirmPassword');
+
+                if (!newPassEl || !confirmPassEl) return;
+
+                const newPass = newPassEl.value;
+                const confirmPass = confirmPassEl.value;
+
+                if (newPass !== confirmPass) {
+                    alert('Passwords do not match.');
+                    return;
+                }
+
+                if (!window.tempStaff) {
+                    alert('Session expired. Please refresh the login page.');
+                    return;
+                }
+
+                const staffList = JSON.parse(localStorage.getItem('jmc_staff') || '[]');
+                const index = staffList.findIndex(s => s.id === window.tempStaff.id);
+                if (index !== -1) {
+                    staffList[index].password = newPass;
+                    localStorage.setItem('jmc_staff', JSON.stringify(staffList));
+                    localStorage.setItem('jmc_logged_staff', JSON.stringify(staffList[index]));
+                    alert('Staff account verified! Redirecting to dashboard...');
+                    window.location.href = 'staff-dashboard.html';
+                }
+            });
+        }
+    } catch (e) {
+        console.error('General failure in Staff Portal logic:', e);
     }
 
     // Staff Dashboard Initialization
