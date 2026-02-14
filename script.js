@@ -357,28 +357,36 @@ document.addEventListener('DOMContentLoaded', function () {
     // Staff Login Handler
     const staffLoginForm = document.getElementById('staffLoginForm');
     if (staffLoginForm) {
+        console.log('Staff Login Form detected.');
         staffLoginForm.addEventListener('submit', function (e) {
             e.preventDefault();
+            console.log('Staff Login submitted.');
             const email = document.getElementById('staffEmail').value;
             const pass = document.getElementById('staffPassword').value;
+
+            // Re-fetch staff to ensure we have latest from localStorage
             const staffList = JSON.parse(localStorage.getItem('jmc_staff') || '[]');
-            const staff = staffList.find(s => s.email === email);
+            console.log('Checking against staff list:', staffList.length, 'entries found.');
+
+            const staff = staffList.find(s => s.email.toLowerCase() === email.toLowerCase());
 
             if (!staff) {
-                alert('Invalid Staff Email.');
+                alert('Invalid Staff Email. Please use a registered staff account (e.g. s.ahmed@josmed.edu.ng).');
                 return;
             }
 
             if (staff.password === pass && pass === staff.tempPass) {
-                // First-time login for staff
+                console.log('First-time login detected for:', staff.fullName);
                 window.tempStaff = staff;
-                document.getElementById('staffPasswordSetupModal').style.display = 'flex';
+                const modal = document.getElementById('staffPasswordSetupModal');
+                if (modal) modal.style.display = 'flex';
+                else alert('Password Setup Modal not found in DOM.');
             } else if (staff.password === pass) {
-                // Regular staff login
+                console.log('Successful login for:', staff.fullName);
                 localStorage.setItem('jmc_logged_staff', JSON.stringify(staff));
                 window.location.href = 'staff-dashboard.html';
             } else {
-                alert('Incorrect password.');
+                alert('Incorrect password. Please try again.');
             }
         });
     }
