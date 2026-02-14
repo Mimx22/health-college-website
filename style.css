@@ -5,10 +5,10 @@
 
 :root {
     /* Colors */
-    --primary-color: #2d6a4f;
-    /* Deep Green - Now Primary */
-    --primary-dark: #1b4332;
-    --primary-light: #d8f3dc;
+    --primary-color: #00a8e8;
+    /* Professional Light Blue */
+    --primary-dark: #007ea7;
+    --primary-light: #e3f2fd;
     --green-primary: #e53935;
     /* Medical Red - Now Accent */
     --green-dark: #c62828;
@@ -670,7 +670,7 @@ h6 {
     outline: none;
     border-color: var(--primary-color);
     background-color: var(--white);
-    box-shadow: 0 0 0 4px rgba(45, 106, 79, 0.1);
+    box-shadow: 0 0 0 4px rgba(0, 168, 232, 0.1);
 }
 
 .label-info {
@@ -716,7 +716,7 @@ h6 {
 .file-upload-wrapper:hover .file-upload-design {
     border-color: var(--primary-color);
     color: var(--primary-color);
-    background-color: rgba(45, 106, 79, 0.05);
+    background-color: rgba(0, 168, 232, 0.05);
 }
 
 .file-upload-design i {
@@ -1445,8 +1445,8 @@ h6 {
 /* Section Titles */
 .section-title {
     font-size: 2.5rem;
-    color: var(--green-primary);
-    /* Deep Green for headings */
+    color: var(--primary-color);
+    /* Professional Blue for headings */
     font-weight: 700;
     text-align: center;
     margin-bottom: 1.5rem;
@@ -1492,13 +1492,13 @@ h6 {
     font-size: 2rem;
     margin-bottom: 1.5rem;
     line-height: 1;
-    color: #2d6a4f;
+    color: #00a8e8;
     font-weight: 400;
 }
 
 .excellence-card h3 {
     font-size: 1.4rem;
-    color: #1b4332;
+    color: #007ea7;
     /* Dark Green */
     margin-bottom: 1rem;
     font-weight: 600;
@@ -1547,7 +1547,7 @@ h6 {
 .facility-icon {
     font-size: 1.2rem;
     line-height: 1;
-    color: #2d6a4f;
+    color: #00a8e8;
     font-weight: 700;
 }
 
@@ -1579,7 +1579,7 @@ h6 {
 }
 
 .affiliate-card:hover {
-    border-color: #2d6a4f;
+    border-color: #00a8e8;
     box-shadow: var(--shadow-md);
 }
 
@@ -1587,13 +1587,13 @@ h6 {
     font-size: 2.5rem;
     margin-bottom: 1.5rem;
     line-height: 1;
-    color: #1b4332;
+    color: #007ea7;
     font-weight: 300;
 }
 
 .affiliate-card h3 {
     font-size: 1.3rem;
-    color: #1b4332;
+    color: #007ea7;
     margin-bottom: 1rem;
     font-weight: 600;
 }
@@ -1617,7 +1617,7 @@ h6 {
 /* Mission & Vision Section */
 .about-mission-vision {
     padding: 6rem 0;
-    background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
+    background: linear-gradient(135deg, #007ea7 0%, #00a8e8 100%);
     color: var(--white);
 }
 
