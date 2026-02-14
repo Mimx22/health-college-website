@@ -120,9 +120,72 @@
                         <li>MEDICAL FITNESS REPORT</li>
                         <li>PASSPORT PHOTOGRAPHS (WHITE BACKGROUND)</li>
                     </ul>
-                    <div style="text-align: center; margin-top: 2.5rem;">
-                        <a href="portal.html" class="btn btn-primary"
-                            style="padding: 1rem 3rem; font-size: 1.1rem;">Register Now</a>
+                    <div class="application-form-container">
+                        <div class="form-header">
+                            <h2>STUDENT APPLICATION FORM</h2>
+                            <p>Please fill out the form below to begin your journey with us.</p>
+                        </div>
+                        <form id="admissionForm" class="admission-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="fullName">Full Name</label>
+                                    <input type="text" id="fullName" name="fullName" placeholder="Enter your full name"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" name="email" placeholder="example@email.com"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone" placeholder="e.g. +234 800 000 0000"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="program">Program of Study</label>
+                                    <select id="program" name="program" required>
+                                        <option value="" disabled selected>Select a program</option>
+                                        <optgroup label="Degree Programs">
+                                            <option value="Nursing Sciences">Nursing Sciences</option>
+                                            <option value="Medical Laboratory Sciences">Medical Laboratory Sciences
+                                            </option>
+                                            <option value="Pharmacy">Pharmacy</option>
+                                            <option value="Public Health">Public Health</option>
+                                            <option value="Biochemistry">Biochemistry</option>
+                                            <option value="Microbiology">Microbiology</option>
+                                            <option value="Community Health">Community Health</option>
+                                            <option value="Computer Sciences">Computer Sciences</option>
+                                        </optgroup>
+                                        <optgroup label="Diploma Programs">
+                                            <option value="Mass Communication">Mass Communication</option>
+                                            <option value="Public Administration">Public Administration</option>
+                                            <option value="Business Administration">Business Administration</option>
+                                            <option value="Office and Hotel Management">Office and Hotel Management
+                                            </option>
+                                            <option value="Computer Science">Computer Science</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="documents">Upload Documents (Optional) <span class="label-info">PDF, JPG
+                                        (Max 5MB)</span></label>
+                                <div class="file-upload-wrapper">
+                                    <input type="file" id="documents" name="documents" multiple
+                                        accept=".pdf,.jpg,.jpeg">
+                                    <div class="file-upload-design">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Click to upload or drag and drop</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-footer">
+                                <button type="submit" class="btn btn-primary submit-btn">Submit Application</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -136,6 +199,11 @@
                     <img src="assets/newlogo.png" alt="Jos Medical College" class="footer-logo-img">
                 </div>
                 <p>Let us help you help others</p>
+                <p
+                    style="font-size: 0.85rem; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
+                    “Official website of Medical Career College of Health Science and Technology, Jos — built with
+                    modern web technologies.”
+                </p>
             </div>
             <div class="footer-col">
                 <h3>Quick Links</h3>
@@ -169,8 +237,13 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <div class="container">
+            <div class="container"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                 <p>&copy; 2026 Jos Medical College. All rights reserved.</p>
+                <div class="footer-admin-link">
+                    <a href="admin-dashboard.html" style="font-size: 0.75rem; opacity: 0.5; color: var(--white);"><i
+                            class="fas fa-lock"></i> Admin Panel</a>
+                </div>
                 <div class="social-links">
                     <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
