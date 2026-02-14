@@ -332,6 +332,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('Initializing mock staff data...');
                     const mockStaff = [
                         {
+                            id: 'STF/TEST/001',
+                            fullName: 'Test Lecturer',
+                            email: 'staff@testcollege.com',
+                            password: 'password123',
+                            tempPass: '', // No first-time setup for test account
+                            dept: 'General Studies',
+                            phone: '08000000000',
+                            courses: ['GEN 101', 'GST 102']
+                        },
+                        {
                             id: 'STF/2026/001',
                             fullName: 'Dr. Samuel Ahmed',
                             email: 's.ahmed@josmed.edu.ng',
