@@ -2402,3 +2402,114 @@ h6 {
         grid-template-columns: 1fr;
     }
 }
+
+/* --- PROGRAM CARD ENHANCEMENTS --- */
+.programs-section {
+    padding: 6rem 0;
+    background-color: var(--bg-light);
+}
+
+.category-title {
+    font-size: 2.2rem;
+    color: var(--secondary-color);
+    margin-bottom: 3rem;
+    border-bottom: 3px solid var(--primary-color);
+    display: inline-block;
+    padding-bottom: 0.5rem;
+}
+
+.course-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+    margin-bottom: 4rem;
+}
+
+.course-card {
+    background: var(--white);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-color);
+}
+
+.course-card h3 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+}
+
+.course-card p {
+    color: var(--text-light);
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+/* Expandable Content */
+.course-details {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0, 1, 0, 1);
+    opacity: 0;
+}
+
+.course-card.expanded .course-details {
+    max-height: 1000px;
+    opacity: 1;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    transition: all 0.5s ease-in-out;
+}
+
+.detail-item {
+    margin-bottom: 1.2rem;
+}
+
+.detail-item:last-child {
+    margin-bottom: 0;
+}
+
+.detail-item strong {
+    display: block;
+    color: var(--secondary-color);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.4rem;
+}
+
+.detail-item p {
+    font-size: 0.95rem !important;
+    color: var(--text-color) !important;
+}
+
+.btn-read-more {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.btn-read-more:hover {
+    color: var(--secondary-color);
+    transform: translateX(5px);
+}
+
+.mt-large {
+    margin-top: 4rem;
+}

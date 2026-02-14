@@ -528,4 +528,16 @@ document.addEventListener('DOMContentLoaded', function () {
         const student = JSON.parse(localStorage.getItem('jmc_logged_student'));
         if (student) generatePDF(student);
     };
+
+    // Toggle Program Card Expansion
+    window.toggleCourse = function (btn) {
+        const card = btn.closest('.course-card');
+        card.classList.toggle('expanded');
+        if (card.classList.contains('expanded')) {
+            btn.innerHTML = 'Read Less ↑';
+        } else {
+            btn.innerHTML = 'Read More →';
+        }
+    };
 });
+
