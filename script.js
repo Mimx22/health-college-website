@@ -3,6 +3,19 @@
 */
 
 document.addEventListener('DOMContentLoaded', function () {
+    // --- STYLES & SHARED UI ---
+    // Populate Admin Support on Dashboard
+    const adminSupportDashboard = document.getElementById('adminSupportDashboard');
+    if (adminSupportDashboard) {
+        adminSupportDashboard.innerHTML = `
+            <h3>Admin Support</h3>
+            <address>
+                <p style="margin-bottom: 0.5rem;"><i class="fab fa-whatsapp" style="color: #25D366;"></i> <a href="https://wa.me/2349066498487" style="color: inherit; text-decoration: none;">09066498487</a></p>
+                <p><i class="fas fa-envelope"></i> <a href="mailto:glttercost@gmail.com" style="color: inherit; text-decoration: none;">glttercost@gmail.com</a></p>
+            </address>
+        `;
+    }
+
     // --- ORIGINAL SITE FUNCTIONALITY ---
 
     // Mobile Menu Toggle
@@ -12,8 +25,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (mobileMenuBtn && mainNav) {
         mobileMenuBtn.addEventListener('click', function () {
             mainNav.classList.toggle('active');
-
-            // Animate hamburger icon
             if (mainNav.classList.contains('active')) {
                 mobileMenuBtn.style.opacity = '0.8';
             } else {
@@ -24,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Sticky Header Scroll Effect
     const header = document.querySelector('.main-header');
-
     window.addEventListener('scroll', function () {
         if (header) {
             if (window.scrollY > 50) {
@@ -35,30 +45,20 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Smooth Scrolling for Anchor Links
+    // Smooth Scrolling
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const targetId = this.getAttribute('href');
             if (targetId === '#' || targetId === '') return;
-
             const targetElement = document.querySelector(targetId);
-
             if (targetElement) {
                 e.preventDefault();
-
-                // Close mobile menu if open
                 if (mainNav && mainNav.classList.contains('active')) {
                     mainNav.classList.remove('active');
                 }
-
-                // Account for sticky header
                 const headerHeight = header ? header.offsetHeight : 0;
                 const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - headerHeight;
-
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
+                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
             }
         });
     });
@@ -67,23 +67,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const slides = document.querySelectorAll('.hero-slide');
     if (slides.length > 0) {
         let currentSlide = 0;
-        const slideInterval = 5000;
-
         setInterval(() => {
             slides[currentSlide].classList.remove('active');
             currentSlide = (currentSlide + 1) % slides.length;
             slides[currentSlide].classList.add('active');
-        }, slideInterval);
+        }, 5000);
     }
 
     // --- STUDENT ADMISSION SYSTEM ---
 
-    // Admission Form Submission
     const admissionForm = document.getElementById('admissionForm');
     if (admissionForm) {
         admissionForm.addEventListener('submit', function (e) {
             e.preventDefault();
-
             const formData = new FormData(this);
             const application = {
                 id: 'APP-' + Date.now(),
@@ -94,17 +90,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 date: new Date().toLocaleDateString(),
                 status: 'Pending'
             };
-
             const applications = JSON.parse(localStorage.getItem('jmc_applications') || '[]');
             applications.push(application);
             localStorage.setItem('jmc_applications', JSON.stringify(applications));
-
-            alert('Application Submitted Successfully! Our administration will review your details and contact you soon.');
+            alert('Application Submitted Successfully!');
             this.reset();
         });
     }
 
-    // Admin Dashboard Rendering
     const appsTableBody = document.getElementById('applicationsBody');
     if (appsTableBody) {
         renderApplications();
@@ -113,24 +106,20 @@ document.addEventListener('DOMContentLoaded', function () {
     function renderApplications() {
         const applications = JSON.parse(localStorage.getItem('jmc_applications') || '[]');
         const stats = { total: applications.length, pending: 0, approved: 0 };
-
         appsTableBody.innerHTML = '';
-
         if (applications.length === 0) {
             const emptyState = document.getElementById('emptyState');
-            const appsTable = document.getElementById('applicationsTable');
             if (emptyState) emptyState.style.display = 'block';
-            if (appsTable) appsTable.style.display = 'none';
+            const table = document.getElementById('applicationsTable');
+            if (table) table.style.display = 'none';
         } else {
             const emptyState = document.getElementById('emptyState');
-            const appsTable = document.getElementById('applicationsTable');
             if (emptyState) emptyState.style.display = 'none';
-            if (appsTable) appsTable.style.display = 'table';
-
+            const table = document.getElementById('applicationsTable');
+            if (table) table.style.display = 'table';
             ([...applications]).reverse().forEach(app => {
                 if (app.status === 'Pending') stats.pending++;
                 if (app.status === 'Approved') stats.approved++;
-
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>
@@ -152,7 +141,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 appsTableBody.appendChild(tr);
             });
         }
-
         const statsTotal = document.getElementById('totalApps');
         const statsPending = document.getElementById('pendingApps');
         const statsApproved = document.getElementById('approvedApps');
@@ -161,15 +149,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (statsApproved) statsApproved.textContent = stats.approved;
     }
 
-    // PDF and Status Update functions attached to window for global access
-    window.approveApp = function (id) {
-        updateStatus(id, 'Approved');
-    };
-
-    window.rejectApp = function (id) {
-        updateStatus(id, 'Rejected');
-    };
-
+    // Functions for Global Access
+    window.approveApp = function (id) { updateStatus(id, 'Approved'); };
+    window.rejectApp = function (id) { updateStatus(id, 'Rejected'); };
     window.downloadLetter = function (id) {
         const applications = JSON.parse(localStorage.getItem('jmc_applications') || '[]');
         const app = applications.find(a => a.id === id);
@@ -181,19 +163,18 @@ document.addEventListener('DOMContentLoaded', function () {
         const index = applications.findIndex(a => a.id === id);
         if (index !== -1) {
             applications[index].status = status;
-
             if (status === 'Approved') {
                 const stdId = 'JMC/2026/' + Math.floor(Math.random() * 900 + 100);
                 const tempPass = Math.random().toString(36).slice(-8).toUpperCase();
                 applications[index].studentId = stdId;
                 applications[index].tempPass = tempPass;
-
+                applications[index].password = tempPass; // Default password
                 localStorage.setItem('jmc_applications', JSON.stringify(applications));
                 generatePDF(applications[index]);
-                alert(`Application Approved!\nStudent ID: ${stdId}\nTemp Password: ${tempPass}`);
+                alert(`Approved! Student ID: ${stdId} | Temp Password: ${tempPass}`);
             } else {
                 localStorage.setItem('jmc_applications', JSON.stringify(applications));
-                alert('Application Rejected. Notification sent to student.');
+                alert('Rejected.');
             }
             renderApplications();
         }
@@ -202,8 +183,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function generatePDF(app) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-
-        // Header
         doc.setFillColor(45, 106, 79);
         doc.rect(0, 0, 210, 40, 'F');
         doc.setTextColor(255, 255, 255);
@@ -211,49 +190,137 @@ document.addEventListener('DOMContentLoaded', function () {
         doc.text('JOS MEDICAL COLLEGE', 105, 20, { align: 'center' });
         doc.setFontSize(10);
         doc.text('OF HEALTH SCIENCE AND TECHNOLOGY', 105, 28, { align: 'center' });
-
-        // Title
         doc.setTextColor(40, 40, 40);
         doc.setFontSize(18);
         doc.text('PROVISIONAL ADMISSION LETTER', 105, 60, { align: 'center' });
-
-        // Details
         doc.setFontSize(12);
         doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 80);
         doc.text(`Student ID: ${app.studentId}`, 20, 90);
-
         doc.setFont('helvetica', 'bold');
         doc.text(`Dear ${app.fullName.toUpperCase()},`, 20, 110);
         doc.setFont('helvetica', 'normal');
-
-        const message = `Congratulations! We are pleased to inform you that you have been offered provisional admission into the Medical Career College of Health Science and Technology, Jos for the 2026 academic session.`;
-        const splitMessage = doc.splitTextToSize(message, 170);
-        doc.text(splitMessage, 20, 120);
-
+        const message = `Congratulations! You have been offered provisional admission into JMC for the 2026 session.`;
+        doc.text(doc.splitTextToSize(message, 170), 20, 120);
         doc.setFont('helvetica', 'bold');
         doc.text('PROGRAM DETAILS:', 20, 145);
         doc.setFont('helvetica', 'normal');
         doc.text(`Program: ${app.program}`, 30, 155);
         doc.text(`Academic Session: 2026/2027`, 30, 165);
-
         doc.setFont('helvetica', 'bold');
         doc.text('PORTAL ACCESS:', 20, 185);
         doc.setFont('helvetica', 'normal');
         doc.text(`Portal Link: portal.josmed.edu.ng`, 30, 195);
         doc.text(`Temporary Password: ${app.tempPass}`, 30, 205);
-
-        doc.setFontSize(10);
-        const footerText = `Please present this letter at the college registry for physical screening and documentation within two weeks of receipt.`;
-        const splitFooter = doc.splitTextToSize(footerText, 170);
-        doc.text(splitFooter, 20, 230);
-
-        doc.line(20, 260, 80, 260);
-        doc.text('Registrar', 20, 265);
-
-        // Border
-        doc.setDrawColor(45, 106, 79);
-        doc.rect(5, 5, 200, 287);
-
         doc.save(`Admission_Letter_${app.fullName.replace(/\s+/g, '_')}.pdf`);
     }
+
+    // --- STUDENT PORTAL LOGIC ---
+
+    const loginForm = document.getElementById('studentLoginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const stdId = document.getElementById('studentId').value;
+            const pass = document.getElementById('password').value;
+            const applications = JSON.parse(localStorage.getItem('jmc_applications') || '[]');
+            const student = applications.find(a => a.studentId === stdId);
+
+            if (!student || student.status !== 'Approved') {
+                alert('Invalid Student ID or Application not yet approved.');
+                return;
+            }
+
+            if (student.password === pass && pass === student.tempPass) {
+                // First-time login
+                window.tempStudent = student;
+                document.getElementById('passwordSetupModal').style.display = 'flex';
+            } else if (student.password === pass) {
+                // Regular login
+                localStorage.setItem('jmc_logged_student', JSON.stringify(student));
+                window.location.href = 'student-dashboard.html';
+            } else {
+                alert('Incorrect password.');
+            }
+        });
+    }
+
+    const setupForm = document.getElementById('passwordSetupForm');
+    if (setupForm) {
+        setupForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+
+            if (newPass !== confirmPass) {
+                alert('Passwords do not match.');
+                return;
+            }
+
+            const applications = JSON.parse(localStorage.getItem('jmc_applications') || '[]');
+            const index = applications.findIndex(a => a.studentId === window.tempStudent.studentId);
+            if (index !== -1) {
+                applications[index].password = newPass;
+                localStorage.setItem('jmc_applications', JSON.stringify(applications));
+                localStorage.setItem('jmc_logged_student', JSON.stringify(applications[index]));
+                alert('Password set successfully!');
+                window.location.href = 'student-dashboard.html';
+            }
+        });
+    }
+
+    // Dashboard Initialization
+    if (window.location.pathname.includes('student-dashboard.html')) {
+        const student = JSON.parse(localStorage.getItem('jmc_logged_student'));
+        if (!student) {
+            window.location.href = 'student-login.html';
+            return;
+        }
+
+        document.getElementById('profileName').textContent = student.fullName;
+        document.getElementById('profileId').textContent = student.studentId;
+        document.getElementById('profileProgram').textContent = student.program;
+        document.getElementById('updateEmail').value = student.email;
+        document.getElementById('updatePhone').value = student.phone || '';
+        document.getElementById('sidebarName').textContent = student.fullName;
+        document.getElementById('sidebarEmail').textContent = student.email;
+        document.getElementById('avatarInitial').textContent = student.fullName.charAt(0);
+    }
+
+    const profileForm = document.getElementById('profileUpdateForm');
+    if (profileForm) {
+        profileForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const student = JSON.parse(localStorage.getItem('jmc_logged_student'));
+            student.email = document.getElementById('updateEmail').value;
+            student.phone = document.getElementById('updatePhone').value;
+
+            // Update in applications list too
+            const applications = JSON.parse(localStorage.getItem('jmc_applications') || '[]');
+            const index = applications.findIndex(a => a.studentId === student.studentId);
+            if (index !== -1) {
+                applications[index] = student;
+                localStorage.setItem('jmc_applications', JSON.stringify(applications));
+                localStorage.setItem('jmc_logged_student', JSON.stringify(student));
+                alert('Profile updated successfully!');
+                window.location.reload();
+            }
+        });
+    }
+
+    window.switchTab = function (tabName) {
+        document.querySelectorAll('.dashboard-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+        document.getElementById('tab-' + tabName).classList.add('active');
+        event.currentTarget.classList.add('active');
+    };
+
+    window.logoutStudent = function () {
+        localStorage.removeItem('jmc_logged_student');
+        window.location.href = 'student-login.html';
+    };
+
+    window.downloadLetterPortal = function () {
+        const student = JSON.parse(localStorage.getItem('jmc_logged_student'));
+        if (student) generatePDF(student);
+    };
 });
