@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Login - Jos Medical College</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .login-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 1rem;
+            background-color: var(--bg-light);
+        }
+
+        .login-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 450px;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            border-top: 6px solid var(--primary-color);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-header h1 {
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .login-form .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .forgot-password {
+            display: block;
+            text-align: right;
+            font-size: 0.85rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-top: -1rem;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .login-footer a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-card {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                    <img src="assets/newlogo.png" alt="Jos Medical College Logo" class="logo-img">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="portal.html" class="nav-link active">Portal</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="login-section">
+            <div class="login-card">
+                <div class="login-header">
+                    <h1>Staff Portal Login</h1>
+                    <p>Enter your Email and Password to access the teaching dashboard.</p>
+                </div>
+
+                <form id="staffLoginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="staffEmail">Email Address</label>
+                        <input type="email" id="staffEmail" name="staffEmail" placeholder="e.g. staff@josmed.edu.ng"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffPassword">Password</label>
+                        <input type="password" id="staffPassword" name="staffPassword" placeholder="••••••••" required>
+                    </div>
+
+                    <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
+
+                    <button type="submit" class="btn btn-primary login-btn">Login to Staff Portal</button>
+                </form>
+
+                <div class="login-footer">
+                    <p>Issues with access? <a href="contact.html">Contact IT Support</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Initial Password Setup Modal -->
+        <div id="staffPasswordSetupModal" class="modal-overlay">
+            <div class="modal-card">
+                <h2>Welcome, Colleague!</h2>
+                <p style="margin-bottom: 1.5rem; color: var(--text-light);">This is your first login. Please set a
+                    secure password for your staff account.</p>
+                <form id="staffPasswordSetupForm">
+                    <div class="form-group">
+                        <label for="staffNewPassword">New Password</label>
+                        <input type="password" id="staffNewPassword" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="staffConfirmPassword">Confirm Password</label>
+                        <input type="password" id="staffConfirmPassword" required minlength="6">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Set Password &
+                        Login</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-col brand-col">
+                <div class="footer-logo">
+                    <img src="assets/newlogo.png" alt="Jos Medical College" class="footer-logo-img">
+                </div>
+                <p>Let us help you help others</p>
+            </div>
+            <div class="footer-col contact-col">
+                <h3>Contact Us</h3>
+                <address>
+                    <p>No.2 Rikkos Jos</p>
+                    <p>Plateau State, Nigeria</p>
+                    <p><a href="mailto:e.medicalcareeracademy.edu@gmail.com"
+                            style="color: inherit; text-decoration: none;">e.medicalcareeracademy.edu@gmail.com</a></p>
+                </address>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container" style="text-align: center; color: var(--text-light); font-size: 0.85rem;">
+                <p>&copy; 2026 Jos Medical College. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

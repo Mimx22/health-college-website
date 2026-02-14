@@ -321,6 +321,154 @@ document.addEventListener('DOMContentLoaded', function () {
         window.location.href = 'student-login.html';
     };
 
+    // --- TEACHING STAFF PORTAL LOGIC ---
+
+    // Initialize Mock Staff Data if empty
+    function initStaffData() {
+        const staff = JSON.parse(localStorage.getItem('jmc_staff') || '[]');
+        if (staff.length === 0) {
+            const mockStaff = [
+                {
+                    id: 'STF/2026/001',
+                    fullName: 'Dr. Samuel Ahmed',
+                    email: 's.ahmed@josmed.edu.ng',
+                    password: 'password123',
+                    tempPass: 'password123',
+                    dept: 'Nursing Sciences',
+                    phone: '08012345678',
+                    courses: ['NSG 301', 'ANA 201']
+                },
+                {
+                    id: 'STF/2026/002',
+                    fullName: 'Prof. Mary John',
+                    email: 'm.john@josmed.edu.ng',
+                    password: 'password123',
+                    tempPass: 'password123',
+                    dept: 'Anatomy',
+                    phone: '08087654321',
+                    courses: ['ANA 202', 'BIO 105']
+                }
+            ];
+            localStorage.setItem('jmc_staff', JSON.stringify(mockStaff));
+        }
+    }
+    initStaffData();
+
+    // Staff Login Handler
+    const staffLoginForm = document.getElementById('staffLoginForm');
+    if (staffLoginForm) {
+        staffLoginForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const email = document.getElementById('staffEmail').value;
+            const pass = document.getElementById('staffPassword').value;
+            const staffList = JSON.parse(localStorage.getItem('jmc_staff') || '[]');
+            const staff = staffList.find(s => s.email === email);
+
+            if (!staff) {
+                alert('Invalid Staff Email.');
+                return;
+            }
+
+            if (staff.password === pass && pass === staff.tempPass) {
+                // First-time login for staff
+                window.tempStaff = staff;
+                document.getElementById('staffPasswordSetupModal').style.display = 'flex';
+            } else if (staff.password === pass) {
+                // Regular staff login
+                localStorage.setItem('jmc_logged_staff', JSON.stringify(staff));
+                window.location.href = 'staff-dashboard.html';
+            } else {
+                alert('Incorrect password.');
+            }
+        });
+    }
+
+    // Staff Password Setup
+    const staffSetupForm = document.getElementById('staffPasswordSetupForm');
+    if (staffSetupForm) {
+        staffSetupForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const newPass = document.getElementById('staffNewPassword').value;
+            const confirmPass = document.getElementById('staffConfirmPassword').value;
+
+            if (newPass !== confirmPass) {
+                alert('Passwords do not match.');
+                return;
+            }
+
+            const staffList = JSON.parse(localStorage.getItem('jmc_staff') || '[]');
+            const index = staffList.findIndex(s => s.id === window.tempStaff.id);
+            if (index !== -1) {
+                staffList[index].password = newPass;
+                localStorage.setItem('jmc_staff', JSON.stringify(staffList));
+                localStorage.setItem('jmc_logged_staff', JSON.stringify(staffList[index]));
+                alert('Staff password set successfully!');
+                window.location.href = 'staff-dashboard.html';
+            }
+        });
+    }
+
+    // Staff Dashboard Initialization
+    if (window.location.pathname.includes('staff-dashboard.html')) {
+        const staff = JSON.parse(localStorage.getItem('jmc_logged_staff'));
+        if (!staff) {
+            window.location.href = 'staff-login.html';
+            return;
+        }
+
+        document.getElementById('dispStaffName').textContent = staff.fullName;
+        document.getElementById('dispStaffId').textContent = staff.id;
+        document.getElementById('dispStaffDept').textContent = staff.dept;
+        document.getElementById('dispStaffEmail').textContent = staff.email;
+        document.getElementById('staffUpdatePhone').value = staff.phone || '';
+        document.getElementById('staffSidebarName').textContent = staff.fullName;
+        document.getElementById('staffSidebarDept').textContent = staff.dept;
+        document.getElementById('staffAvatarInitial').textContent = staff.fullName.charAt(0);
+
+        // Logout
+        document.getElementById('staffLogoutBtn')?.addEventListener('click', function () {
+            localStorage.removeItem('jmc_logged_staff');
+            window.location.href = 'staff-login.html';
+        });
+    }
+
+    // Staff Profile Update
+    const staffProfileForm = document.getElementById('staffProfileForm');
+    if (staffProfileForm) {
+        staffProfileForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const staff = JSON.parse(localStorage.getItem('jmc_logged_staff'));
+            staff.phone = document.getElementById('staffUpdatePhone').value;
+
+            const staffList = JSON.parse(localStorage.getItem('jmc_staff') || '[]');
+            const index = staffList.findIndex(s => s.id === staff.id);
+            if (index !== -1) {
+                staffList[index] = staff;
+                localStorage.setItem('jmc_staff', JSON.stringify(staffList));
+                localStorage.setItem('jmc_logged_staff', JSON.stringify(staff));
+                alert('Staff profile updated!');
+                window.location.reload();
+            }
+        });
+    }
+
+    // RBAC - Access Restrictions
+    function enforceRBAC() {
+        const path = window.location.pathname;
+        const student = localStorage.getItem('jmc_logged_student');
+        const staff = localStorage.getItem('jmc_logged_staff');
+
+        if (path.includes('admin-dashboard.html') && staff) {
+            alert('Access Denied: Teaching staff do not have administrative privileges.');
+            window.location.href = 'staff-dashboard.html';
+        }
+        if (path.includes('staff-dashboard.html') && student) {
+            alert('Access Denied: Students cannot access the staff portal.');
+            window.location.href = 'student-dashboard.html';
+        }
+    }
+    enforceRBAC();
+
     window.downloadLetterPortal = function () {
         const student = JSON.parse(localStorage.getItem('jmc_logged_student'));
         if (student) generatePDF(student);
