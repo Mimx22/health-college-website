@@ -323,46 +323,58 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- TEACHING STAFF PORTAL LOGIC ---
     try {
-        // Initialize Mock Staff Data if empty
+        // Initialize Mock Staff Data and ensure test accounts are synced
         function initStaffData() {
             try {
                 const staffData = localStorage.getItem('jmc_staff');
-                const staff = JSON.parse(staffData || '[]');
-                if (!staff || staff.length === 0) {
-                    console.log('Initializing mock staff data...');
-                    const mockStaff = [
-                        {
-                            id: 'STF/TEST/001',
-                            fullName: 'Test Lecturer',
-                            email: 'staff@testcollege.com',
-                            password: 'password123',
-                            tempPass: '', // No first-time setup for test account
-                            dept: 'General Studies',
-                            phone: '08000000000',
-                            courses: ['GEN 101', 'GST 102']
-                        },
-                        {
-                            id: 'STF/2026/001',
-                            fullName: 'Dr. Samuel Ahmed',
-                            email: 's.ahmed@josmed.edu.ng',
-                            password: 'password123',
-                            tempPass: 'password123',
-                            dept: 'Nursing Sciences',
-                            phone: '08012345678',
-                            courses: ['NSG 301', 'ANA 201']
-                        },
-                        {
-                            id: 'STF/2026/002',
-                            fullName: 'Prof. Mary John',
-                            email: 'm.john@josmed.edu.ng',
-                            password: 'password123',
-                            tempPass: 'password123',
-                            dept: 'Anatomy',
-                            phone: '08087654321',
-                            courses: ['ANA 202', 'BIO 105']
-                        }
-                    ];
-                    localStorage.setItem('jmc_staff', JSON.stringify(mockStaff));
+                let staffList = JSON.parse(staffData || '[]');
+
+                const defaultStaff = [
+                    {
+                        id: 'STF/TEST/001',
+                        fullName: 'Test Lecturer',
+                        email: 'staff@testcollege.com',
+                        password: 'password123',
+                        tempPass: '',
+                        dept: 'General Studies',
+                        phone: '08000000000',
+                        courses: ['GEN 101', 'GST 102']
+                    },
+                    {
+                        id: 'STF/2026/001',
+                        fullName: 'Dr. Samuel Ahmed',
+                        email: 's.ahmed@josmed.edu.ng',
+                        password: 'password123',
+                        tempPass: 'password123',
+                        dept: 'Nursing Sciences',
+                        phone: '08012345678',
+                        courses: ['NSG 301', 'ANA 201']
+                    },
+                    {
+                        id: 'STF/2026/002',
+                        fullName: 'Prof. Mary John',
+                        email: 'm.john@josmed.edu.ng',
+                        password: 'password123',
+                        tempPass: 'password123',
+                        dept: 'Anatomy',
+                        phone: '08087654321',
+                        courses: ['ANA 202', 'BIO 105']
+                    }
+                ];
+
+                // Synchronize: Add missing default accounts to the list
+                let updated = false;
+                defaultStaff.forEach(def => {
+                    const exists = staffList.find(s => s.email.toLowerCase() === def.email.toLowerCase());
+                    if (!exists) {
+                        staffList.push(def);
+                        updated = true;
+                    }
+                });
+
+                if (updated || staffList.length === 0) {
+                    localStorage.setItem('jmc_staff', JSON.stringify(staffList));
+                    console.log('Mock staff data synchronized.');
                 }
             } catch (err) {
                 console.error('Error initializing staff data:', err);
