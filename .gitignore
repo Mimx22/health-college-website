@@ -1,0 +1,15 @@
+# Node
+node_modules/
+
+# Environment
+.env
+
+# VS Code
+.vscode/
+
+# Thunder Client
+thunder-client-*.json
+thunder-client-*.environment.json
+
+# Logs
+*.log
