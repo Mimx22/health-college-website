@@ -140,9 +140,22 @@ const approveStudent = async (req, res, next) => {
     }
 };
 
+// @desc    Get all students (admin)
+// @route   GET /api/students
+// @access  Private (admin)
+const getAllStudents = async (req, res, next) => {
+    try {
+        const students = await Student.find({}).select('-password');
+        res.json(students);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     registerStudent,
     loginStudent,
     updateProfile
     ,approveStudent
+    ,getAllStudents
 };
