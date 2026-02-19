@@ -1,16 +1,28 @@
-const adminAuth = (req, res, next) => {
-    const adminSecret = process.env.ADMIN_SECRET;
-    const provided = req.headers['x-admin-secret'];
+const jwt = require('jsonwebtoken');
 
-    if (!adminSecret) {
-        return res.status(500).json({ message: 'Admin secret not configured on server' });
+const authMiddleware = (req, res, next) => {
+    try {
+        const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+        if (!authHeader || typeof authHeader !== 'string') {
+            return res.status(401).json({ message: 'Authorization header missing' });
+        }
+
+        const parts = authHeader.split(' ');
+        if (parts.length !== 2 || parts[0] !== 'Bearer') {
+            return res.status(401).json({ message: 'Authorization format must be "Bearer <token>"' });
+        }
+
+        const token = parts[1];
+        if (!process.env.JWT_SECRET) {
+            return res.status(500).json({ message: 'JWT secret not configured on server' });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid or expired token' });
     }
-
-    if (!provided || provided !== adminSecret) {
-        return res.status(401).json({ message: 'Unauthorized: admin credentials required' });
-    }
-
-    next();
 };
 
-module.exports = { adminAuth };
+module.exports = { authMiddleware };
