@@ -1,5 +1,6 @@
 const Student = require('../models/Student');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // @desc    Register a new student
 // @route   POST /api/students/register
@@ -55,12 +56,17 @@ const loginStudent = async (req, res, next) => {
         const student = await Student.findOne({ email });
 
         if (student && (await bcrypt.compare(password, student.password))) {
+            const payload = { id: student._id, role: student.role };
+            const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
+
             res.json({
                 _id: student._id,
                 fullName: student.fullName,
                 email: student.email,
                 admissionStatus: student.admissionStatus,
                 program: student.program,
+                role: student.role,
+                token,
                 message: 'Login successful'
             });
         } else {
