@@ -1,57 +1,37 @@
 const jwt = require('jsonwebtoken');
 const Student = require('../models/Student');
-const Staff = require('../models/Staff');
 
-const protect = async (req, res, next) => {
+// Used for general auth (admin/staff)
+const authMiddleware = async (req, res, next) => {
     let token;
-
-    if (
-        req.headers.authorization &&
-        req.headers.authorization.startsWith('Bearer')
-    ) {
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
             token = req.headers.authorization.split(' ')[1];
-
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-            if (decoded.id === 'admin') {
-                req.user = { _id: 'admin', role: 'admin', email: 'admin@josmed.edu.ng' };
-            } else {
-                // Check if user is student
-                req.user = await Student.findById(decoded.id).select('-password');
-                if (!req.user) {
-                    // Check if user is staff
-                    req.user = await Staff.findById(decoded.id).select('-password');
-                }
-            }
-
-            if (!req.user) {
-                return res.status(401).json({ message: 'Not authorized, user not found' });
-            }
-
+            // Since we don't have a unified User model, we'll just pass the ID for now
+            // and let specific controllers handle user lookup if needed.
+            req.user = { id: decoded.id };
             next();
         } catch (error) {
-            console.error(error);
-            res.status(401).json({ message: 'Not authorized, token failed' });
+            res.status(401).json({ message: 'Not authorized' });
         }
-    }
-
-    if (!token) {
-        res.status(401).json({ message: 'Not authorized, no token' });
+    } else {
+        res.status(401).json({ message: 'No token' });
     }
 };
 
-const admin = (req, res, next) => {
-    if (req.user && req.user.role === 'admin') { // You might need to add role to Student/Staff or have a separate Admin model
-        next();
-    } else {
-        // Temporary: Allow if email matches admin (as per frontend)
-        if (req.user.email === 'admin@josmed.edu.ng') {
+const authorizeRoles = (...roles) => {
+    return (req, res, next) => {
+        // Simple admin check for now
+        if (req.user && req.user.id === 'admin') {
             next();
         } else {
-            res.status(401).json({ message: 'Not authorized as an admin' });
+            res.status(403).json({ message: 'Access denied' });
         }
-    }
+    };
 };
 
-module.exports = { protect, admin };
+// Legacy 'protect' for staff/student routes if needed
+const protect = authMiddleware;
+
+module.exports = { authMiddleware, authorizeRoles, protect };
