@@ -1,27 +1,37 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 
 const app = express();
-
 app.use(cors());
 app.use(express.json());
 
-// Mock MongoDB state
-const mongoose = {
-    connection: { readyState: 1 } // Pretend we are connected
-};
+// Health check with REAL DB CONNECTION attempt
+app.get('/api/health', async (req, res) => {
+    let dbStatus = 'Disconnected';
+    let error = null;
 
-// Health check
-app.get('/api/health', (req, res) => {
+    try {
+        if (mongoose.connection.readyState !== 1) {
+            console.log('Attempting DB Connection...');
+            await mongoose.connect(process.env.MONGO_URI, {
+                serverSelectionTimeoutMS: 5000 // fail fast for diagnostics
+            });
+            console.log('DB Connected');
+        }
+        dbStatus = 'Connected';
+    } catch (e) {
+        dbStatus = 'Error';
+        error = e.message;
+        console.error('DB Connection Failed:', e);
+    }
+
     res.json({
         status: 'ok',
-        db: 'MOCKED',
+        db: dbStatus,
+        error: error,
         time: new Date().toISOString()
     });
 });
-
-// Minimal Routes (Mocked or simple)
-app.use('/api/auth', (req, res) => res.json({ msg: 'Auth Mock' }));
-app.use('/api/students', (req, res) => res.json({ msg: 'Students Mock' }));
 
 module.exports = app;
