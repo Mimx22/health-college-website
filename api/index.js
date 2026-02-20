@@ -1,39 +1,35 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const dotenv = require('dotenv');
-
-dotenv.config();
-
 const app = express();
+let errorLog = [];
 
-app.use(cors());
-app.use(express.json());
+try {
+    const mongoose = require('mongoose');
+    console.log('Mongoose required');
+} catch (e) { errorLog.push('mongoose: ' + e.message); }
 
-// Diagnostic Route
+try {
+    require('../models/Student');
+    console.log('Student Model required');
+} catch (e) { errorLog.push('StudentModel: ' + e.message); }
+
+try {
+    require('../utils/sendEmail');
+    console.log('sendEmail required');
+} catch (e) { errorLog.push('sendEmail: ' + e.message); }
+
+try {
+    require('../routes/authRoutes');
+    console.log('authRoutes required');
+} catch (e) { errorLog.push('authRoutes: ' + e.message); }
+
 app.get('/api/health', (req, res) => {
     res.json({
-        status: 'ok',
-        engine: 'Express on Vercel',
-        db: mongoose.connection.readyState === 1 ? 'connected' : 'connecting/disconnected',
-        time: new Date().toISOString()
+        status: errorLog.length > 0 ? 'degraded' : 'ok',
+        errors: errorLog,
+        env: {
+            MONGO_URI: process.env.MONGO_URI ? 'SET' : 'MISSING'
+        }
     });
 });
-
-// Re-add Models and Routes (Standard folder structure)
-const Student = require('../models/Student');
-const sendEmail = require('../utils/sendEmail');
-
-app.use('/api/auth', require('../routes/authRoutes'));
-app.use('/api/students', require('../routes/studentRoutes'));
-app.use('/api/staff', require('../routes/staffRoutes'));
-app.use('/api/admin', require('../routes/adminRoutes'));
-
-// Database Connection (using standard stable patterns)
-if (mongoose.connection.readyState === 0) {
-    mongoose.connect(process.env.MONGO_URI)
-        .then(() => console.log('MongoDB Connected'))
-        .catch(err => console.error('MongoDB Error:', err));
-}
 
 module.exports = app;
