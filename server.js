@@ -2,6 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
+const Student = require('./models/Student');
+const sendEmail = require('./utils/sendEmail');
 
 dotenv.config();
 
@@ -21,8 +25,10 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 // Database Connection
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('MongoDB Connected'))
-    .catch(err => console.log(err));
+    .catch(err => console.log('MongoDB Connection Error:', err));
 
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Export for Vercel
+module.exports = app;
