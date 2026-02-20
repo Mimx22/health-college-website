@@ -13,3 +13,13 @@ thunder-client-*.environment.json
 
 # Logs
 *.log
+
+# Backend specific
+uploads/
+test.txt
+testEmail.js
+testUpload.js
+testAdminApi.js
+debug_db.js
+seedAdmin.js
+scripts/seedAdmin.js
