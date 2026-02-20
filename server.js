@@ -1,3 +1,6 @@
+console.log('🚀 Vercel Startup: Initializing Express...');
+console.log('Environment Check - MONGO_URI:', process.env.MONGO_URI ? 'SET' : 'MISSING');
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
