@@ -5,4 +5,4 @@
  *  LOCAL  →  'http://localhost:5000/api'
  *  LIVE   →  'https://YOUR-BACKEND.onrender.com/api'
  */
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://health-college-website.vercel.app/api';
