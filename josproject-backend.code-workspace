@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "josproject-backend",
+			"path": "../josproject-backend"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true,
+		"liveServer.settings.multiRootWorkspaceName": "josproject"
+	}
+}
