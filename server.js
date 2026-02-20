@@ -11,6 +11,11 @@ dotenv.config();
 
 const app = express();
 
+// Health check for Vercel troubleshooting
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ status: 'ok', message: 'API is running' });
+});
+
 // Middleware
 app.use(cors());
 app.use(express.json());
