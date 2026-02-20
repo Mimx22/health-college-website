@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="toast.js"></script>
     <script src="script.js" defer></script>
     <style>
         .dashboard-container {
@@ -244,34 +245,137 @@
             <section class="dashboard-main">
                 <!-- Profile Tab -->
                 <div id="tab-profile" class="dashboard-content content-card active">
-                    <h2><i class="fas fa-user-circle"></i> Personal Profile</h2>
-                    <form id="profileUpdateForm">
+                    <div class="profile-header">
+                        <div class="profile-pic-container" id="profilePicTrigger">
+                            <img id="currentProfilePic" src="" alt="Profile Photo" style="display: none;">
+                            <i class="fas fa-user" id="defaultAvatar"></i>
+                            <div class="photo-overlay edit-mode-only"
+                                onclick="document.getElementById('photoUpload').click()">
+                                <span>Change Photo</span>
+                            </div>
+                        </div>
+                        <input type="file" id="photoUpload" accept="image/png, image/jpeg" style="display: none;">
+                        <div id="photoPreviewLabel" class="edit-mode-only"
+                            style="font-size: 0.85rem; color: var(--primary-color); margin-top: -1rem; margin-bottom: 1rem; cursor: pointer;"
+                            onclick="document.getElementById('photoUpload').click()">
+                            Click to change photo
+                        </div>
+                        <h3 id="profileNameHeader" style="margin-bottom: 0.2rem;">Loading...</h3>
+                        <p id="profileIdHeader" style="color: var(--text-light); font-size: 0.9rem;">ID: Loading...</p>
+                    </div>
+
+                    <form id="profileInPlaceForm">
                         <div class="profile-grid">
                             <div class="profile-item">
                                 <label>Full Name</label>
-                                <p id="profileName">Loading...</p>
+                                <p id="viewFullName" class="view-text view-mode-only">Loading...</p>
+                                <input type="text" id="editFullName" class="form-control edit-mode-only" disabled
+                                    title="Full name cannot be changed here.">
                             </div>
                             <div class="profile-item">
                                 <label>Student ID</label>
-                                <p id="profileId">Loading...</p>
+                                <p id="viewId" class="view-text view-mode-only">Loading...</p>
+                                <input type="text" id="editId" class="form-control edit-mode-only" disabled
+                                    title="Student ID cannot be changed.">
                             </div>
                             <div class="profile-item">
-                                <label>Program</label>
-                                <p id="profileProgram">Loading...</p>
+                                <label>Program of Study</label>
+                                <p id="viewProgram" class="view-text view-mode-only">Loading...</p>
+                                <input type="text" id="editProgram" class="form-control edit-mode-only" disabled
+                                    title="Program change requires admin approval.">
                             </div>
-                            <div class="profile-item full-width">
+                            <div class="profile-item">
                                 <label>Email Address</label>
-                                <input type="email" id="updateEmail" class="form-control"
-                                    placeholder="Update your email">
+                                <p id="viewEmail" class="view-text view-mode-only">Loading...</p>
+                                <input type="email" id="editEmail" class="form-control edit-mode-only" required>
                             </div>
-                            <div class="profile-item full-width">
+                            <div class="profile-item">
                                 <label>Phone Number</label>
-                                <input type="tel" id="updatePhone" class="form-control" placeholder="Update your phone">
+                                <p id="viewPhone" class="view-text view-mode-only">Loading...</p>
+                                <input type="tel" id="editPhone" class="form-control edit-mode-only" required>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="margin-top: 2rem;">Save Changes</button>
+
+                        <div style="margin-top: 3rem; display: flex; gap: 1rem; justify-content: flex-end;">
+                            <button type="button" id="editProfileBtn" class="btn btn-primary view-mode-only"
+                                onclick="enterEditMode()">
+                                <i class="fas fa-edit"></i> Edit Profile
+                            </button>
+                            <button type="button" id="cancelEditBtn" class="btn btn-cancel edit-mode-only"
+                                onclick="exitEditMode()">
+                                Cancel
+                            </button>
+                            <button type="submit" id="saveProfileBtn" class="btn btn-primary edit-mode-only">
+                                Save Changes
+                            </button>
+                        </div>
                     </form>
+
+                    <!-- Quick Actions Row -->
+                    <div class="view-mode-only"
+                        style="margin-top: 3rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                        <button class="btn btn-secondary" onclick="openModal('receiptModal')"><i
+                                class="fas fa-upload"></i> Upload Receipt</button>
+                        <button class="btn btn-secondary" onclick="openModal('announcementModal')"><i
+                                class="fas fa-bullhorn"></i> Current Announcements</button>
+                    </div>
+
+                    <!-- Toast Notification -->
+                    <div id="successToast"
+                        style="position: fixed; bottom: 2rem; right: 2rem; background: #4caf50; color: white; padding: 1rem 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; z-index: 3000;">
+                        <i class="fas fa-check-circle"></i> Profile updated successfully!
+                    </div>
                 </div>
+
+
+
+                <!-- Upload Receipt Modal -->
+                <div id="receiptModal" class="modal-overlay">
+                    <div class="modal-card">
+                        <span class="modal-close-x" onclick="closeModal('receiptModal')">&times;</span>
+                        <div class="modal-header">
+                            <h2>Upload Payment Receipt</h2>
+                            <p>Please upload a clear copy of your payment evidence</p>
+                        </div>
+                        <form id="receiptUploadForm">
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="receiptType">Payment Type</label>
+                                <select id="receiptType" class="form-control" required>
+                                    <option value="Tuition">Tuition Fee</option>
+                                    <option value="Registration">Registration Fee</option>
+                                    <option value="Hostel">Hostel Fee</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="receiptFile">Select File (PDF/JPG)</label>
+                                <input type="file" id="receiptFile" class="form-control" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-cancel"
+                                    onclick="closeModal('receiptModal')">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Upload Receipt</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Announcement Modal -->
+                <div id="announcementModal" class="modal-overlay">
+                    <div class="modal-card">
+                        <span class="modal-close-x" onclick="closeModal('announcementModal')">&times;</span>
+                        <div class="modal-header">
+                            <h2>Announcements</h2>
+                        </div>
+                        <div class="notification-list" id="modalAnnouncementList">
+                            <!-- Populated from notifications -->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="closeModal('announcementModal')">Got
+                                it</button>
+                        </div>
+                    </div>
+                </div>
+
 
                 <!-- Admission Letter Tab -->
                 <div id="tab-admission" class="dashboard-content content-card">

@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="toast.js"></script>
     <script src="script.js" defer></script>
 </head>
 
@@ -82,8 +83,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#" class="disabled-link" style="opacity: 0.6; cursor: not-allowed;">Admin
-                                    Portal
+                                <a href="admin-login.html">Admin Portal
                                     <span class="badge-nav badge-restricted">Restricted</span>
                                     <span class="dropdown-item-desc">Institutional system management.</span>
                                 </a>
@@ -147,7 +147,7 @@
 
                     <!-- Admin Portal -->
                     <div class="portal-card admin-card"
-                        style="background: var(--white); padding: 3.5rem 2.5rem; border-radius: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); border-top: 6px solid var(--secondary-color); text-align: center; opacity: 0.85;">
+                        style="background: var(--white); padding: 3.5rem 2.5rem; border-radius: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); border-top: 6px solid var(--secondary-color); text-align: center;">
                         <div class="portal-icon"
                             style="font-size: 4rem; color: var(--secondary-color); margin-bottom: 2rem;">
                             <i class="fas fa-shield-alt"></i>
@@ -155,12 +155,12 @@
                         <h3 style="font-size: 1.8rem; color: var(--secondary-color); margin-bottom: 1rem;">Admin Portal
                         </h3>
                         <div style="margin-bottom: 1rem;"><span class="badge"
-                                style="background: #fff0f0; color: #e53935; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid #ffcdd2;">Restricted
-                                Area</span></div>
+                                style="background: #e3f2fd; color: #0277bd; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid #bbdefb;">Staff
+                                Access</span></div>
                         <p style="color: var(--text-light); margin-bottom: 2.5rem; line-height: 1.6;">Restricted access.
                             Only administrators can login.</p>
-                        <button class="btn btn-secondary" disabled
-                            style="width: 100%; padding: 1rem; border-radius: 6px; cursor: not-allowed; opacity: 0.6;">Login</button>
+                        <a href="admin-login.html" class="btn btn-secondary"
+                            style="width: 100%; padding: 1rem; border-radius: 6px;">Login</a>
                     </div>
 
                 </div>
@@ -218,7 +218,7 @@
                 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                 <p>&copy; 2026 Jos Medical College. All rights reserved.</p>
                 <div class="footer-admin-link">
-                    <a href="admin-dashboard.html" style="font-size: 0.75rem; opacity: 0.5; color: var(--white);"><i
+                    <a href="admin-login.html" style="font-size: 0.75rem; opacity: 0.5; color: var(--white);"><i
                             class="fas fa-lock"></i> Admin Panel</a>
                 </div>
                 <div class="social-links">

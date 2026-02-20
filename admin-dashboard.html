@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="toast.js"></script>
     <script src="script.js" defer></script>
     <style>
         .admin-container {
@@ -80,38 +81,100 @@
             border-bottom: none;
         }
 
+        /* --- Status Badges --- */
         .status-badge {
-            padding: 0.4rem 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.85rem;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 600;
             text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .status-pending {
             background: #fff8e1;
-            color: #f57f17;
+            color: #e65100;
         }
 
         .status-approved {
-            background: #e3f2fd;
-            color: #007ea7;
+            background: #e8f5e9;
+            color: #1b5e20;
         }
 
         .status-rejected {
             background: #ffebee;
-            color: #c62828;
+            color: #b71c1c;
         }
 
+        /* --- Actions Cell --- */
         .actions {
             display: flex;
             gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .btn-sm {
-            padding: 0.5rem 1rem;
-            font-size: 0.85rem;
-            border-radius: 4px;
+            padding: 0.45rem 1rem;
+            font-size: 0.82rem;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .btn-sm:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* --- Filter Bar --- */
+        .filter-bar {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.4rem;
+            border-radius: 24px;
+            border: 2px solid var(--border-color);
+            background: var(--white);
+            color: var(--text-light);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .filter-btn[data-filter="Pending"].active {
+            background: #e65100;
+            border-color: #e65100;
+        }
+
+        .filter-btn[data-filter="Approved"].active {
+            background: #1b5e20;
+            border-color: #1b5e20;
+        }
+
+        .filter-btn[data-filter="Rejected"].active {
+            background: #b71c1c;
+            border-color: #b71c1c;
         }
 
         .btn-approve {
@@ -172,12 +235,24 @@
                 </div>
                 <div class="stat-card">
                     <h3>Pending</h3>
-                    <div class="value" id="pendingApps">0</div>
+                    <div class="value" id="pendingApps" style="color: #e65100;">0</div>
                 </div>
                 <div class="stat-card">
                     <h3>Approved</h3>
-                    <div class="value" id="approvedApps" style="color: var(--primary-color);">0</div>
+                    <div class="value" id="approvedApps" style="color: #1b5e20;">0</div>
                 </div>
+                <div class="stat-card">
+                    <h3>Rejected</h3>
+                    <div class="value" id="rejectedApps" style="color: #b71c1c;">0</div>
+                </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="filter-bar" id="filterBar">
+                <button class="filter-btn active" data-filter="All">All</button>
+                <button class="filter-btn" data-filter="Pending">🟡 Pending</button>
+                <button class="filter-btn" data-filter="Approved">🟢 Approved</button>
+                <button class="filter-btn" data-filter="Rejected">🔴 Rejected</button>
             </div>
 
             <div class="applications-table-wrapper">
@@ -197,7 +272,7 @@
                 </table>
                 <div id="emptyState" class="empty-state" style="display: none;">
                     <i class="fas fa-inbox"></i>
-                    <p>No applications found.</p>
+                    <p>No applications found for this filter.</p>
                 </div>
             </div>
         </div>

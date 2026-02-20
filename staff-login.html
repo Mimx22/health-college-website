@@ -160,9 +160,11 @@
         <!-- Initial Password Setup Modal -->
         <div id="staffPasswordSetupModal" class="modal-overlay">
             <div class="modal-card">
-                <h2>Welcome, Colleague!</h2>
-                <p style="margin-bottom: 1.5rem; color: var(--text-light);">This is your first login. Please set a
-                    secure password for your staff account.</p>
+                <span class="modal-close-x" onclick="closeModal('staffPasswordSetupModal')">&times;</span>
+                <div class="modal-header">
+                    <h2>Welcome, Colleague!</h2>
+                    <p>This is your first login. Please set a secure password for your staff account.</p>
+                </div>
                 <form id="staffPasswordSetupForm">
                     <div class="form-group">
                         <label for="staffNewPassword">New Password</label>
@@ -172,8 +174,11 @@
                         <label for="staffConfirmPassword">Confirm Password</label>
                         <input type="password" id="staffConfirmPassword" required minlength="6">
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Set Password &
-                        Login</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-cancel"
+                            onclick="closeModal('staffPasswordSetupModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Set Password & Login</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -204,6 +209,7 @@
         </div>
     </footer>
 
+    <script src="toast.js"></script>
     <script src="script.js"></script>
 </body>
 

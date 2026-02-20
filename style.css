@@ -680,6 +680,38 @@ h6 {
     margin-left: 0.5rem;
 }
 
+/* ── Password Visibility Toggle ───────────────────────────────────────────── */
+.pwd-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.pwd-wrapper input[type="password"],
+.pwd-wrapper input[type="text"] {
+    width: 100%;
+    padding-right: 3rem !important;
+}
+
+.pwd-toggle {
+    position: absolute;
+    right: 0.85rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-light);
+    font-size: 1rem;
+    padding: 0.25rem 0.3rem;
+    line-height: 1;
+    transition: color 0.2s;
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.pwd-toggle:hover {
+    color: var(--primary-color);
+}
+
 .file-upload-wrapper {
     position: relative;
     width: 100%;
@@ -1850,6 +1882,119 @@ h6 {
     cursor: pointer;
 }
 
+/* --- STUDENT PROFILE ENHANCEMENTS --- */
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-pic-container {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    border: 4px solid var(--white);
+    box-shadow: var(--shadow-md);
+    background: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+
+.profile-pic-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-pic-container i {
+    font-size: 4rem;
+    color: var(--primary-color);
+}
+
+.photo-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: rgba(0, 0, 0, 0.6);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    cursor: pointer;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.profile-pic-container:hover .photo-overlay {
+    opacity: 1;
+}
+
+/* Edit Mode Helpers */
+.edit-mode-only {
+    display: none !important;
+}
+
+.dashboard-content.editing .edit-mode-only {
+    display: block !important;
+}
+
+.dashboard-content.editing .view-mode-only {
+    display: none !important;
+}
+
+.profile-item input.form-control {
+    font-size: 1rem;
+    padding: 0.6rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    width: 100%;
+    background: var(--white);
+}
+
+.profile-item p.view-text {
+    padding: 0.6rem 0;
+    margin: 0;
+}
+
+/* Toast Notification */
+#successToast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #4caf50;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    display: none;
+    z-index: 3000;
+    animation: slideUpToast 0.3s ease;
+}
+
+@keyframes slideUpToast {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+
 .lightbox-close:hover {
     color: #bbb;
 }
@@ -2223,31 +2368,88 @@ h6 {
     text-decoration: none;
 }
 
-/* Modal Styles */
+/* Modal Base & Transitions */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+    opacity: 1;
 }
 
 .modal-card {
     background: var(--white);
-    padding: 3rem;
+    padding: 2.5rem;
     border-radius: 12px;
-    max-width: 400px;
+    max-width: 500px;
     width: 90%;
+    position: relative;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
 }
 
-.modal-card h2 {
-    margin-bottom: 1rem;
+.modal-overlay.active .modal-card {
+    transform: translateY(0);
+}
+
+.modal-close-x {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    font-size: 1.5rem;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: var(--transition);
+    line-height: 1;
+}
+
+.modal-close-x:hover {
+    color: var(--accent-color);
+    transform: rotate(90deg);
+}
+
+.modal-header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.modal-header h2 {
     color: var(--secondary-color);
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.btn-cancel {
+    background-color: var(--bg-light);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+.btn-cancel:hover {
+    background-color: var(--border-color);
 }
 
 /* Dashboard Styles */

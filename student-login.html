@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="toast.js"></script>
     <script src="script.js" defer></script>
     <style>
         .login-section {
@@ -166,9 +167,11 @@
         <!-- Initial Password Setup Modal -->
         <div id="passwordSetupModal" class="modal-overlay">
             <div class="modal-card">
-                <h2>Welcome!</h2>
-                <p style="margin-bottom: 1.5rem; color: var(--text-light);">This is your first login. Please set a
-                    secure password for your account.</p>
+                <span class="modal-close-x" onclick="closeModal('passwordSetupModal')">&times;</span>
+                <div class="modal-header">
+                    <h2>Welcome!</h2>
+                    <p>This is your first login. Please set a secure password for your account.</p>
+                </div>
                 <form id="passwordSetupForm">
                     <div class="form-group">
                         <label for="newPassword">New Password</label>
@@ -178,8 +181,11 @@
                         <label for="confirmPassword">Confirm Password</label>
                         <input type="password" id="confirmPassword" required minlength="6">
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Set Password &
-                        Login</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-cancel"
+                            onclick="closeModal('passwordSetupModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Set Password & Login</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -216,7 +222,7 @@
                 style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
                 <p>&copy; 2026 Jos Medical College. All rights reserved.</p>
                 <div class="footer-admin-link">
-                    <a href="admin-dashboard.html" style="font-size: 0.75rem; opacity: 0.5; color: var(--white);"><i
+                    <a href="admin-login.html" style="font-size: 0.75rem; opacity: 0.5; color: var(--white);"><i
                             class="fas fa-lock"></i> Admin Panel</a>
                 </div>
                 <div class="social-links">

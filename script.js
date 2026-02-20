@@ -18,6 +18,61 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
     }
 
+    const API_BASE_URL = 'http://localhost:5000/api';
+    const ADMIN_CREDENTIALS = {
+        email: 'admin@josmed.edu.ng',
+        password: 'adminpassword123'
+    };
+
+    // Initialize Mock Data - REMOVED FOR BACKEND INTEGRATION
+    // function initMockData() { ... } 
+    // initMockData();
+
+    // ── PASSWORD VISIBILITY TOGGLE ──────────────────────────────────────────
+    // Auto-applies to every input[type="password"] on the page — no HTML edits needed
+    document.querySelectorAll('input[type="password"]').forEach(function (input) {
+        // Wrap input in a relative container
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pwd-wrapper';
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+
+        // Create the eye icon button
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'pwd-toggle';
+        btn.setAttribute('aria-label', 'Toggle password visibility');
+        btn.setAttribute('tabindex', '-1');
+        btn.innerHTML = '<i class="fas fa-eye"></i>';
+        wrapper.appendChild(btn);
+
+        btn.addEventListener('click', function () {
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            btn.innerHTML = isHidden
+                ? '<i class="fas fa-eye-slash"></i>'
+                : '<i class="fas fa-eye"></i>';
+            input.focus();
+        });
+    });
+
+    // --- 2. MODAL CONTROLS ---
+    window.openModal = function (modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+    };
+
+    window.closeModal = function (modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+    };
+
     // --- ORIGINAL SITE FUNCTIONALITY ---
 
     // Mobile Menu Toggle
@@ -79,106 +134,307 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- STUDENT ADMISSION SYSTEM ---
 
     const admissionForm = document.getElementById('admissionForm');
-    if (admissionForm) {
-        admissionForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            const application = {
-                id: 'APP-' + Date.now(),
-                fullName: formData.get('fullName'),
-                email: formData.get('email'),
-                phone: formData.get('phone'),
-                program: formData.get('program'),
-                date: new Date().toLocaleDateString(),
-                status: 'Pending'
-            };
-            const applications = JSON.parse(localStorage.getItem('jmc_applications') || '[]');
-            applications.push(application);
-            localStorage.setItem('jmc_applications', JSON.stringify(applications));
-            alert('Application Submitted Successfully!');
-            this.reset();
+    const documentsInput = document.getElementById('documents');
+    const uploadDesign = document.querySelector('.file-upload-design');
+
+    // Helper to reset upload UI
+    function resetUploadUI() {
+        const label = uploadDesign ? uploadDesign.querySelector('span') : null;
+        const icon = uploadDesign ? uploadDesign.querySelector('.fas') : null;
+        if (label) { label.textContent = 'Click to upload or drag and drop'; label.style.color = ''; label.style.fontWeight = ''; }
+        if (icon) { icon.className = 'fas fa-cloud-upload-alt'; icon.style.color = ''; }
+    }
+
+    // Helper to show selected files in the UI
+    function updateUploadUI(files) {
+        const label = uploadDesign ? uploadDesign.querySelector('span') : null;
+        const icon = uploadDesign ? uploadDesign.querySelector('.fas') : null;
+        if (files && files.length > 0) {
+            const fileNames = Array.from(files).map(f => f.name).join(', ');
+            if (label) { label.textContent = `✔ ${files.length} file(s) selected: ${fileNames}`; label.style.color = 'green'; label.style.fontWeight = '600'; }
+            if (icon) { icon.className = 'fas fa-check-circle'; icon.style.color = 'green'; }
+        } else {
+            resetUploadUI();
+        }
+    }
+
+    // File input change event
+    if (documentsInput) {
+        documentsInput.addEventListener('change', function () {
+            updateUploadUI(this.files);
         });
     }
 
+    // Drag-and-drop support
+    if (uploadDesign && documentsInput) {
+        uploadDesign.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.style.borderColor = 'var(--primary-color)';
+            this.style.background = 'rgba(0,168,232,0.05)';
+        });
+
+        uploadDesign.addEventListener('dragleave', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.style.borderColor = '';
+            this.style.background = '';
+        });
+
+        uploadDesign.addEventListener('drop', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.style.borderColor = '';
+            this.style.background = '';
+
+            const dt = e.dataTransfer;
+            if (dt && dt.files && dt.files.length > 0) {
+                // Transfer files to the real input
+                const dataTransfer = new DataTransfer();
+                Array.from(dt.files).forEach(file => dataTransfer.items.add(file));
+                documentsInput.files = dataTransfer.files;
+                updateUploadUI(documentsInput.files);
+            }
+        });
+    }
+
+    if (admissionForm) {
+        admissionForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Create FormData object to handle text + files
+            const formData = new FormData(this);
+            formData.append('password', 'password123');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/students/register`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast('Application submitted successfully!', 'success');
+                    this.reset();       // Reset form fields
+                    resetUploadUI();    // Reset upload UI
+                } else {
+                    showToast('Error: ' + (data.message || 'Failed to submit application'), 'error');
+                }
+            } catch (err) {
+                console.error('Registration Error:', err);
+                showToast('Connection error: Could not connect to the server.', 'error');
+            }
+        });
+    }
+
+    // ── Admin Dashboard State ──────────────────────────────────────────────────
+    let allApplications = [];   // master list fetched once from API
+    let currentFilter = 'All'; // active filter tab
+
     const appsTableBody = document.getElementById('applicationsBody');
     if (appsTableBody) {
-        renderApplications();
+        fetchApplications();
+        wireFilterButtons();
     }
 
-    function renderApplications() {
-        const applications = JSON.parse(localStorage.getItem('jmc_applications') || '[]');
-        const stats = { total: applications.length, pending: 0, approved: 0 };
-        appsTableBody.innerHTML = '';
-        if (applications.length === 0) {
-            const emptyState = document.getElementById('emptyState');
-            if (emptyState) emptyState.style.display = 'block';
-            const table = document.getElementById('applicationsTable');
-            if (table) table.style.display = 'none';
-        } else {
-            const emptyState = document.getElementById('emptyState');
-            if (emptyState) emptyState.style.display = 'none';
-            const table = document.getElementById('applicationsTable');
-            if (table) table.style.display = 'table';
-            ([...applications]).reverse().forEach(app => {
-                if (app.status === 'Pending') stats.pending++;
-                if (app.status === 'Approved') stats.approved++;
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>
-                        <div style="font-weight: 600; color: var(--secondary-color);">${app.fullName}</div>
-                        <div style="font-size: 0.8rem; color: var(--text-light);">${app.email}</div>
-                    </td>
-                    <td>${app.program}</td>
-                    <td>${app.date}</td>
-                    <td><span class="status-badge status-${app.status.toLowerCase()}">${app.status}</span></td>
-                    <td class="actions">
-                        ${app.status === 'Pending' ? `
-                            <button class="btn btn-sm btn-approve" onclick="approveApp('${app.id}')">Approve</button>
-                            <button class="btn btn-sm btn-reject" onclick="rejectApp('${app.id}')">Reject</button>
-                        ` : app.status === 'Approved' ? `
-                            <button class="btn btn-sm btn-secondary" onclick="downloadLetter('${app.id}')"><i class="fas fa-file-pdf"></i> Reprint</button>
-                        ` : `<span style="color: var(--text-light); font-size: 0.8rem;">No Actions</span>`}
-                    </td>
-                `;
-                appsTableBody.appendChild(tr);
-            });
+    /** Fetch all applications from the API and render. Called once on page load. */
+    async function fetchApplications() {
+        const token = localStorage.getItem('jmc_token');
+        if (!token) {
+            showToast('You are not logged in. Redirecting...', 'error');
+            setTimeout(() => window.location.href = 'admin-login.html', 1500);
+            return;
         }
-        const statsTotal = document.getElementById('totalApps');
-        const statsPending = document.getElementById('pendingApps');
-        const statsApproved = document.getElementById('approvedApps');
-        if (statsTotal) statsTotal.textContent = stats.total;
-        if (statsPending) statsPending.textContent = stats.pending;
-        if (statsApproved) statsApproved.textContent = stats.approved;
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/admin/applications`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.status === 401 || response.status === 403) {
+                showToast('Session expired. Please login again.', 'error');
+                setTimeout(() => window.location.href = 'admin-login.html', 1500);
+                return;
+            }
+
+            if (!response.ok) throw new Error('Failed to fetch applications');
+
+            allApplications = await response.json();
+            applyFilter(currentFilter);
+
+        } catch (err) {
+            console.error('Error fetching applications:', err);
+        }
     }
 
-    // Functions for Global Access
+    /**
+     * Filter allApplications client-side and re-render the table.
+     * @param {string} filter - 'All' | 'Pending' | 'Approved' | 'Rejected'
+     */
+    function applyFilter(filter) {
+        currentFilter = filter;
+
+        // Highlight the active filter button
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.filter === filter);
+        });
+
+        const filtered = filter === 'All'
+            ? allApplications
+            : allApplications.filter(a => a.admissionStatus === filter);
+
+        renderRows(filtered);
+        updateStats();
+    }
+
+    /** Render table rows for a given list of applications */
+    function renderRows(apps) {
+        const table = document.getElementById('applicationsTable');
+        const empty = document.getElementById('emptyState');
+
+        appsTableBody.innerHTML = '';
+
+        if (apps.length === 0) {
+            if (table) table.style.display = 'none';
+            if (empty) empty.style.display = 'block';
+            return;
+        }
+
+        if (table) table.style.display = 'table';
+        if (empty) empty.style.display = 'none';
+
+        apps.forEach(app => {
+            const status = app.admissionStatus; // 'Pending' | 'Approved' | 'Rejected'
+            const isPending = status === 'Pending';
+
+            const tr = document.createElement('tr');
+            tr.dataset.id = app._id;
+
+            tr.innerHTML = `
+                <td>
+                    <div style="font-weight:600; color:var(--secondary-color);">${app.fullName}</div>
+                    <div style="font-size:0.8rem; color:var(--text-light);">${app.email}</div>
+                </td>
+                <td>${app.program}</td>
+                <td>${new Date(app.dateApplied).toLocaleDateString()}</td>
+                <td>
+                    <span class="status-badge status-${status.toLowerCase()}">
+                        ${status === 'Pending' ? '🟡' : status === 'Approved' ? '🟢' : '🔴'} ${status}
+                    </span>
+                </td>
+                <td class="actions">
+                    ${isPending ? `
+                        <button class="btn btn-sm btn-approve" onclick="approveApp('${app._id}')">Approve</button>
+                        <button class="btn btn-sm btn-reject"  onclick="rejectApp('${app._id}')">Reject</button>
+                    ` : status === 'Approved' ? `
+                        <button class="btn btn-sm btn-secondary" onclick="downloadLetter('${app._id}')">
+                            <i class="fas fa-file-pdf"></i> Reprint
+                        </button>
+                    ` : `<span style="color:var(--text-light); font-size:0.8rem;">—</span>`}
+                </td>
+            `;
+            appsTableBody.appendChild(tr);
+        });
+
+        window.cachedApplications = allApplications; // keep for downloadLetter
+    }
+
+    /** Recalculate and update the four stat cards */
+    function updateStats() {
+        const stats = { total: allApplications.length, pending: 0, approved: 0, rejected: 0 };
+        allApplications.forEach(a => {
+            if (a.admissionStatus === 'Pending') stats.pending++;
+            if (a.admissionStatus === 'Approved') stats.approved++;
+            if (a.admissionStatus === 'Rejected') stats.rejected++;
+        });
+        const el = id => document.getElementById(id);
+        if (el('totalApps')) el('totalApps').textContent = stats.total;
+        if (el('pendingApps')) el('pendingApps').textContent = stats.pending;
+        if (el('approvedApps')) el('approvedApps').textContent = stats.approved;
+        if (el('rejectedApps')) el('rejectedApps').textContent = stats.rejected;
+    }
+
+    /** Wire filter button click events */
+    function wireFilterButtons() {
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                applyFilter(this.dataset.filter);
+            });
+        });
+    }
+
+    // Global helpers for inline onclick handlers
     window.approveApp = function (id) { updateStatus(id, 'Approved'); };
-    window.rejectApp = function (id) { updateStatus(id, 'Rejected'); };
+    window.rejectApp = function (id) {
+        showConfirm(
+            'Are you sure you want to reject this application? This action cannot be undone.',
+            () => updateStatus(id, 'Rejected'),
+            null,
+            'Yes, Reject'
+        );
+    };
     window.downloadLetter = function (id) {
-        const applications = JSON.parse(localStorage.getItem('jmc_applications') || '[]');
-        const app = applications.find(a => a.id === id);
+        const app = allApplications.find(a => a._id === id);
         if (app) generatePDF(app);
     };
 
-    function updateStatus(id, status) {
-        const applications = JSON.parse(localStorage.getItem('jmc_applications') || '[]');
-        const index = applications.findIndex(a => a.id === id);
-        if (index !== -1) {
-            applications[index].status = status;
-            if (status === 'Approved') {
-                const stdId = 'JMC/2026/' + Math.floor(Math.random() * 900 + 100);
-                const tempPass = Math.random().toString(36).slice(-8).toUpperCase();
-                applications[index].studentId = stdId;
-                applications[index].tempPass = tempPass;
-                applications[index].password = tempPass; // Default password
-                localStorage.setItem('jmc_applications', JSON.stringify(applications));
-                generatePDF(applications[index]);
-                alert(`Approved! Student ID: ${stdId} | Temp Password: ${tempPass}`);
-            } else {
-                localStorage.setItem('jmc_applications', JSON.stringify(applications));
-                alert('Rejected.');
+    /**
+     * PATCH status via API, then update allApplications in-place and re-render.
+     * No full page reload. Buttons are disabled instantly to prevent double-clicks.
+     */
+    async function updateStatus(id, status) {
+        const token = localStorage.getItem('jmc_token');
+        if (!token) { showToast('Unauthorized. Please login again.', 'error'); return; }
+
+        // Immediately disable the row's buttons to prevent double-click
+        const row = appsTableBody.querySelector(`tr[data-id="${id}"]`);
+        if (row) row.querySelectorAll('button').forEach(b => b.disabled = true);
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/admin/applications/${id}/status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status })
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                showToast('Error: ' + data.message, 'error');
+                // Re-enable the buttons on failure
+                if (row) row.querySelectorAll('button').forEach(b => b.disabled = false);
+                return;
             }
-            renderApplications();
+
+            const updatedApp = await response.json();
+
+            // Update the record in-place inside allApplications (no re-fetch needed)
+            const idx = allApplications.findIndex(a => a._id === id);
+            if (idx !== -1) {
+                allApplications[idx].admissionStatus = status;
+                if (status === 'Approved' && updatedApp.studentId) {
+                    allApplications[idx].studentId = updatedApp.studentId;
+                }
+            }
+
+            // Re-render with current filter (approved student disappears from Pending view, etc.)
+            applyFilter(currentFilter);
+
+            // Show confirmation
+            if (status === 'Approved') {
+                showToast(`Approved! Student ID: ${updatedApp.studentId} — Email sent to ${updatedApp.email}`, 'success', 6000);
+                generatePDF(updatedApp);
+            } else {
+                showToast('Application has been rejected.', 'info');
+            }
+
+        } catch (err) {
+            console.error('Update status error:', err);
+            showToast('Connection error. Please try again.', 'error');
+            if (row) row.querySelectorAll('button').forEach(b => b.disabled = false);
         }
     }
 
@@ -197,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function () {
         doc.text('PROVISIONAL ADMISSION LETTER', 105, 60, { align: 'center' });
         doc.setFontSize(12);
         doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 80);
-        doc.text(`Student ID: ${app.studentId}`, 20, 90);
+        doc.text(`Student ID: ${app.studentId || 'Pending'}`, 20, 90);
         doc.setFont('helvetica', 'bold');
         doc.text(`Dear ${app.fullName.toUpperCase()},`, 20, 110);
         doc.setFont('helvetica', 'normal');
@@ -212,39 +468,50 @@ document.addEventListener('DOMContentLoaded', function () {
         doc.text('PORTAL ACCESS:', 20, 185);
         doc.setFont('helvetica', 'normal');
         doc.text(`Portal Link: portal.josmed.edu.ng`, 30, 195);
-        doc.text(`Temporary Password: ${app.tempPass}`, 30, 205);
+        doc.text(`Login ID: ${app.studentId || 'Pending Approval'}`, 30, 205);
+        doc.text(`Password: Your registered phone number (change after first login)`, 30, 215);
         doc.save(`Admission_Letter_${app.fullName.replace(/\s+/g, '_')}.pdf`);
     }
 
     // --- STUDENT PORTAL LOGIC ---
 
+    // Student Login Handler - UPDATED FOR API INTEGRATION
     const loginForm = document.getElementById('studentLoginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', function (e) {
+        loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            const stdId = document.getElementById('studentId').value;
-            const pass = document.getElementById('password').value;
-            const applications = JSON.parse(localStorage.getItem('jmc_applications') || '[]');
-            const student = applications.find(a => a.studentId === stdId);
+            const studentId = document.getElementById('studentId').value.trim();
+            const password = document.getElementById('password').value;
 
-            if (!student || student.status !== 'Approved') {
-                alert('Invalid Student ID or Application not yet approved.');
-                return;
-            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/students/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studentId, password })
+                });
 
-            if (student.password === pass && pass === student.tempPass) {
-                // First-time login
-                window.tempStudent = student;
-                document.getElementById('passwordSetupModal').style.display = 'flex';
-            } else if (student.password === pass) {
-                // Regular login
-                localStorage.setItem('jmc_logged_student', JSON.stringify(student));
-                window.location.href = 'student-dashboard.html';
-            } else {
-                alert('Incorrect password.');
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.role === 'admin' || data.role === 'staff') {
+                        showToast('Access denied: This login is for students only.', 'error');
+                        localStorage.removeItem('jmc_token');
+                    } else {
+                        localStorage.setItem('jmc_token', data.token);
+                        localStorage.setItem('jmc_logged_student', JSON.stringify(data));
+                        showToast('Login successful! Redirecting...', 'success');
+                        setTimeout(() => window.location.href = 'student-dashboard.html', 1000);
+                    }
+                } else {
+                    showToast('Login failed: ' + (data.message || 'Incorrect credentials'), 'error');
+                }
+            } catch (err) {
+                console.error('Login Error:', err);
+                showToast('Connection error: Could not connect to the server.', 'error');
             }
         });
     }
+
 
     const setupForm = document.getElementById('passwordSetupForm');
     if (setupForm) {
@@ -254,7 +521,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const confirmPass = document.getElementById('confirmPassword').value;
 
             if (newPass !== confirmPass) {
-                alert('Passwords do not match.');
+                showToast('Passwords do not match.', 'error');
                 return;
             }
 
@@ -262,131 +529,189 @@ document.addEventListener('DOMContentLoaded', function () {
             const index = applications.findIndex(a => a.studentId === window.tempStudent.studentId);
             if (index !== -1) {
                 applications[index].password = newPass;
+                applications[index].tempPass = '';
                 localStorage.setItem('jmc_applications', JSON.stringify(applications));
                 localStorage.setItem('jmc_logged_student', JSON.stringify(applications[index]));
-                alert('Password set successfully!');
-                window.location.href = 'student-dashboard.html';
+                showToast('Password set successfully!', 'success');
+                setTimeout(() => window.location.href = 'student-dashboard.html', 1000);
             }
         });
     }
 
-    // Dashboard Initialization
+    // Dashboard Initialization - UPDATED FOR API INTEGRATION
     if (window.location.pathname.includes('student-dashboard.html')) {
-        const student = JSON.parse(localStorage.getItem('jmc_logged_student'));
-        if (!student) {
+        const token = localStorage.getItem('jmc_token');
+
+        if (!token) {
             window.location.href = 'student-login.html';
             return;
         }
 
-        document.getElementById('profileName').textContent = student.fullName;
-        document.getElementById('profileId').textContent = student.studentId;
-        document.getElementById('profileProgram').textContent = student.program;
-        document.getElementById('updateEmail').value = student.email;
-        document.getElementById('updatePhone').value = student.phone || '';
-        document.getElementById('sidebarName').textContent = student.fullName;
-        document.getElementById('sidebarEmail').textContent = student.email;
-        document.getElementById('avatarInitial').textContent = student.fullName.charAt(0);
-    }
+        const updateUI = (student) => {
+            // Header & Sidebar
+            const nameEls = ['profileNameHeader', 'sidebarName', 'viewFullName'];
+            nameEls.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = student.fullName; });
 
-    const profileForm = document.getElementById('profileUpdateForm');
-    if (profileForm) {
-        profileForm.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const student = JSON.parse(localStorage.getItem('jmc_logged_student'));
-            student.email = document.getElementById('updateEmail').value;
-            student.phone = document.getElementById('updatePhone').value;
+            const idEls = ['profileIdHeader', 'viewId'];
+            // Use email or special ID from backend if available
+            idEls.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = (id === 'profileIdHeader' ? 'ID: ' : '') + (student.studentId || student.email); });
 
-            // Update in applications list too
-            const applications = JSON.parse(localStorage.getItem('jmc_applications') || '[]');
-            const index = applications.findIndex(a => a.studentId === student.studentId);
-            if (index !== -1) {
-                applications[index] = student;
-                localStorage.setItem('jmc_applications', JSON.stringify(applications));
-                localStorage.setItem('jmc_logged_student', JSON.stringify(student));
-                alert('Profile updated successfully!');
-                window.location.reload();
+            const emailEls = ['sidebarEmail', 'viewEmail'];
+            emailEls.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = student.email; });
+
+            const programEl = document.getElementById('viewProgram');
+            if (programEl) programEl.textContent = student.program;
+
+            const phoneEl = document.getElementById('viewPhone');
+            if (phoneEl) phoneEl.textContent = student.phone || 'Not Set';
+
+            const avatarInt = document.getElementById('avatarInitial');
+            if (avatarInt) avatarInt.textContent = student.fullName ? student.fullName.charAt(0) : 'S';
+
+            // Profile Picture
+            const imgEl = document.getElementById('currentProfilePic');
+            const defEl = document.getElementById('defaultAvatar');
+            if (student.profilePic) {
+                if (imgEl) { imgEl.src = student.profilePic; imgEl.style.display = 'block'; }
+                if (defEl) defEl.style.display = 'none';
+            } else {
+                if (imgEl) imgEl.style.display = 'none';
+                if (defEl) defEl.style.display = 'block';
             }
-        });
+
+            // Inputs (for edit mode)
+            const inputMap = { 'editFullName': student.fullName, 'editId': student.studentId || student.email, 'editProgram': student.program, 'editEmail': student.email, 'editPhone': student.phone || '' };
+            Object.entries(inputMap).forEach(([id, val]) => { const el = document.getElementById(id); if (el) el.value = val; });
+        };
+
+        // Fetch latest student data
+        fetch(`${API_BASE_URL}/students/me`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Unauthorized or failed to fetch profile');
+                }
+                return response.json();
+            })
+            .then(student => {
+                // Update local storage to keep it fresh
+                localStorage.setItem('jmc_logged_student', JSON.stringify(student));
+                updateUI(student);
+            })
+            .catch(err => {
+                console.error('Dashboard Auth Error:', err);
+                // If auth fails, redirect to login
+                localStorage.removeItem('jmc_token');
+                localStorage.removeItem('jmc_logged_student');
+                window.location.href = 'student-login.html';
+            });
+
+        // In-Place Mode Controls
+        window.enterEditMode = function () {
+            document.getElementById('tab-profile').classList.add('editing');
+        };
+
+        window.exitEditMode = function () {
+            document.getElementById('tab-profile').classList.remove('editing');
+            // Re-fetch to revert UI or rely on stored data
+            const s = JSON.parse(localStorage.getItem('jmc_logged_student'));
+            if (s) updateUI(s);
+        };
+
+        // Photo Upload Handling
+        const photoInput = document.getElementById('photoUpload');
+        if (photoInput) {
+            photoInput.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        const base64 = event.target.result;
+                        document.getElementById('currentProfilePic').src = base64;
+                        document.getElementById('currentProfilePic').style.display = 'block';
+                        document.getElementById('defaultAvatar').style.display = 'none';
+                        window.pendingProfilePic = base64;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Profile Form Submit - Update via API
+        const profileInPlaceForm = document.getElementById('profileInPlaceForm');
+        if (profileInPlaceForm) {
+            profileInPlaceForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const token = localStorage.getItem('jmc_token');
+                const email = document.getElementById('editEmail').value;
+                const phone = document.getElementById('editPhone').value;
+
+                const updateData = { email, phone };
+
+                if (window.pendingProfilePic) {
+                    updateData.profilePic = window.pendingProfilePic;
+                    window.pendingProfilePic = null;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/students/profile`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(updateData)
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        localStorage.setItem('jmc_logged_student', JSON.stringify(data));
+                        showToast('Profile updated successfully!', 'success');
+                        exitEditMode();
+                        updateUI(data);
+                    } else {
+                        showToast('Update failed: ' + (data.message || 'Error updating profile'), 'error');
+                    }
+                } catch (err) {
+                    console.error('Update Error:', err);
+                    showToast('Connection error: Could not update profile.', 'error');
+                }
+            });
+        }
     }
+
 
     window.switchTab = function (tabName) {
         document.querySelectorAll('.dashboard-content').forEach(tab => tab.classList.remove('active'));
         document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
-        document.getElementById('tab-' + tabName).classList.add('active');
-        event.currentTarget.classList.add('active');
+        const targetTab = document.getElementById('tab-' + tabName);
+        if (targetTab) targetTab.classList.add('active');
+        if (event && event.currentTarget) event.currentTarget.classList.add('active');
     };
 
     window.logoutStudent = function () {
         localStorage.removeItem('jmc_logged_student');
+        localStorage.removeItem('jmc_token');
         window.location.href = 'student-login.html';
     };
 
     // --- TEACHING STAFF PORTAL LOGIC ---
     try {
         // Initialize Mock Staff Data and ensure test accounts are synced
-        function initStaffData() {
-            try {
-                const staffData = localStorage.getItem('jmc_staff');
-                let staffList = JSON.parse(staffData || '[]');
-
-                const defaultStaff = [
-                    {
-                        id: 'STF/TEST/001',
-                        fullName: 'Test Lecturer',
-                        email: 'staff@testcollege.com',
-                        password: 'password123',
-                        tempPass: '',
-                        dept: 'General Studies',
-                        phone: '08000000000',
-                        courses: ['GEN 101', 'GST 102']
-                    },
-                    {
-                        id: 'STF/2026/001',
-                        fullName: 'Dr. Samuel Ahmed',
-                        email: 's.ahmed@josmed.edu.ng',
-                        password: 'password123',
-                        tempPass: 'password123',
-                        dept: 'Nursing Sciences',
-                        phone: '08012345678',
-                        courses: ['NSG 301', 'ANA 201']
-                    },
-                    {
-                        id: 'STF/2026/002',
-                        fullName: 'Prof. Mary John',
-                        email: 'm.john@josmed.edu.ng',
-                        password: 'password123',
-                        tempPass: 'password123',
-                        dept: 'Anatomy',
-                        phone: '08087654321',
-                        courses: ['ANA 202', 'BIO 105']
-                    }
-                ];
-
-                // Synchronize: Add missing default accounts to the list
-                let updated = false;
-                defaultStaff.forEach(def => {
-                    const exists = staffList.find(s => s.email.toLowerCase() === def.email.toLowerCase());
-                    if (!exists) {
-                        staffList.push(def);
-                        updated = true;
-                    }
-                });
-
-                if (updated || staffList.length === 0) {
-                    localStorage.setItem('jmc_staff', JSON.stringify(staffList));
-                    console.log('Mock staff data synchronized.');
-                }
-            } catch (err) {
-                console.error('Error initializing staff data:', err);
-            }
-        }
-        initStaffData();
+        // Initialize Mock Staff Data - REMOVED FOR BACKEND INTEGRATION
+        // function initStaffData() { ... }
+        // initStaffData();
 
         // Staff Login Handler
         const staffLoginForm = document.getElementById('staffLoginForm');
         if (staffLoginForm) {
             console.log('Attaching Staff Login listener.');
-            staffLoginForm.addEventListener('submit', function (e) {
+            staffLoginForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
                 console.log('Staff Login form submitted.');
 
@@ -394,33 +719,40 @@ document.addEventListener('DOMContentLoaded', function () {
                 const passEl = document.getElementById('staffPassword');
 
                 if (!emailEl || !passEl) {
-                    alert('Technical Error: Login inputs not found.');
+                    showToast('Technical error: Login inputs not found.', 'error');
                     return;
                 }
 
                 const email = emailEl.value.trim().toLowerCase();
-                const pass = passEl.value;
+                const password = passEl.value;
 
-                const staffList = JSON.parse(localStorage.getItem('jmc_staff') || '[]');
-                const staff = staffList.find(s => s.email.toLowerCase() === email);
+                try {
+                    const response = await fetch(`${API_BASE_URL}/staff/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
 
-                if (!staff) {
-                    alert('Invalid Staff Email. Please ensure you are a registered teaching staff member.');
-                    return;
-                }
+                    const data = await response.json();
 
-                if (staff.password === pass && pass === staff.tempPass) {
-                    console.log('First-time staff login.');
-                    window.tempStaff = staff;
-                    const modal = document.getElementById('staffPasswordSetupModal');
-                    if (modal) modal.style.display = 'flex';
-                    else alert('First-time setup modal missing. Please contact IT.');
-                } else if (staff.password === pass) {
-                    console.log('Successful staff login.');
-                    localStorage.setItem('jmc_logged_staff', JSON.stringify(staff));
-                    window.location.href = 'staff-dashboard.html';
-                } else {
-                    alert('Incorrect password. Please verify your credentials.');
+                    if (response.ok) {
+                        if (data.isTempPassword) {
+                            window.tempStaff = data;
+                            const modal = document.getElementById('staffPasswordSetupModal');
+                            if (modal) modal.style.display = 'flex';
+                            else showToast('First-time setup modal missing. Please contact IT.', 'error');
+                        } else {
+                            localStorage.setItem('jmc_logged_staff', JSON.stringify(data));
+                            localStorage.setItem('jmc_staff_token', data.token);
+                            showToast('Login successful! Redirecting...', 'success');
+                            setTimeout(() => window.location.href = 'staff-dashboard.html', 1000);
+                        }
+                    } else {
+                        showToast('Login failed: ' + (data.message || 'Incorrect credentials'), 'error');
+                    }
+                } catch (err) {
+                    console.error('Login Error:', err);
+                    showToast('Connection error: Could not connect to the server.', 'error');
                 }
             });
         }
@@ -439,12 +771,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 const confirmPass = confirmPassEl.value;
 
                 if (newPass !== confirmPass) {
-                    alert('Passwords do not match.');
+                    showToast('Passwords do not match.', 'error');
                     return;
                 }
 
                 if (!window.tempStaff) {
-                    alert('Session expired. Please refresh the login page.');
+                    showToast('Session expired. Please refresh the login page.', 'error');
                     return;
                 }
 
@@ -454,13 +786,50 @@ document.addEventListener('DOMContentLoaded', function () {
                     staffList[index].password = newPass;
                     localStorage.setItem('jmc_staff', JSON.stringify(staffList));
                     localStorage.setItem('jmc_logged_staff', JSON.stringify(staffList[index]));
-                    alert('Staff account verified! Redirecting to dashboard...');
-                    window.location.href = 'staff-dashboard.html';
+                    showToast('Staff account verified! Redirecting...', 'success');
+                    setTimeout(() => window.location.href = 'staff-dashboard.html', 1000);
                 }
             });
         }
     } catch (e) {
         console.error('General failure in Staff Portal logic:', e);
+    }
+
+    // --- ADMIN LOGIN LOGIC ---
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    if (adminLoginForm) {
+        adminLoginForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+
+            try {
+                // Reuse student login endpoint as it returns role 'admin'
+                const response = await fetch(`${API_BASE_URL}/students/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    if (data.role === 'admin') {
+                        localStorage.setItem('jmc_token', data.token);
+                        showToast('Admin login successful! Redirecting...', 'success');
+                        setTimeout(() => window.location.href = 'admin-dashboard.html', 1000);
+                    } else {
+                        showToast('Access denied: You do not have administrator privileges.', 'error');
+                        localStorage.removeItem('jmc_token');
+                    }
+                } else {
+                    showToast('Login failed: ' + (data.message || 'Incorrect credentials'), 'error');
+                }
+            } catch (err) {
+                console.error('Admin Login Error:', err);
+                showToast('Connection error: Could not connect to the server.', 'error');
+            }
+        });
     }
 
     // Staff Dashboard Initialization
@@ -490,19 +859,34 @@ document.addEventListener('DOMContentLoaded', function () {
     // Staff Profile Update
     const staffProfileForm = document.getElementById('staffProfileForm');
     if (staffProfileForm) {
-        staffProfileForm.addEventListener('submit', function (e) {
+        staffProfileForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            const staff = JSON.parse(localStorage.getItem('jmc_logged_staff'));
-            staff.phone = document.getElementById('staffUpdatePhone').value;
+            const token = localStorage.getItem('jmc_staff_token'); // Use specific token key if different
+            // Note: Login sets 'jmc_staff_token' in my previous edit.
 
-            const staffList = JSON.parse(localStorage.getItem('jmc_staff') || '[]');
-            const index = staffList.findIndex(s => s.id === staff.id);
-            if (index !== -1) {
-                staffList[index] = staff;
-                localStorage.setItem('jmc_staff', JSON.stringify(staffList));
-                localStorage.setItem('jmc_logged_staff', JSON.stringify(staff));
-                alert('Staff profile updated!');
-                window.location.reload();
+            const phone = document.getElementById('staffUpdatePhone').value;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/staff/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ phone })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('jmc_logged_staff', JSON.stringify(data));
+                    showToast('Staff profile updated successfully!', 'success');
+                } else {
+                    showToast('Update failed: ' + (data.message || 'Error updating profile'), 'error');
+                }
+            } catch (err) {
+                console.error('Update Error:', err);
+                showToast('Connection error: Could not update profile.', 'error');
             }
         });
     }
@@ -514,12 +898,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const staff = localStorage.getItem('jmc_logged_staff');
 
         if (path.includes('admin-dashboard.html') && staff) {
-            alert('Access Denied: Teaching staff do not have administrative privileges.');
-            window.location.href = 'staff-dashboard.html';
+            showToast('Access denied: Staff cannot access the admin panel.', 'error');
+            setTimeout(() => window.location.href = 'staff-dashboard.html', 1500);
         }
         if (path.includes('staff-dashboard.html') && student) {
-            alert('Access Denied: Students cannot access the staff portal.');
-            window.location.href = 'student-dashboard.html';
+            showToast('Access denied: Students cannot access the staff portal.', 'error');
+            setTimeout(() => window.location.href = 'student-dashboard.html', 1500);
         }
     }
     enforceRBAC();
