@@ -26,6 +26,28 @@ const studentSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    studentId: {
+        type: String,
+        unique: true,
+        sparse: true // Only unique when set
+    },
+    tempPass: {
+        type: String  // Set by backend on registration; no default
+    },
+    documents: [{
+        type: String // Paths to uploaded files
+    }],
+    role: {
+        type: String,
+        enum: ['student', 'admin'],
+        default: 'student'
+    },
+    resetPasswordToken: {
+        type: String
+    },
+    resetPasswordExpire: {
+        type: Date
+    },
     createdAt: {
         type: Date,
         default: Date.now

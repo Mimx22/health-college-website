@@ -7,7 +7,10 @@ const jwt = require('jsonwebtoken');
 // @access  Public
 const registerStudent = async (req, res, next) => {
     try {
-        const { fullName, email, phone, password, program } = req.body;
+        const { fullName, email, phone, program } = req.body;
+
+        // Handle file uploads
+        const documents = req.files ? req.files.map(file => file.path) : [];
 
         // Check if student exists
         const studentExists = await Student.findOne({ email });
@@ -15,9 +18,12 @@ const registerStudent = async (req, res, next) => {
             return res.status(400).json({ message: 'Student already exists' });
         }
 
-        // Hash password
+        // Use phone number as the initial temporary password
+        const tempPass = phone;
+
+        // Hash the generated password
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(tempPass, salt);
 
         // Create student
         const student = await Student.create({
@@ -25,7 +31,9 @@ const registerStudent = async (req, res, next) => {
             email,
             phone,
             password: hashedPassword,
-            program
+            tempPass,  // Store plain-text for admission letter
+            program,
+            documents
         });
 
         if (student) {
@@ -42,6 +50,7 @@ const registerStudent = async (req, res, next) => {
         }
     } catch (error) {
         next(error);
+
     }
 };
 
@@ -50,10 +59,20 @@ const registerStudent = async (req, res, next) => {
 // @access  Public
 const loginStudent = async (req, res, next) => {
     try {
-        const { email, password } = req.body;
+        const { studentId, email, password } = req.body;
 
-        // Check for student email
-        const student = await Student.findOne({ email });
+        let student;
+
+        if (studentId) {
+            // Student portal login — look up by assigned Student ID
+            student = await Student.findOne({ studentId });
+            if (!student) {
+                return res.status(401).json({ message: 'Student ID not found. Make sure your application has been approved.' });
+            }
+        } else if (email) {
+            // Admin/staff login — look up by email
+            student = await Student.findOne({ email });
+        }
 
         if (student && (await bcrypt.compare(password, student.password))) {
             const payload = { id: student._id, role: student.role };
@@ -158,10 +177,26 @@ const getAllStudents = async (req, res, next) => {
     }
 };
 
+// @desc    Get currently logged-in student
+// @route   GET /api/students/me
+// @access  Private (student)
+const getMe = async (req, res, next) => {
+    try {
+        if (!req.student) {
+            return res.status(401).json({ message: 'Not authenticated' });
+        }
+
+        res.json(req.student);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     registerStudent,
     loginStudent,
     updateProfile
-    ,approveStudent
-    ,getAllStudents
+    , approveStudent
+    , getAllStudents
+    , getMe
 };
