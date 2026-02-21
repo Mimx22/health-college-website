@@ -206,6 +206,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData(this);
             formData.append('password', 'password123');
 
+            // Debug: Check FormData content
+            console.log('Submitting application...');
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
+            }
+
             try {
                 const response = await fetch(`${API_BASE_URL}/students/register`, {
                     method: 'POST',
