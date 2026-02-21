@@ -23,3 +23,11 @@ const API_BASE_URL = getApiBaseUrl();
 // Log the endpoint for debugging purposes (Production-ready audit)
 console.log(`[API Config] Active Endpoint: ${API_BASE_URL}`);
 console.log(`[API Config] Mode: ${window.location.hostname === 'localhost' ? 'Development' : 'Production'}`);
+
+// --- Self-Healing Wake-up ---
+// Hit the backend immediately on page load to "wake it up" from Render's sleep mode.
+// This ensures the server is warm by the time the user clicks "Login".
+if (API_BASE_URL.includes('onrender.com')) {
+    console.log('[API Config] Waking up live server...');
+    fetch(API_BASE_URL.replace('/api', '/')).catch(() => { }); // Hit root health check
+}
