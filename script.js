@@ -467,9 +467,9 @@ document.addEventListener('DOMContentLoaded', function () {
         doc.setFont('helvetica', 'bold');
         doc.text('PORTAL ACCESS:', 20, 185);
         doc.setFont('helvetica', 'normal');
-        doc.text(`Portal Link: portal.josmed.edu.ng`, 30, 195);
-        doc.text(`Login ID: ${app.studentId || 'Pending Approval'}`, 30, 205);
-        doc.text(`Password: Your registered phone number (change after first login)`, 30, 215);
+        doc.text(`Portal Link: medicalcareer.netlify.app`, 30, 195);
+        doc.text(`Login ID: ${app.studentId || 'Check your approval email'}`, 30, 205);
+        doc.text(`Password: 5-digit number sent to your email`, 30, 215);
         doc.save(`Admission_Letter_${app.fullName.replace(/\s+/g, '_')}.pdf`);
     }
 
