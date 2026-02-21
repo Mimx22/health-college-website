@@ -7,9 +7,10 @@
  */
 const getApiBaseUrl = () => {
     const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
 
-    // Check if we're running locally (localhost or 127.0.0.1)
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    // Check if we're running locally (localhost, 127.0.0.1, or file://)
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '' || protocol === 'file:') {
         return 'http://localhost:5000/api';
     }
 
@@ -18,3 +19,7 @@ const getApiBaseUrl = () => {
 };
 
 const API_BASE_URL = getApiBaseUrl();
+
+// Log the endpoint for debugging purposes (Production-ready audit)
+console.log(`[API Config] Active Endpoint: ${API_BASE_URL}`);
+console.log(`[API Config] Mode: ${window.location.hostname === 'localhost' ? 'Development' : 'Production'}`);
