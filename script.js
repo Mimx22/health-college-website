@@ -758,7 +758,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 } catch (err) {
                     console.error('Login Error:', err);
-                    showToast('Connection error: Could not connect to the server.', 'error');
+                    showToast(`Connection error: ${err.message || 'Check your internet'}.`, 'error');
                 }
             });
         }
@@ -833,7 +833,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             } catch (err) {
                 console.error('Admin Login Error:', err);
-                showToast('Connection error: Could not connect to the server.', 'error');
+                showToast(`Connection error: ${err.message || 'Check your internet'}.`, 'error');
             }
         });
     }
