@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             } catch (err) {
                 console.error('Registration Error:', err);
-                showToast('Connection error: Could not connect to the server.', 'error');
+                showToast(`Connection error: ${err.message || 'Check your internet connection'}.`, 'error');
             }
         });
     }
@@ -444,6 +444,26 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // --- STUDENT ID AUTO-FORMATTER ---
+    const studentIdInput = document.getElementById('studentId');
+    if (studentIdInput) {
+        studentIdInput.addEventListener('input', function (e) {
+            let value = e.target.value.toUpperCase().replace(/\//g, '');
+            if (value.startsWith('JMC')) {
+                let formatted = 'JMC';
+                if (value.length > 3) {
+                    formatted += '/' + value.substring(3, 7);
+                }
+                if (value.length > 7) {
+                    formatted += '/' + value.substring(7, 11);
+                }
+                e.target.value = formatted;
+            } else if (value.length >= 3 && !value.startsWith('JMC')) {
+                // If they typed something else, don't force JMC unless it's empty
+            }
+        });
+    }
+
     function generatePDF(app) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
@@ -486,6 +506,37 @@ document.addEventListener('DOMContentLoaded', function () {
     if (loginForm) {
         loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
+            const studentIdInput = document.getElementById('studentId');
+            if (studentIdInput) {
+                studentIdInput.addEventListener('input', function (e) {
+                    let value = e.target.value.toUpperCase().replace(/\//g, ''); // Remove existing slashes and make uppercase
+
+                    // Always start with JMC
+                    if (!value.startsWith('JMC')) {
+                        if (value.startsWith('J') || value.startsWith('JM')) {
+                            // Let it be
+                        } else {
+                            value = 'JMC' + value;
+                        }
+                    }
+
+                    let formatted = '';
+                    if (value.length > 0) {
+                        // JMC
+                        formatted = value.substring(0, 3);
+                        // JMC/YYYY
+                        if (value.length > 3) {
+                            formatted += '/' + value.substring(3, 7);
+                        }
+                        // JMC/YYYY/NNN
+                        if (value.length > 7) {
+                            formatted += '/' + value.substring(7, 10);
+                        }
+                    }
+                    e.target.value = formatted;
+                });
+            }
+
             const studentId = document.getElementById('studentId').value.trim();
             const password = document.getElementById('password').value;
 
@@ -513,7 +564,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             } catch (err) {
                 console.error('Login Error:', err);
-                showToast('Connection error: Could not connect to the server.', 'error');
+                showToast(`Connection error: ${err.message || 'Check your internet connection'}.`, 'error');
             }
         });
     }
