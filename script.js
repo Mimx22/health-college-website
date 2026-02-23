@@ -448,18 +448,58 @@ document.addEventListener('DOMContentLoaded', function () {
     const studentIdInput = document.getElementById('studentId');
     if (studentIdInput) {
         studentIdInput.addEventListener('input', function (e) {
-            let value = e.target.value.toUpperCase().replace(/\//g, '');
-            if (value.startsWith('JMC')) {
-                let formatted = 'JMC';
-                if (value.length > 3) {
-                    formatted += '/' + value.substring(3, 7);
+            let cursorPosition = e.target.selectionStart;
+            let originalValue = e.target.value.toUpperCase();
+
+            // Extract just the alphanumeric characters
+            let digits = originalValue.replace(/[^A-Z0-9]/g, '');
+
+            // If they just type numbers, auto-prefix JMC
+            if (/^\d/.test(digits) && !digits.startsWith('JMC')) {
+                digits = 'JMC' + digits;
+            }
+
+            let formatted = '';
+            if (digits.length > 0) {
+                // PART 1: JMC
+                formatted = digits.substring(0, 3);
+
+                // PART 2: YYYY
+                if (digits.length > 3) {
+                    formatted += '/' + digits.substring(3, 7);
                 }
-                if (value.length > 7) {
-                    formatted += '/' + value.substring(7, 11);
+
+                // PART 3: NNN
+                if (digits.length > 7) {
+                    formatted += '/' + digits.substring(7, 11);
                 }
+            }
+
+            // Only update if it actually changed to prevent cursor jumps
+            if (e.target.value !== formatted) {
                 e.target.value = formatted;
-            } else if (value.length >= 3 && !value.startsWith('JMC')) {
-                // If they typed something else, don't force JMC unless it's empty
+
+                // Try to maintain cursor position (simple logic)
+                if (cursorPosition) {
+                    // If we added a slash, adjust cursor
+                    let slashesBefore = (formatted.substring(0, cursorPosition).match(/\//g) || []).length;
+                    let slashesAfter = (originalValue.substring(0, cursorPosition).match(/\//g) || []).length;
+                    if (slashesBefore > slashesAfter) cursorPosition++;
+                    e.target.setSelectionRange(cursorPosition, cursorPosition);
+                }
+            }
+        });
+
+        // Also handle backspace specifically for slashes
+        studentIdInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Backspace') {
+                const pos = this.selectionStart;
+                if (this.value[pos - 1] === '/') {
+                    // If they delete a slash, delete the character before it too
+                    this.value = this.value.substring(0, pos - 2) + this.value.substring(pos);
+                    this.setSelectionRange(pos - 2, pos - 2);
+                    e.preventDefault();
+                }
             }
         });
     }
@@ -506,36 +546,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if (loginForm) {
         loginForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            const studentIdInput = document.getElementById('studentId');
-            if (studentIdInput) {
-                studentIdInput.addEventListener('input', function (e) {
-                    let value = e.target.value.toUpperCase().replace(/\//g, ''); // Remove existing slashes and make uppercase
-
-                    // Always start with JMC
-                    if (!value.startsWith('JMC')) {
-                        if (value.startsWith('J') || value.startsWith('JM')) {
-                            // Let it be
-                        } else {
-                            value = 'JMC' + value;
-                        }
-                    }
-
-                    let formatted = '';
-                    if (value.length > 0) {
-                        // JMC
-                        formatted = value.substring(0, 3);
-                        // JMC/YYYY
-                        if (value.length > 3) {
-                            formatted += '/' + value.substring(3, 7);
-                        }
-                        // JMC/YYYY/NNN
-                        if (value.length > 7) {
-                            formatted += '/' + value.substring(7, 10);
-                        }
-                    }
-                    e.target.value = formatted;
-                });
-            }
 
             const studentId = document.getElementById('studentId').value.trim();
             const password = document.getElementById('password').value;
