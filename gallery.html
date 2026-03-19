@@ -4,14 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Portal - Jos Medical College</title>
-    <meta name="description" content="Access the student portal for Jos Medical College.">
+    <title>Gallery - Jos Medical College</title>
+    <meta name="description" content="Jos Medical College Gallery - Coming Soon.">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="toast.js"></script>
     <script src="config.js"></script>
     <script src="script.js" defer></script>
 </head>
@@ -35,7 +34,7 @@
                 <ul class="nav-list">
                     <li><a href="index.html" class="nav-link">Home</a></li>
                     <li><a href="about.html" class="nav-link">About</a></li>
-                    <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+                    <li><a href="gallery.html" class="nav-link active">Gallery</a></li>
                     <li class="dropdown">
                         <a href="programs.html" class="nav-link">Explore Programs <span class="arrow">▼</span></a>
                         <ul class="dropdown-menu">
@@ -68,7 +67,7 @@
                         </ul>
                     </li>
                     <li class="dropdown">
-                        <a href="portal.html" class="nav-link active">Portal Access <span class="arrow">▼</span></a>
+                        <a href="portal.html" class="nav-link">Portal Access <span class="arrow">▼</span></a>
                         <ul class="dropdown-menu">
                             <li class="dropdown-header-info">
                                 <p>Access your dedicated portal for students, staff, or administrators.</p>
@@ -100,71 +99,24 @@
     </header>
 
     <main>
-        <section class="page-header text-center">
+        <section class="page-header">
             <div class="container">
-                <span class="section-label">Digital Access</span>
-                <h1>Portal Access</h1>
-                <p style="margin: 0 auto;">
-                    Access your dedicated portal for students, staff, or administrators. Our digital infrastructure is
-                    designed to support your academic and professional journey.
-                </p>
+                <h1>Our Gallery</h1>
+                <p>Campus Life, Events, and Memories</p>
             </div>
         </section>
 
-        <section class="portal-selection" style="padding: 6rem 0;">
+        <section class="section-home text-center"
+            style="min-height: 50vh; display: flex; align-items: center; justify-content: center;">
             <div class="container">
-                <div class="portal-grid"
-                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 3rem;">
-
-                    <!-- Student Portal -->
-                    <div class="portal-card"
-                        style="background: var(--white); padding: 3.5rem 2.5rem; border-radius: 12px; box-shadow: var(--shadow-md); border: 1px solid var(--border-color); border-top: 6px solid var(--primary-color); text-align: center; transition: transform 0.3s ease;">
-                        <div class="portal-icon"
-                            style="font-size: 4rem; color: var(--primary-color); margin-bottom: 2rem;">
-                            <i class="fas fa-user-graduate"></i>
-                        </div>
-                        <h3 style="font-size: 1.8rem; color: var(--secondary-color); margin-bottom: 1rem;">Student
-                            Portal</h3>
-                        <p style="color: var(--text-light); margin-bottom: 2.5rem; line-height: 1.6;">Login to access
-                            course materials, results, and student services.</p>
-                        <a href="student-login.html" class="btn btn-primary"
-                            style="width: 100%; padding: 1rem; border-radius: 6px;">Login</a>
-                    </div>
-
-                    <!-- Staff Portal -->
-                    <div class="portal-card staff-card"
-                        style="background: var(--white); padding: 3.5rem 2.5rem; border-radius: 12px; box-shadow: var(--shadow-md); border: 1px solid var(--border-color); border-top: 6px solid var(--primary-color); text-align: center; transition: transform 0.3s ease;">
-                        <div class="portal-icon"
-                            style="font-size: 4rem; color: var(--primary-color); margin-bottom: 2rem;">
-                            <i class="fas fa-chalkboard-teacher"></i>
-                        </div>
-                        <h3 style="font-size: 1.8rem; color: var(--secondary-color); margin-bottom: 1rem;">Staff Portal
-                        </h3>
-                        <p style="color: var(--text-light); margin-bottom: 2.5rem; line-height: 1.6;">Login to access
-                            teaching resources and internal staff tools.</p>
-                        <a href="staff-login.html" class="btn btn-primary"
-                            style="width: 100%; padding: 1rem; border-radius: 6px;">Login</a>
-                    </div>
-
-                    <!-- Admin Portal -->
-                    <div class="portal-card admin-card"
-                        style="background: var(--white); padding: 3.5rem 2.5rem; border-radius: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); border-top: 6px solid var(--secondary-color); text-align: center;">
-                        <div class="portal-icon"
-                            style="font-size: 4rem; color: var(--secondary-color); margin-bottom: 2rem;">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <h3 style="font-size: 1.8rem; color: var(--secondary-color); margin-bottom: 1rem;">Admin Portal
-                        </h3>
-                        <div style="margin-bottom: 1rem;"><span class="badge"
-                                style="background: #e3f2fd; color: #0277bd; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; border: 1px solid #bbdefb;">Staff
-                                Access</span></div>
-                        <p style="color: var(--text-light); margin-bottom: 2.5rem; line-height: 1.6;">Restricted access.
-                            Only administrators can login.</p>
-                        <a href="admin-login.html" class="btn btn-secondary"
-                            style="width: 100%; padding: 1rem; border-radius: 6px;">Login</a>
-                    </div>
-
-                </div>
+                <i class="fas fa-hammer"
+                    style="font-size: 4rem; color: var(--green-primary); margin-bottom: 1.5rem;"></i>
+                <h2>Coming Soon</h2>
+                <p style="max-width: 600px; margin: 1rem auto; font-size: 1.1rem; color: var(--text-light);">
+                    We are currently building an immersive gallery experience to showcase the vibrant campus life,
+                    academic milestones, and events at Jos Medical College. Please check back later!
+                </p>
+                <a href="index.html" class="btn btn-primary" style="margin-top: 1.5rem;">Return to Homepage</a>
             </div>
         </section>
     </main>
