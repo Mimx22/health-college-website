@@ -175,6 +175,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (icon) icon.className = 'fas fa-cloud-upload-alt';
                 if (span) span.textContent = 'Click to upload or drag and drop';
             }
+            
+            // Passport Live Preview Logic
+            if (field.id === 'passportPhoto') {
+                const previewContainer = document.getElementById('passportPreviewContainer');
+                const previewImg = document.getElementById('passportPreviewImg');
+                const previewName = document.getElementById('passportPreviewName');
+                
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    const url = URL.createObjectURL(file);
+                    if (previewImg) previewImg.src = url;
+                    if (previewName) previewName.textContent = file.name;
+                    if (previewContainer) previewContainer.style.display = 'block';
+                } else {
+                    if (previewContainer) previewContainer.style.display = 'none';
+                    if (previewImg) previewImg.src = '';
+                }
+            }
         });
     });
 
@@ -193,11 +211,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     const admissionForm = document.getElementById('admissionForm');
-    if (admissionForm) {
-        admissionForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
+    
+    // Store pending form data globally for the review modal
+    let pendingFormData = null;
 
-            const submitBtn = this.querySelector('.submit-btn');
+    if (admissionForm) {
+        admissionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
 
             // Validate: all 6 document fields must have a file
             const missingDocs = ADMISSION_DOC_FIELDS.filter(function(field) {
@@ -209,49 +229,105 @@ document.addEventListener('DOMContentLoaded', function () {
                 showToast('Please upload: ' + missingDocs.map(f => f.label).join(', '), 'error', 6000);
                 return;
             }
+            
+            // Populate the Review Modal checklist
+            const reviewDocsList = document.getElementById('reviewDocsList');
+            const reviewPassportImg = document.getElementById('reviewPassportImg');
+            
+            if (reviewDocsList) {
+                reviewDocsList.innerHTML = ADMISSION_DOC_FIELDS.filter(f => f.id !== 'passportPhoto').map(field => {
+                    const input = document.getElementById(field.id);
+                    const fileName = input && input.files[0] ? input.files[0].name : '';
+                    return `
+                        <div class="review-doc-item">
+                            <span><i class="fas fa-file-alt" style="color:var(--text-light);"></i> ${field.label}</span>
+                            <span style="color:var(--primary-color);">${fileName}</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            if (reviewPassportImg) {
+                const passportInput = document.getElementById('passportPhoto');
+                if (passportInput && passportInput.files[0]) {
+                    reviewPassportImg.src = URL.createObjectURL(passportInput.files[0]);
+                }
+            }
 
             // Build FormData manually — append all files under 'documents' key
-            // (backend multer expects the field name 'documents')
-            const formData = new FormData();
-            formData.append('fullName', document.getElementById('fullName').value.trim());
-            formData.append('email',    document.getElementById('email').value.trim());
-            formData.append('phone',    document.getElementById('phone').value.trim());
-            formData.append('program',  document.getElementById('program').value);
-            formData.append('password', 'password123');
+            pendingFormData = new FormData();
+            pendingFormData.append('fullName', document.getElementById('fullName').value.trim());
+            pendingFormData.append('email',    document.getElementById('email').value.trim());
+            pendingFormData.append('phone',    document.getElementById('phone').value.trim());
+            pendingFormData.append('program',  document.getElementById('program').value);
+            pendingFormData.append('password', 'password123');
 
             ADMISSION_DOC_FIELDS.forEach(function(field) {
                 const input = document.getElementById(field.id);
                 if (input && input.files[0]) {
-                    formData.append('documents', input.files[0]);
+                    pendingFormData.append('documents', input.files[0]);
                 }
             });
 
-            // Show loading state
-            if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...'; }
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/students/register`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    showToast('Application submitted successfully! You will be contacted via email once reviewed.', 'success', 7000);
-                    this.reset();
-                    resetAllUploadBoxes();
-                } else {
-                    showToast('Error: ' + (data.message || 'Failed to submit application'), 'error');
-                }
-            } catch (err) {
-                console.error('Registration Error:', err);
-                showToast('Connection error: ' + (err.message || 'Check your internet connection.'), 'error');
-            } finally {
-                if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Submit Application'; }
+            // Show Review Modal
+            const modal = document.getElementById('reviewModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('active'), 10);
             }
         });
     }
+
+    window.closeReviewModal = function() {
+        const modal = document.getElementById('reviewModal');
+        if (modal) {
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+    };
+
+    window.confirmSubmitApplication = async function() {
+        if (!pendingFormData) return;
+        
+        const confirmBtn = document.getElementById('reviewConfirmBtn');
+        const goBackBtn = document.getElementById('reviewGoBackBtn');
+        const submitBtn = document.querySelector('.submit-btn');
+
+        // Show loading state
+        if (confirmBtn) { confirmBtn.disabled = true; confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...'; }
+        if (goBackBtn) { goBackBtn.disabled = true; }
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...'; }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/students/register`, {
+                method: 'POST',
+                body: pendingFormData
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                showToast('Application submitted successfully! You will be contacted via email once reviewed.', 'success', 7000);
+                if (admissionForm) admissionForm.reset();
+                resetAllUploadBoxes();
+                
+                // Clear passport preview specifically
+                const previewContainer = document.getElementById('passportPreviewContainer');
+                if (previewContainer) previewContainer.style.display = 'none';
+                
+                closeReviewModal();
+            } else {
+                showToast('Error: ' + (data.message || 'Failed to submit application'), 'error');
+            }
+        } catch (err) {
+            console.error('Registration Error:', err);
+            showToast('Connection error: ' + (err.message || 'Check your internet connection.'), 'error');
+        } finally {
+            if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Confirm & Submit'; }
+            if (goBackBtn) { goBackBtn.disabled = false; }
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Submit Application'; }
+        }
+    };
 
     // ── Admin Dashboard State ──────────────────────────────────────────────────
     let allApplications = [];   // master list fetched once from API

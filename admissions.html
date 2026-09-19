@@ -224,12 +224,24 @@
                             </div>
 
                             <div class="form-group full-width">
-                                <label for="passportPhoto">PASSPORT PHOTOGRAPHS (WHITE BACKGROUND) <span class="label-info">JPG, PNG (Max 5MB)</span></label>
-                                <div class="file-upload-wrapper">
+                                <label for="passportPhoto">PASSPORT PHOTOGRAPHS (WHITE BACKGROUND) <span class="label-info">JPG, PNG only (Max 5MB)</span></label>
+                                <div class="file-upload-wrapper" id="passportPhotoWrapper">
                                     <input type="file" id="passportPhoto" name="passportPhoto" accept=".jpg,.jpeg,.png" required>
                                     <div class="file-upload-design">
                                         <i class="fas fa-cloud-upload-alt"></i>
                                         <span>Click to upload or drag and drop</span>
+                                    </div>
+                                </div>
+                                <!-- Live preview of uploaded passport photo -->
+                                <div id="passportPreviewContainer" style="display:none;">
+                                    <div class="passport-preview-card">
+                                        <img id="passportPreviewImg" src="" alt="Passport photo preview">
+                                        <div class="passport-preview-info">
+                                            <i class="fas fa-check-circle" style="color:#2ecc71;"></i>
+                                            <strong>Photo uploaded</strong>
+                                            <p id="passportPreviewName" style="font-size:0.8rem; color:var(--text-light);"></p>
+                                            <p class="passport-preview-tip"><i class="fas fa-info-circle"></i> Make sure this is a clear photo of your face on a <strong>white background</strong>.</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -304,6 +316,37 @@
             </div>
         </div>
     </footer>
+
+    <!-- Pre-Submit Review Modal -->
+    <div id="reviewModal" class="review-modal-overlay" style="display:none;">
+        <div class="review-modal">
+            <div class="review-modal-header">
+                <h3><i class="fas fa-clipboard-check"></i> Review Your Application</h3>
+                <p>Please confirm all documents are correct before submitting.</p>
+            </div>
+            <div class="review-modal-body">
+                <!-- Passport photo preview -->
+                <div class="review-photo-section">
+                    <img id="reviewPassportImg" src="" alt="Passport Photo" class="review-passport-img">
+                    <div class="review-photo-label">
+                        <i class="fas fa-user-circle" style="color:var(--primary-color);"></i>
+                        <span>Passport Photograph</span>
+                    </div>
+                </div>
+                <!-- Document checklist -->
+                <div class="review-docs-list" id="reviewDocsList"></div>
+            </div>
+            <div class="review-modal-footer">
+                <button class="btn" id="reviewGoBackBtn" onclick="closeReviewModal()" style="background:var(--bg-light); color:var(--secondary-color); border:1.5px solid var(--border-color); padding:0.8rem 2rem; border-radius:50px; font-weight:600; cursor:pointer;">
+                    <i class="fas fa-arrow-left"></i> Go Back & Edit
+                </button>
+                <button class="btn btn-primary submit-btn" id="reviewConfirmBtn" onclick="confirmSubmitApplication()" style="padding:0.8rem 2rem; border-radius:50px;">
+                    <i class="fas fa-paper-plane"></i> Confirm & Submit
+                </button>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>

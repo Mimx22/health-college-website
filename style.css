@@ -3142,3 +3142,138 @@ h6 {
         grid-template-columns: 1fr;
     }
 }
+
+/* ---- Passport Preview Styling ---- */
+.passport-preview-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--white);
+    margin-top: 0.5rem;
+}
+.passport-preview-card img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--primary-color);
+}
+.passport-preview-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+.passport-preview-info strong {
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+}
+.passport-preview-tip {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 0.2rem;
+}
+
+/* --- Pre-Submit Review Modal --- */
+.review-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.review-modal-overlay.active {
+    opacity: 1;
+}
+.review-modal {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+.review-modal-overlay.active .review-modal {
+    transform: translateY(0);
+}
+.review-modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    text-align: center;
+}
+.review-modal-header h3 {
+    font-size: 1.25rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.25rem;
+}
+.review-modal-header p {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+.review-modal-body {
+    overflow-y: auto;
+    padding: 1.5rem;
+    flex: 1;
+}
+.review-photo-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px dashed var(--border-color);
+}
+.review-passport-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--primary-color);
+    box-shadow: var(--shadow-sm);
+}
+.review-photo-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+.review-docs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.review-doc-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: var(--bg-light);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.review-modal-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+@media (max-width: 480px) {
+    .review-modal-footer {
+        flex-direction: column;
+    }
+}
