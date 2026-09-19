@@ -971,7 +971,9 @@ h6 {
 
 .hero-logo {
     width: 250px;
-    height: auto;
+    max-height: 200px;
+    object-fit: contain;
+    margin-top: 3rem;
     margin-bottom: 1.5rem;
     filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
 }
