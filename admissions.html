@@ -304,26 +304,6 @@
             </div>
         </div>
     </footer>
-
-    <script>
-        // File upload visual feedback — show green "has-file" state when a file is chosen
-        document.querySelectorAll('.file-upload-wrapper input[type="file"]').forEach(function(input) {
-            input.addEventListener('change', function() {
-                var wrapper = this.closest('.file-upload-wrapper');
-                var designSpan = wrapper.querySelector('.file-upload-design span');
-                var icon = wrapper.querySelector('.file-upload-design i');
-                if (this.files && this.files.length > 0) {
-                    wrapper.classList.add('has-file');
-                    icon.className = 'fas fa-check-circle';
-                    designSpan.textContent = this.files[0].name;
-                } else {
-                    wrapper.classList.remove('has-file');
-                    icon.className = 'fas fa-cloud-upload-alt';
-                    designSpan.textContent = 'Click to upload or drag and drop';
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>

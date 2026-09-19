@@ -147,84 +147,87 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- STUDENT ADMISSION SYSTEM ---
 
-    const admissionForm = document.getElementById('admissionForm');
-    const documentsInput = document.getElementById('documents');
-    const uploadDesign = document.querySelector('.file-upload-design');
+    // Document fields definition — used for validation, upload feedback, and reset
+    const ADMISSION_DOC_FIELDS = [
+        { id: 'ssce',             label: 'SSCE (WAEC/NECO/NABTEB)' },
+        { id: 'stateOrigin',      label: 'Certificate of State of Origin' },
+        { id: 'birthCertificate', label: 'Birth Certificate' },
+        { id: 'nin',              label: 'NIN (National Identification Number)' },
+        { id: 'medicalFitness',   label: 'Medical Fitness Report' },
+        { id: 'passportPhoto',    label: 'Passport Photograph' }
+    ];
 
-    // Helper to reset upload UI
-    function resetUploadUI() {
-        const label = uploadDesign ? uploadDesign.querySelector('span') : null;
-        const icon = uploadDesign ? uploadDesign.querySelector('.fas') : null;
-        if (label) { label.textContent = 'Click to upload or drag and drop'; label.style.color = ''; label.style.fontWeight = ''; }
-        if (icon) { icon.className = 'fas fa-cloud-upload-alt'; icon.style.color = ''; }
-    }
-
-    // Helper to show selected files in the UI
-    function updateUploadUI(files) {
-        const label = uploadDesign ? uploadDesign.querySelector('span') : null;
-        const icon = uploadDesign ? uploadDesign.querySelector('.fas') : null;
-        if (files && files.length > 0) {
-            const fileNames = Array.from(files).map(f => f.name).join(', ');
-            if (label) { label.textContent = `✔ ${files.length} file(s) selected: ${fileNames}`; label.style.color = 'green'; label.style.fontWeight = '600'; }
-            if (icon) { icon.className = 'fas fa-check-circle'; icon.style.color = 'green'; }
-        } else {
-            resetUploadUI();
-        }
-    }
-
-    // File input change event
-    if (documentsInput) {
-        documentsInput.addEventListener('change', function () {
-            updateUploadUI(this.files);
-        });
-    }
-
-    // Drag-and-drop support
-    if (uploadDesign && documentsInput) {
-        uploadDesign.addEventListener('dragover', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            this.style.borderColor = 'var(--primary-color)';
-            this.style.background = 'rgba(0,168,232,0.05)';
-        });
-
-        uploadDesign.addEventListener('dragleave', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            this.style.borderColor = '';
-            this.style.background = '';
-        });
-
-        uploadDesign.addEventListener('drop', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            this.style.borderColor = '';
-            this.style.background = '';
-
-            const dt = e.dataTransfer;
-            if (dt && dt.files && dt.files.length > 0) {
-                // Transfer files to the real input
-                const dataTransfer = new DataTransfer();
-                Array.from(dt.files).forEach(file => dataTransfer.items.add(file));
-                documentsInput.files = dataTransfer.files;
-                updateUploadUI(documentsInput.files);
+    // Wire per-field upload visual feedback
+    ADMISSION_DOC_FIELDS.forEach(function(field) {
+        const input = document.getElementById(field.id);
+        if (!input) return;
+        input.addEventListener('change', function() {
+            const wrapper = this.closest('.file-upload-wrapper');
+            if (!wrapper) return;
+            const span = wrapper.querySelector('.file-upload-design span');
+            const icon = wrapper.querySelector('.file-upload-design i');
+            if (this.files && this.files.length > 0) {
+                wrapper.classList.add('has-file');
+                if (icon) icon.className = 'fas fa-check-circle';
+                if (span) span.textContent = '\u2714 ' + this.files[0].name;
+            } else {
+                wrapper.classList.remove('has-file');
+                if (icon) icon.className = 'fas fa-cloud-upload-alt';
+                if (span) span.textContent = 'Click to upload or drag and drop';
             }
         });
+    });
+
+    // Helper: reset all 6 upload boxes to default state
+    function resetAllUploadBoxes() {
+        ADMISSION_DOC_FIELDS.forEach(function(field) {
+            const input = document.getElementById(field.id);
+            const wrapper = input ? input.closest('.file-upload-wrapper') : null;
+            if (!wrapper) return;
+            wrapper.classList.remove('has-file');
+            const icon = wrapper.querySelector('.file-upload-design i');
+            const span = wrapper.querySelector('.file-upload-design span');
+            if (icon) icon.className = 'fas fa-cloud-upload-alt';
+            if (span) span.textContent = 'Click to upload or drag and drop';
+        });
     }
 
+    const admissionForm = document.getElementById('admissionForm');
     if (admissionForm) {
-        admissionForm.addEventListener('submit', async function (e) {
+        admissionForm.addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            // Create FormData object to handle text + files
-            const formData = new FormData(this);
+            const submitBtn = this.querySelector('.submit-btn');
+
+            // Validate: all 6 document fields must have a file
+            const missingDocs = ADMISSION_DOC_FIELDS.filter(function(field) {
+                const input = document.getElementById(field.id);
+                return !input || !input.files || input.files.length === 0;
+            });
+
+            if (missingDocs.length > 0) {
+                showToast('Please upload: ' + missingDocs.map(f => f.label).join(', '), 'error', 6000);
+                return;
+            }
+
+            // Build FormData manually — append all files under 'documents' key
+            // (backend multer expects the field name 'documents')
+            const formData = new FormData();
+            formData.append('fullName', document.getElementById('fullName').value.trim());
+            formData.append('email',    document.getElementById('email').value.trim());
+            formData.append('phone',    document.getElementById('phone').value.trim());
+            formData.append('program',  document.getElementById('program').value);
             formData.append('password', 'password123');
 
-            // Debug: Check FormData content
-            console.log('Submitting application...');
-            for (let pair of formData.entries()) {
-                console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
-            }
+            ADMISSION_DOC_FIELDS.forEach(function(field) {
+                const input = document.getElementById(field.id);
+                if (input && input.files[0]) {
+                    formData.append('documents', input.files[0]);
+                }
+            });
+
+            // Show loading state
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...'; }
 
             try {
                 const response = await fetch(`${API_BASE_URL}/students/register`, {
@@ -235,15 +238,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 const data = await response.json();
 
                 if (response.ok) {
-                    showToast('Application submitted successfully!', 'success');
-                    this.reset();       // Reset form fields
-                    resetUploadUI();    // Reset upload UI
+                    showToast('Application submitted successfully! You will be contacted via email once reviewed.', 'success', 7000);
+                    this.reset();
+                    resetAllUploadBoxes();
                 } else {
                     showToast('Error: ' + (data.message || 'Failed to submit application'), 'error');
                 }
             } catch (err) {
                 console.error('Registration Error:', err);
-                showToast(`Connection error: ${err.message || 'Check your internet connection'}.`, 'error');
+                showToast('Connection error: ' + (err.message || 'Check your internet connection.'), 'error');
+            } finally {
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'Submit Application'; }
             }
         });
     }
@@ -327,6 +332,7 @@ document.addEventListener('DOMContentLoaded', function () {
         apps.forEach(app => {
             const status = app.admissionStatus; // 'Pending' | 'Approved' | 'Rejected'
             const isPending = status === 'Pending';
+            const docs = app.documents || [];
 
             const tr = document.createElement('tr');
             tr.dataset.id = app._id;
@@ -335,13 +341,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>
                     <div style="font-weight:600; color:var(--secondary-color);">${app.fullName}</div>
                     <div style="font-size:0.8rem; color:var(--text-light);">${app.email}</div>
+                    <div style="font-size:0.78rem; color:var(--text-light);">${app.phone || ''}</div>
                 </td>
                 <td>${app.program}</td>
                 <td>${new Date(app.dateApplied).toLocaleDateString()}</td>
                 <td>
                     <span class="status-badge status-${status.toLowerCase()}">
-                        ${status === 'Pending' ? '🟡' : status === 'Approved' ? '🟢' : '🔴'} ${status}
+                        ${status === 'Pending' ? '\uD83D\uDFE1' : status === 'Approved' ? '\uD83D\uDFE2' : '\uD83D\uDD34'} ${status}
                     </span>
+                </td>
+                <td>
+                    <button class="btn btn-sm" style="background:var(--secondary-color);color:#fff;margin-bottom:0.3rem;" onclick="viewDocs('${app._id}')">
+                        <i class="fas fa-folder-open"></i> View Docs (${docs.length})
+                    </button>
                 </td>
                 <td class="actions">
                     ${isPending ? `
@@ -397,6 +409,63 @@ document.addEventListener('DOMContentLoaded', function () {
     window.downloadLetter = function (id) {
         const app = allApplications.find(a => a._id === id);
         if (app) generatePDF(app);
+    };
+
+    // Open the documents modal for a given application
+    window.viewDocs = function(id) {
+        const app = allApplications.find(a => a._id === id);
+        if (!app) return;
+
+        const DOC_LABELS = [
+            'SSCE (WAEC/NECO/NABTEB)',
+            'Certificate of State of Origin',
+            'Birth Certificate',
+            'NIN (National Identification Number)',
+            'Medical Fitness Report',
+            'Passport Photograph'
+        ];
+
+        const docs = app.documents || [];
+        const modal = document.getElementById('docsModal');
+        const modalTitle = document.getElementById('docsModalTitle');
+        const docsList = document.getElementById('docsModalList');
+
+        if (!modal || !docsList) return;
+
+        modalTitle.textContent = app.fullName + ' — Documents';
+
+        if (docs.length === 0) {
+            docsList.innerHTML = '<p style="color:var(--text-light); text-align:center; padding:2rem;">No documents uploaded for this application.</p>';
+        } else {
+            docsList.innerHTML = docs.map(function(docUrl, i) {
+                const label = DOC_LABELS[i] || ('Document ' + (i + 1));
+                const ext = docUrl.split('.').pop().toLowerCase();
+                const isImage = ['jpg','jpeg','png','gif','webp'].includes(ext);
+                const isPdf   = ext === 'pdf';
+                const icon    = isPdf ? 'fa-file-pdf' : isImage ? 'fa-file-image' : 'fa-file';
+                return `
+                    <div class="doc-item">
+                        <div class="doc-item-info">
+                            <i class="fas ${icon} doc-icon"></i>
+                            <span class="doc-label">${label}</span>
+                        </div>
+                        <a href="${docUrl}" target="_blank" class="btn btn-sm btn-approve doc-download-btn">
+                            <i class="fas fa-external-link-alt"></i> Open
+                        </a>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('active'), 10);
+    };
+
+    window.closeDocsModal = function() {
+        const modal = document.getElementById('docsModal');
+        if (!modal) return;
+        modal.classList.remove('active');
+        setTimeout(() => modal.style.display = 'none', 300);
     };
 
     /**
