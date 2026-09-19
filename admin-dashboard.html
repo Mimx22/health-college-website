@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Jos Medical College</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="toast.js"></script>
+    <script src="config.js"></script>
+    <script src="script.js" defer></script>
+    <style>
+        .admin-container {
+            padding: 4rem 0;
+            min-height: 80vh;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .applications-table-wrapper {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--bg-light);
+            padding: 1.2rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* --- Status Badges --- */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status-pending {
+            background: #fff8e1;
+            color: #e65100;
+        }
+
+        .status-approved {
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .status-rejected {
+            background: #ffebee;
+            color: #b71c1c;
+        }
+
+        /* --- Actions Cell --- */
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-sm {
+            padding: 0.45rem 1rem;
+            font-size: 0.82rem;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .btn-sm:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* --- Filter Bar --- */
+        .filter-bar {
+            display: flex;
+            gap: 0.6rem;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1.4rem;
+            border-radius: 24px;
+            border: 2px solid var(--border-color);
+            background: var(--white);
+            color: var(--text-light);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: #fff;
+        }
+
+        .filter-btn[data-filter="Pending"].active {
+            background: #e65100;
+            border-color: #e65100;
+        }
+
+        .filter-btn[data-filter="Approved"].active {
+            background: #1b5e20;
+            border-color: #1b5e20;
+        }
+
+        .filter-btn[data-filter="Rejected"].active {
+            background: #b71c1c;
+            border-color: #b71c1c;
+        }
+
+        .btn-approve {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+
+        .btn-reject {
+            background-color: #e53935;
+            color: var(--white);
+        }
+
+        .empty-state {
+            padding: 5rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                    <img src="assets/newlogo.png" alt="Jos Medical College Logo" class="logo-img">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="portal.html" class="nav-link">Portal Access</a></li>
+                    <li><a href="#" class="nav-link active">Admin Dashboard</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>Admission Management</h1>
+                <p>Review and process student applications.</p>
+            </div>
+        </section>
+
+        <div class="container admin-container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Applications</h3>
+                    <div class="value" id="totalApps">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending</h3>
+                    <div class="value" id="pendingApps" style="color: #e65100;">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Approved</h3>
+                    <div class="value" id="approvedApps" style="color: #1b5e20;">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Rejected</h3>
+                    <div class="value" id="rejectedApps" style="color: #b71c1c;">0</div>
+                </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="filter-bar" id="filterBar">
+                <button class="filter-btn active" data-filter="All">All</button>
+                <button class="filter-btn" data-filter="Pending">🟡 Pending</button>
+                <button class="filter-btn" data-filter="Approved">🟢 Approved</button>
+                <button class="filter-btn" data-filter="Rejected">🔴 Rejected</button>
+            </div>
+
+            <div class="applications-table-wrapper">
+                <table id="applicationsTable">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Program</th>
+                            <th>Date Applied</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="applicationsBody">
+                        <!-- Content loaded via script.js -->
+                    </tbody>
+                </table>
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <i class="fas fa-inbox"></i>
+                    <p>No applications found for this filter.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-col brand-col">
+                <div class="footer-logo">
+                    <img src="assets/newlogo.png" alt="Jos Medical College" class="footer-logo-img">
+                </div>
+                <p>Let us help you help others</p>
+                <p
+                    style="font-size: 0.85rem; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
+                    “Official website of Medical Career College of Health Science and Technology, Jos — built with
+                    modern web technologies.”
+                </p>
+            </div>
+            <div class="footer-col contact-col">
+                <h3>Contact Us</h3>
+                <address>
+                    <p>No.2 Rikkos Jos</p>
+                    <p>Plateau State, Nigeria</p>
+                    <p style="margin-top: 0.5rem;"><i class="fab fa-whatsapp" style="color: #25D366;"></i> <a
+                            href="https://wa.me/2349066498487"
+                            style="color: inherit; text-decoration: none;">09066498487</a></p>
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:e.medicalcareeracademy.edu@gmail.com"
+                            style="color: inherit; text-decoration: none;">e.medicalcareeracademy.edu@gmail.com</a></p>
+                </address>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Jos Medical College Admin Panel. Confidential.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

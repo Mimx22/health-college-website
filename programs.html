@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Programs - Jos Medical College</title>
+    <meta name="description" content="Explore our accredited degree and diploma programs in health sciences.">
+    <link rel="stylesheet" href="style.css?v=2.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="toast.js"></script>
+    <script src="config.js"></script>
+    <script src="script.js?v=2.0" defer></script>
+</head>
+
+<body>
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                    <img src="assets/newlogo.png" alt="Jos Medical College Logo" class="logo-img">
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-label="Toggle navigation">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="about.html" class="nav-link">About</a></li>
+                    <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+                    <li class="dropdown">
+                        <a href="programs.html" class="nav-link active">Explore Programs <span
+                                class="arrow">▼</span></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-submenu">
+                                <a href="javascript:void(0)" onclick="filterPrograms('degree', true)" class="submenu-toggle">Degree Programs <span
+                                        class="arrow-right">▸</span></a>
+                                <ul class="submenu">
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('degree', true)">Nursing Sciences</a></li>
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('degree', true)">Medical Laboratory Sciences</a></li>
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('degree', true)">Pharmacy</a></li>
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('degree', true)">Public Health</a></li>
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('degree', true)">Health Information Management</a></li>
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('degree', true)">Biochemistry</a></li>
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('degree', true)">Microbiology</a></li>
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('degree', true)">Community Health</a></li>
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('degree', true)">Computer Sciences</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a href="javascript:void(0)" onclick="filterPrograms('diploma', true)" class="submenu-toggle">Diploma Programs <span
+                                        class="arrow-right">▸</span></a>
+                                <ul class="submenu">
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('diploma', true)">Mass Communication</a></li>
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('diploma', true)">Public Administration</a></li>
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('diploma', true)">Business Administration</a></li>
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('diploma', true)">Office and Hotel Management</a></li>
+                                    <li><a href="javascript:void(0)" onclick="filterPrograms('diploma', true)">Computer Science</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="portal.html" class="nav-link">Portal Access <span class="arrow">▼</span></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header-info">
+                                <p>Access your dedicated portal for students, staff, or administrators.</p>
+                            </li>
+                            <li>
+                                <a href="student-login.html">Student Portal
+                                    <span class="dropdown-item-desc">Access course materials and results.</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="staff-login.html">Staff Portal
+                                    <span class="dropdown-item-desc">Teaching resources and staff tools.</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="admin-login.html">Admin Portal
+                                    <span class="badge-nav badge-restricted">Restricted</span>
+                                    <span class="dropdown-item-desc">Institutional system management.</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="admissions.html" class="nav-link">Admissions</a></li>
+                    <li><a href="index.html#news" class="nav-link">News & Events</a></li>
+                    <li><a href="contact.html" class="nav-link btn-contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <div class="container">
+                <h1>Our Academic Programs</h1>
+                <p>Choose from our wide range of accredited Degree and Diploma courses.</p>
+            </div>
+        </section>
+
+        <section class="programs-section">
+            <div class="container">
+
+                <!-- Degree Programs Section (Always visible) -->
+                <div id="degree-section" class="program-category-group" data-category="degree">
+                    <h2 id="degree" class="category-title">Degree Programs</h2>
+                    <div class="course-grid">
+                        <!-- Course Card -->
+                        <div class="course-card">
+                            <h3>Nursing Sciences</h3>
+                            <p>Learn the art and science of nursing with our comprehensive curriculum focused on patient
+                                care and medical ethics.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years (Degree) / 3 Years (Diploma)</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Registered Nurse, Clinical Specialist, Nurse Educator, Healthcare Administrator.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Fully accredited by the Nursing and Midwifery Council of Nigeria (NMCN).</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                        <div class="course-card">
+                            <h3>Medical Laboratory Sciences</h3>
+                            <p>Master the skills to perform diagnostic tests and analyze samples in modern clinical
+                                laboratories.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Medical Lab Scientist, Pathologist's Assistant, Research Researcher, Diagnostic
+                                        Consultant.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Accredited by the Medical Laboratory Science Council of Nigeria (MLSCN).</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                        <div class="course-card">
+                            <h3>Pharmacy</h3>
+                            <p>Study pharmaceutical sciences, drug compounding, and patient medication therapy management.
+                            </p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>5 Years</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Pharmacist, Pharmaceutical Researcher, Drug Regulatory Officer, Clinical
+                                        Pharmacologist.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Fully accredited by the Pharmacists Council of Nigeria (PCN).</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                        <div class="course-card">
+                            <h3>Public Health</h3>
+                            <p>Focus on disease prevention, health promotion, and community health strategies.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Epidemiologist, Health Educator, Public Health Administrator, Community Health
+                                        Worker.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Regulated by the National Universities Commission and relevant health bodies.</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                        <div class="course-card">
+                            <h3>Health Info. Management</h3>
+                            <p>Manage health data and information systems critical for modern healthcare delivery.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Health Information Manager, Data Analyst, Medical Records Director, Clinical Coder.
+                                    </p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Regulated by Health Records Officers Registration Board of Nigeria (HRORBN).</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                        <div class="course-card">
+                            <h3>Biochemistry</h3>
+                            <p>Explore the chemical processes within and related to living organisms.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Biomedical Scientist, Toxicologist, Forensic Scientist, Research Associate.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>NUC Accredited Program.</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                        <div class="course-card">
+                            <h3>Microbiology</h3>
+                            <p>Study microscopic organisms and their impact on humans, animals, and the environment.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Medical Microbiologist, Environmental Specialist, Quality Control Officer, Research
+                                        Scientist.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>NUC Accredited Program.</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                        <div class="course-card">
+                            <h3>Community Health</h3>
+                            <p>Prepare for a career in grassroots healthcare delivery and community wellness programs.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years (CHO) / 3 Years (CHEW)</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Community Health Officer, Health Educator, Planning Officer, NGO Consultant.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Accredited by CHPRBN.</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                        <div class="course-card">
+                            <h3>Computer Sciences</h3>
+                            <p>Apply computational thinking and software engineering to solve healthcare problems.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Health Informatics Specialist, Systems Analyst, Software Developer, Data Scientist.
+                                    </p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Recognized by Computer Professionals Registration Council of Nigeria (CPN).</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Diploma Programs Section — Collapsible Dropdown -->
+                <div class="diploma-accordion">
+                    <button class="diploma-accordion-toggle" id="diplomaToggleBtn" onclick="toggleDiplomaSection()" aria-expanded="false" aria-controls="diploma-section">
+                        <span class="diploma-toggle-left">
+                            <span class="diploma-toggle-icon"><i class="fas fa-certificate"></i></span>
+                            <span class="diploma-toggle-text">
+                                <strong>Diploma Programs</strong>
+                                <small>5 Courses &mdash; Click to expand</small>
+                            </span>
+                        </span>
+                        <span class="diploma-toggle-arrow" id="diplomaArrow"><i class="fas fa-chevron-down"></i></span>
+                    </button>
+                    <div id="diploma-section" class="diploma-dropdown-body" aria-hidden="true">
+                    <div class="course-grid">
+                        <div class="course-card">
+                            <h3>Mass Communication</h3>
+                            <p>Develop skills in media, journalism, and public relations within the health sector.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>2 Years</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Health Journalist, PR Officer, Communications Consultant, Media Producer.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>NBTE Accredited Program.</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                        <div class="course-card">
+                            <h3>Public Administration</h3>
+                            <p>Learn the principles of managing public sector organizations and policies.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>2 Years</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Administrative Officer, Policy Analyst, HR Coordinator, Public Sector Manager.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>NBTE Accredited Diploma.</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                        <div class="course-card">
+                            <h3>Business Administration</h3>
+                            <p>Gain foundational business knowledge applicable to healthcare administration.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>2 Years</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Business Manager, Logistics Officer, Financial Assistant, Operations Supervisor.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>NBTE Accredited Program.</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                        <div class="course-card">
+                            <h3>Office & Hotel Management</h3>
+                            <p>Training for administrative roles and hospitality management in health institutions.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>2 Years</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Medical Secretary, Hotel Manager, Hospitality Supervisor, Executive Assistant.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Board Certified Vocational Program.</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                        <div class="course-card">
+                            <h3>Computer Science</h3>
+                            <p>Practical diploma course in computing fundamentals and IT applications.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>2 Years</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>IT Technician, Network Assistant, Web Developer, Database Administrator.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>CPN Registered Program.</p>
+                                </div>
+                            </div>
+                            <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)">Read More →</a>
+                        </div>
+                    </div>
+                    </div><!-- end diploma-dropdown-body -->
+                </div><!-- end diploma-accordion -->
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-col brand-col">
+                <div class="footer-logo">
+                    <img src="assets/newlogo.png" alt="Jos Medical College" class="footer-logo-img">
+                </div>
+                <p>Let us help you help others</p>
+                <p
+                    style="font-size: 0.85rem; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
+                    “Official website of Medical Career College of Health Science and Technology, Jos — built with
+                    modern web technologies.”
+                </p>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html#about">About Us</a></li>
+                    <li><a href="index.html#academics">Academics</a></li>
+                    <li><a href="index.html#admissions">Admissions</a></li>
+                    <li><a href="index.html#news">News & Events</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Explore Programs</h3>
+                <ul>
+                    <li><a href="programs.html#degree">Nursing Sciences</a></li>
+                    <li><a href="programs.html#degree">Medical Laboratory Sciences</a></li>
+                    <li><a href="programs.html#degree">Pharmacy</a></li>
+                    <li><a href="programs.html#degree">Public Health</a></li>
+                    <li><a href="programs.html#degree">Biochemistry</a></li>
+                    <li><a href="programs.html#diploma">Mass Communication</a></li>
+                    <li><a href="programs.html#diploma">Business Administration</a></li>
+                </ul>
+            </div>
+            <div class="footer-col contact-col">
+                <h3>Contact Us</h3>
+                <address>
+                    <p>No.2 Rikkos Jos</p>
+                    <p>Plateau State, Nigeria</p>
+                    <p><a href="mailto:e.medicalcareeracademy.edu@gmail.com">e.medicalcareeracademy.edu@gmail.com</a>
+                    </p>
+                    <p><a href="tel:+2347040050049">+234 704 005 0049</a></p>
+                </address>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container"
+                style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <p>&copy; 2026 Jos Medical College. All rights reserved.</p>
+                <div class="footer-admin-link">
+                    <a href="admin-login.html" style="font-size: 0.75rem; opacity: 0.5; color: var(--white);"><i
+                            class="fas fa-lock"></i> Admin Panel</a>
+                </div>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
