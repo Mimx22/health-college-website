@@ -1022,46 +1022,44 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // --- ACCORDION TOGGLE ---
-    window.toggleAccordion = function (type) {
-        const body = document.getElementById(`${type}-body`);
-        const btn = document.querySelector(`button[onclick="toggleAccordion('${type}')"]`);
-        if (!body || !btn) return;
+    // --- PROGRAM SECTION NAV TOGGLE ---
+    window.openProgramSection = function (type) {
+        const degreeSection = document.getElementById('degree-section');
+        const diplomaSection = document.getElementById('diploma-section');
+        
+        if (!degreeSection || !diplomaSection) return;
 
-        const isOpen = body.classList.contains('is-open');
-
-        if (isOpen) {
-            // Close it
-            body.classList.remove('is-open');
-            btn.setAttribute('aria-expanded', 'false');
-            body.setAttribute('aria-hidden', 'true');
-        } else {
-            // Open it
-            body.classList.add('is-open');
-            btn.setAttribute('aria-expanded', 'true');
-            body.setAttribute('aria-hidden', 'false');
-            
-            // Smooth scroll to accordion
-            setTimeout(function () {
-                const header = document.querySelector('.main-header');
-                const headerOffset = header ? header.offsetHeight + 20 : 80;
-                const pos = btn.getBoundingClientRect().top + window.scrollY;
-                window.scrollTo({ top: pos - headerOffset, behavior: 'smooth' });
-            }, 80);
+        if (type === 'degree') {
+            degreeSection.style.display = 'block';
+            diplomaSection.style.display = 'none';
+        } else if (type === 'diploma') {
+            diplomaSection.style.display = 'block';
+            degreeSection.style.display = 'none';
         }
+        
+        // Close the mobile menu if open
+        const mainNav = document.querySelector('.main-nav');
+        if (mainNav && mainNav.classList.contains('active')) {
+            mainNav.classList.remove('active');
+            const mobileMenuBtn = document.querySelector('.mobile-menu-toggle');
+            if (mobileMenuBtn) mobileMenuBtn.style.opacity = '1';
+        }
+
+        // Smooth scroll to the top of the section
+        setTimeout(function () {
+            const header = document.querySelector('.main-header');
+            const headerOffset = header ? header.offsetHeight + 20 : 80;
+            const targetSection = type === 'degree' ? degreeSection : diplomaSection;
+            const pos = targetSection.getBoundingClientRect().top + window.scrollY;
+            window.scrollTo({ top: pos - headerOffset, behavior: 'smooth' });
+        }, 80);
     };
 
-    // Open specific accordion if URL hash matches on load
+    // Show correct section if URL hash matches on load
     (function () {
         const hash = window.location.hash.toLowerCase().replace('#', '');
         if (hash === 'diploma' || hash === 'degree') {
-            const body = document.getElementById(`${hash}-body`);
-            const btn = document.querySelector(`button[onclick="toggleAccordion('${hash}')"]`);
-            if (body && btn) {
-                body.classList.add('is-open');
-                btn.setAttribute('aria-expanded', 'true');
-                body.setAttribute('aria-hidden', 'false');
-            }
+            window.openProgramSection(hash);
         }
     })();
 });

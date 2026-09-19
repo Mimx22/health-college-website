@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Programs - Jos Medical College</title>
-    <meta name="description" content="Explore our accredited degree and diploma programs in health sciences.">
+    <meta name="description" content="Accredited degree and diploma programs in health sciences.">
     <link rel="stylesheet" href="style.css?v=2.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -44,26 +44,36 @@
                                 <a href="#degree" class="submenu-toggle">Degree Programs <span
                                         class="arrow-right">▸</span></a>
                                 <ul class="submenu">
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Nursing Sciences</a></li>
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Medical Laboratory Sciences</a></li>
+                                    <li><a href="#degree" onclick="openProgramSection('degree')">Nursing Sciences</a>
+                                    </li>
+                                    <li><a href="#degree" onclick="openProgramSection('degree')">Medical Laboratory
+                                            Sciences</a></li>
                                     <li><a href="#degree" onclick="openProgramSection('degree')">Pharmacy</a></li>
                                     <li><a href="#degree" onclick="openProgramSection('degree')">Public Health</a></li>
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Health Information Management</a></li>
+                                    <li><a href="#degree" onclick="openProgramSection('degree')">Health Information
+                                            Management</a></li>
                                     <li><a href="#degree" onclick="openProgramSection('degree')">Biochemistry</a></li>
                                     <li><a href="#degree" onclick="openProgramSection('degree')">Microbiology</a></li>
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Community Health</a></li>
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Computer Sciences</a></li>
+                                    <li><a href="#degree" onclick="openProgramSection('degree')">Community Health</a>
+                                    </li>
+                                    <li><a href="#degree" onclick="openProgramSection('degree')">Computer Sciences</a>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="dropdown-submenu">
                                 <a href="#diploma" class="submenu-toggle">Diploma Programs <span
                                         class="arrow-right">▸</span></a>
                                 <ul class="submenu">
-                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Mass Communication</a></li>
-                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Public Administration</a></li>
-                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Business Administration</a></li>
-                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Office and Hotel Management</a></li>
-                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Computer Science</a></li>
+                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Mass
+                                            Communication</a></li>
+                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Public
+                                            Administration</a></li>
+                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Business
+                                            Administration</a></li>
+                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Office and Hotel
+                                            Management</a></li>
+                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Computer Science</a>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>
@@ -109,363 +119,391 @@
         <section class="programs-section">
             <div class="container">
 
-                <!-- Degree Programs Accordion -->
-                <div class="diploma-accordion" id="degree-accordion">
-                    <button class="diploma-accordion-toggle" aria-expanded="false" aria-controls="degree-body" onclick="toggleAccordion('degree')">
-                        <div class="diploma-toggle-left">
-                            <div class="diploma-toggle-icon"><i class="fas fa-graduation-cap"></i></div>
-                            <div class="diploma-toggle-text">
-                                <strong>Degree Programs</strong>
-                                <small>9 accredited programs — B.Sc. &amp; professional degrees</small>
+                <!-- Degree Programs Section -->
+                <div id="degree-section" class="program-section" style="display: block;">
+                    <h2 id="degree" class="category-title">Degree Programs</h2>
+                    <div class="course-grid">
+                        <div class="course-card">
+                            <h3>Nursing Sciences</h3>
+                            <p>Learn the art and science of nursing with our comprehensive curriculum focused on patient
+                                care and medical ethics.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years (Degree) / 3 Years (Diploma)</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Registered Nurse, Clinical Specialist, Nurse Educator, Healthcare Administrator.
+                                    </p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Fully accredited by the Nursing and Midwifery Council of Nigeria (NMCN).</p>
+                                </div>
+                            </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
                             </div>
                         </div>
-                        <div class="diploma-toggle-arrow"><i class="fas fa-chevron-down"></i></div>
-                    </button>
-                    <div id="degree-body" class="diploma-dropdown-body" aria-hidden="true">
-                        <h2 id="degree" class="category-title">Degree Programs</h2>
-                        <div class="course-grid">
-                            <div class="course-card">
-                                <h3>Nursing Sciences</h3>
-                                <p>Learn the art and science of nursing with our comprehensive curriculum focused on patient
-                                    care and medical ethics.</p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>4 Years (Degree) / 3 Years (Diploma)</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>Registered Nurse, Clinical Specialist, Nurse Educator, Healthcare Administrator.</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>Fully accredited by the Nursing and Midwifery Council of Nigeria (NMCN).</p>
-                                    </div>
+                        <div class="course-card">
+                            <h3>Medical Laboratory Sciences</h3>
+                            <p>Master the skills to perform diagnostic tests and analyze samples in modern clinical
+                                laboratories.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years</p>
                                 </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Medical Lab Scientist, Pathologist's Assistant, Research Researcher, Diagnostic
+                                        Consultant.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Accredited by the Medical Laboratory Science Council of Nigeria (MLSCN).</p>
                                 </div>
                             </div>
-                            <div class="course-card">
-                                <h3>Medical Laboratory Sciences</h3>
-                                <p>Master the skills to perform diagnostic tests and analyze samples in modern clinical
-                                    laboratories.</p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>4 Years</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>Medical Lab Scientist, Pathologist's Assistant, Research Researcher, Diagnostic
-                                            Consultant.</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>Accredited by the Medical Laboratory Science Council of Nigeria (MLSCN).</p>
-                                    </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                            </div>
+                        </div>
+                        <div class="course-card">
+                            <h3>Pharmacy</h3>
+                            <p>Study pharmaceutical sciences, drug compounding, and patient medication therapy
+                                management.
+                            </p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>5 Years</p>
                                 </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Pharmacist, Pharmaceutical Researcher, Drug Regulatory Officer, Clinical
+                                        Pharmacologist.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Fully accredited by the Pharmacists Council of Nigeria (PCN).</p>
                                 </div>
                             </div>
-                            <div class="course-card">
-                                <h3>Pharmacy</h3>
-                                <p>Study pharmaceutical sciences, drug compounding, and patient medication therapy management.
-                                </p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>5 Years</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>Pharmacist, Pharmaceutical Researcher, Drug Regulatory Officer, Clinical
-                                            Pharmacologist.</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>Fully accredited by the Pharmacists Council of Nigeria (PCN).</p>
-                                    </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                            </div>
+                        </div>
+                        <div class="course-card">
+                            <h3>Public Health</h3>
+                            <p>Focus on disease prevention, health promotion, and community health strategies.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years</p>
                                 </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Epidemiologist, Health Educator, Public Health Administrator, Community Health
+                                        Worker.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Regulated by the National Universities Commission and relevant health bodies.</p>
                                 </div>
                             </div>
-                            <div class="course-card">
-                                <h3>Public Health</h3>
-                                <p>Focus on disease prevention, health promotion, and community health strategies.</p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>4 Years</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>Epidemiologist, Health Educator, Public Health Administrator, Community Health
-                                            Worker.</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>Regulated by the National Universities Commission and relevant health bodies.</p>
-                                    </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                            </div>
+                        </div>
+                        <div class="course-card">
+                            <h3>Health Info. Management</h3>
+                            <p>Manage health data and information systems critical for modern healthcare delivery.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years</p>
                                 </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Health Information Manager, Data Analyst, Medical Records Director, Clinical
+                                        Coder.
+                                    </p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Regulated by Health Records Officers Registration Board of Nigeria (HRORBN).</p>
                                 </div>
                             </div>
-                            <div class="course-card">
-                                <h3>Health Info. Management</h3>
-                                <p>Manage health data and information systems critical for modern healthcare delivery.</p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>4 Years</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>Health Information Manager, Data Analyst, Medical Records Director, Clinical Coder.
-                                        </p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>Regulated by Health Records Officers Registration Board of Nigeria (HRORBN).</p>
-                                    </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                            </div>
+                        </div>
+                        <div class="course-card">
+                            <h3>Biochemistry</h3>
+                            <p>Explore the chemical processes within and related to living organisms.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years</p>
                                 </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Biomedical Scientist, Toxicologist, Forensic Scientist, Research Associate.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>NUC Accredited Program.</p>
                                 </div>
                             </div>
-                            <div class="course-card">
-                                <h3>Biochemistry</h3>
-                                <p>Explore the chemical processes within and related to living organisms.</p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>4 Years</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>Biomedical Scientist, Toxicologist, Forensic Scientist, Research Associate.</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>NUC Accredited Program.</p>
-                                    </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                            </div>
+                        </div>
+                        <div class="course-card">
+                            <h3>Microbiology</h3>
+                            <p>Study microscopic organisms and their impact on humans, animals, and the environment.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years</p>
                                 </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Medical Microbiologist, Environmental Specialist, Quality Control Officer,
+                                        Research
+                                        Scientist.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>NUC Accredited Program.</p>
                                 </div>
                             </div>
-                            <div class="course-card">
-                                <h3>Microbiology</h3>
-                                <p>Study microscopic organisms and their impact on humans, animals, and the environment.</p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>4 Years</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>Medical Microbiologist, Environmental Specialist, Quality Control Officer, Research
-                                            Scientist.</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>NUC Accredited Program.</p>
-                                    </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                            </div>
+                        </div>
+                        <div class="course-card">
+                            <h3>Community Health</h3>
+                            <p>Prepare for a career in grassroots healthcare delivery and community wellness programs.
+                            </p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years (CHO) / 3 Years (CHEW)</p>
                                 </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Community Health Officer, Health Educator, Planning Officer, NGO Consultant.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Accredited by CHPRBN.</p>
                                 </div>
                             </div>
-                            <div class="course-card">
-                                <h3>Community Health</h3>
-                                <p>Prepare for a career in grassroots healthcare delivery and community wellness programs.</p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>4 Years (CHO) / 3 Years (CHEW)</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>Community Health Officer, Health Educator, Planning Officer, NGO Consultant.</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>Accredited by CHPRBN.</p>
-                                    </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                            </div>
+                        </div>
+                        <div class="course-card">
+                            <h3>Computer Sciences</h3>
+                            <p>Apply computational thinking and software engineering to solve healthcare problems.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>4 Years</p>
                                 </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Health Informatics Specialist, Systems Analyst, Software Developer, Data
+                                        Scientist.
+                                    </p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Recognized by Computer Professionals Registration Council of Nigeria (CPN).</p>
                                 </div>
                             </div>
-                            <div class="course-card">
-                                <h3>Computer Sciences</h3>
-                                <p>Apply computational thinking and software engineering to solve healthcare problems.</p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>4 Years</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>Health Informatics Specialist, Systems Analyst, Software Developer, Data Scientist.
-                                        </p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>Recognized by Computer Professionals Registration Council of Nigeria (CPN).</p>
-                                    </div>
-                                </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
-                                </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Diploma Programs Accordion -->
-                <div class="diploma-accordion" id="diploma-accordion" style="margin-top: 2rem;">
-                    <button class="diploma-accordion-toggle" aria-expanded="false" aria-controls="diploma-body" onclick="toggleAccordion('diploma')">
-                        <div class="diploma-toggle-left">
-                            <div class="diploma-toggle-icon"><i class="fas fa-certificate"></i></div>
-                            <div class="diploma-toggle-text">
-                                <strong>Diploma Programs</strong>
-                                <small>5 professional diploma courses — ND &amp; certificates</small>
+                <!-- Diploma Programs Section -->
+                <div id="diploma-section" class="program-section" style="display: none;">
+                    <h2 id="diploma" class="category-title">Diploma Programs</h2>
+                    <div class="course-grid">
+                        <div class="course-card">
+                            <h3>Mass Communication</h3>
+                            <p>Develop skills in media, journalism, and public relations within the health sector.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>2 Years</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Health Journalist, PR Officer, Communications Consultant, Media Producer.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>NBTE Accredited Program.</p>
+                                </div>
+                            </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
                             </div>
                         </div>
-                        <div class="diploma-toggle-arrow"><i class="fas fa-chevron-down"></i></div>
-                    </button>
-                    <div id="diploma-body" class="diploma-dropdown-body" aria-hidden="true">
-                        <h2 id="diploma" class="category-title">Diploma Programs</h2>
-                        <div class="course-grid">
-                            <div class="course-card">
-                                <h3>Mass Communication</h3>
-                                <p>Develop skills in media, journalism, and public relations within the health sector.</p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>2 Years</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>Health Journalist, PR Officer, Communications Consultant, Media Producer.</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>NBTE Accredited Program.</p>
-                                    </div>
+                        <div class="course-card">
+                            <h3>Public Administration</h3>
+                            <p>Learn the principles of managing public sector organizations and policies.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>2 Years</p>
                                 </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Administrative Officer, Policy Analyst, HR Coordinator, Public Sector Manager.
+                                    </p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>NBTE Accredited Diploma.</p>
                                 </div>
                             </div>
-                            <div class="course-card">
-                                <h3>Public Administration</h3>
-                                <p>Learn the principles of managing public sector organizations and policies.</p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>2 Years</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>Administrative Officer, Policy Analyst, HR Coordinator, Public Sector Manager.</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>NBTE Accredited Diploma.</p>
-                                    </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                            </div>
+                        </div>
+                        <div class="course-card">
+                            <h3>Business Administration</h3>
+                            <p>Gain foundational business knowledge applicable to healthcare administration.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>2 Years</p>
                                 </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Business Manager, Logistics Officer, Financial Assistant, Operations Supervisor.
+                                    </p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>NBTE Accredited Program.</p>
                                 </div>
                             </div>
-                            <div class="course-card">
-                                <h3>Business Administration</h3>
-                                <p>Gain foundational business knowledge applicable to healthcare administration.</p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>2 Years</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>Business Manager, Logistics Officer, Financial Assistant, Operations Supervisor.</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>NBTE Accredited Program.</p>
-                                    </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                            </div>
+                        </div>
+                        <div class="course-card">
+                            <h3>Office &amp; Hotel Management</h3>
+                            <p>Training for administrative roles and hospitality management in health institutions.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>2 Years</p>
                                 </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>Medical Secretary, Hotel Manager, Hospitality Supervisor, Executive Assistant.
+                                    </p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>Board Certified Vocational Program.</p>
                                 </div>
                             </div>
-                            <div class="course-card">
-                                <h3>Office &amp; Hotel Management</h3>
-                                <p>Training for administrative roles and hospitality management in health institutions.</p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>2 Years</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>Medical Secretary, Hotel Manager, Hospitality Supervisor, Executive Assistant.</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>Board Certified Vocational Program.</p>
-                                    </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                            </div>
+                        </div>
+                        <div class="course-card">
+                            <h3>Computer Science</h3>
+                            <p>Practical diploma course in computing fundamentals and IT applications.</p>
+                            <div class="course-details">
+                                <div class="detail-item">
+                                    <strong>Duration</strong>
+                                    <p>2 Years</p>
                                 </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
+                                <div class="detail-item">
+                                    <strong>Career Prospects</strong>
+                                    <p>IT Technician, Network Assistant, Web Developer, Database Administrator.</p>
+                                </div>
+                                <div class="detail-item">
+                                    <strong>Accreditation</strong>
+                                    <p>CPN Registered Program.</p>
                                 </div>
                             </div>
-                            <div class="course-card">
-                                <h3>Computer Science</h3>
-                                <p>Practical diploma course in computing fundamentals and IT applications.</p>
-                                <div class="course-details">
-                                    <div class="detail-item">
-                                        <strong>Duration</strong>
-                                        <p>2 Years</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Career Prospects</strong>
-                                        <p>IT Technician, Network Assistant, Web Developer, Database Administrator.</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <strong>Accreditation</strong>
-                                        <p>CPN Registered Program.</p>
-                                    </div>
-                                </div>
-                                <div class="course-actions" style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                    <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)" style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                    <a href="admissions.html" class="btn btn-primary" style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
-                                </div>
+                            <div class="course-actions"
+                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
+                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
+                                <a href="admissions.html" class="btn btn-primary"
+                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
                             </div>
                         </div>
                     </div>
                 </div>
 
             </div>
-        </section>           </div>
+        </section>
+        </div>
         </section>
     </main>
 
