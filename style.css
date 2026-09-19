@@ -1,4 +1,4 @@
-﻿/* 
+/* 
 * Jos Medical College - Premium Design System 
 * Author: Antigravity
 */
@@ -150,10 +150,9 @@ h6 {
 }
 
 .logo-img {
-    height: 70px;
+    max-height: 80px;
     width: auto;
-    margin-top: 5px;
-    margin-left: -30px;
+    object-fit: contain;
 }
 
 .logo-text {
