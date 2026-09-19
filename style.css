@@ -2869,3 +2869,276 @@ h6 {
     }
 }
 
+/* ============================================
+   ADMISSIONS PAGE STYLES
+   ============================================ */
+
+.admissions-section {
+    padding: var(--spacing-lg) 0;
+    background: var(--bg-light);
+}
+
+.requirements-card {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    padding: 3rem;
+    margin-bottom: 3rem;
+}
+
+.requirements-card h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid var(--primary-color);
+    letter-spacing: 0.04em;
+}
+
+.requirements-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.requirements-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--primary-light);
+    border: 1.5px solid rgba(0, 168, 232, 0.2);
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--secondary-color);
+    letter-spacing: 0.02em;
+    transition: var(--transition);
+}
+
+.requirements-list li::before {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.requirements-list li:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0, 168, 232, 0.15);
+    transform: translateY(-2px);
+}
+
+/* ---- Application Form Container ---- */
+.application-form-container {
+    margin-top: 2.5rem;
+}
+
+.form-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.form-header h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin-bottom: 0.4rem;
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+}
+
+.form-header p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+.admission-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--secondary-color);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.label-info {
+    font-weight: 400;
+    font-size: 0.78rem;
+    color: var(--text-light);
+    text-transform: none;
+    letter-spacing: 0;
+    background: var(--bg-light);
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group select {
+    padding: 0.8rem 1rem;
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+    font-family: var(--font-family);
+    font-size: 0.95rem;
+    color: var(--text-color);
+    background: var(--white);
+    transition: var(--transition);
+    outline: none;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="tel"]:focus,
+.form-group select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 168, 232, 0.12);
+}
+
+.form-group select {
+    cursor: pointer;
+}
+
+/* ---- File Upload Styling ---- */
+.file-upload-wrapper {
+    position: relative;
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    background: var(--bg-light);
+    transition: var(--transition);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.file-upload-wrapper:hover {
+    border-color: var(--primary-color);
+    background: var(--primary-light);
+}
+
+.file-upload-wrapper input[type="file"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.file-upload-design {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.5rem 1rem;
+    pointer-events: none;
+    text-align: center;
+    color: var(--text-light);
+    transition: var(--transition);
+}
+
+.file-upload-design i {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 0.25rem;
+    transition: transform 0.25s ease;
+}
+
+.file-upload-design span {
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.file-upload-wrapper:hover .file-upload-design {
+    color: var(--primary-dark);
+}
+
+.file-upload-wrapper:hover .file-upload-design i {
+    transform: translateY(-3px);
+}
+
+/* Uploaded state feedback */
+.file-upload-wrapper.has-file {
+    border-color: #2ecc71;
+    background: #f0fff4;
+}
+
+.file-upload-wrapper.has-file .file-upload-design i {
+    color: #2ecc71;
+}
+
+/* ---- Form Footer ---- */
+.form-footer {
+    display: flex;
+    justify-content: center;
+    padding-top: 1rem;
+}
+
+.submit-btn {
+    padding: 1rem 3rem;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    border-radius: 50px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 4px 15px rgba(0, 168, 232, 0.35);
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 168, 232, 0.45);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .requirements-card {
+        padding: 1.5rem;
+    }
+    .requirements-list {
+        grid-template-columns: 1fr;
+    }
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -169,11 +169,64 @@
                             </div>
 
                             <div class="form-group full-width">
-                                <label for="documents">Upload Documents <span class="label-info">PDF, JPG
-                                        (Max 5MB)</span></label>
+                                <label for="ssce">SSCE (WAEC, NECO, OR NABTEB) <span class="label-info">PDF, JPG (Max 5MB)</span></label>
                                 <div class="file-upload-wrapper">
-                                    <input type="file" id="documents" name="documents" multiple
-                                        accept=".pdf,.jpg,.jpeg" required>
+                                    <input type="file" id="ssce" name="ssce" accept=".pdf,.jpg,.jpeg" required>
+                                    <div class="file-upload-design">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Click to upload or drag and drop</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="stateOrigin">CERTIFICATE OF STATE OF ORIGIN <span class="label-info">PDF, JPG (Max 5MB)</span></label>
+                                <div class="file-upload-wrapper">
+                                    <input type="file" id="stateOrigin" name="stateOrigin" accept=".pdf,.jpg,.jpeg" required>
+                                    <div class="file-upload-design">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Click to upload or drag and drop</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="birthCertificate">BIRTH CERTIFICATE <span class="label-info">PDF, JPG (Max 5MB)</span></label>
+                                <div class="file-upload-wrapper">
+                                    <input type="file" id="birthCertificate" name="birthCertificate" accept=".pdf,.jpg,.jpeg" required>
+                                    <div class="file-upload-design">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Click to upload or drag and drop</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="nin">NIN (National Identification Number) <span class="label-info">PDF, JPG (Max 5MB)</span></label>
+                                <div class="file-upload-wrapper">
+                                    <input type="file" id="nin" name="nin" accept=".pdf,.jpg,.jpeg" required>
+                                    <div class="file-upload-design">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Click to upload or drag and drop</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="medicalFitness">MEDICAL FITNESS REPORT <span class="label-info">PDF, JPG (Max 5MB)</span></label>
+                                <div class="file-upload-wrapper">
+                                    <input type="file" id="medicalFitness" name="medicalFitness" accept=".pdf,.jpg,.jpeg" required>
+                                    <div class="file-upload-design">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Click to upload or drag and drop</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="passportPhoto">PASSPORT PHOTOGRAPHS (WHITE BACKGROUND) <span class="label-info">JPG, PNG (Max 5MB)</span></label>
+                                <div class="file-upload-wrapper">
+                                    <input type="file" id="passportPhoto" name="passportPhoto" accept=".jpg,.jpeg,.png" required>
                                     <div class="file-upload-design">
                                         <i class="fas fa-cloud-upload-alt"></i>
                                         <span>Click to upload or drag and drop</span>
@@ -251,6 +304,26 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // File upload visual feedback — show green "has-file" state when a file is chosen
+        document.querySelectorAll('.file-upload-wrapper input[type="file"]').forEach(function(input) {
+            input.addEventListener('change', function() {
+                var wrapper = this.closest('.file-upload-wrapper');
+                var designSpan = wrapper.querySelector('.file-upload-design span');
+                var icon = wrapper.querySelector('.file-upload-design i');
+                if (this.files && this.files.length > 0) {
+                    wrapper.classList.add('has-file');
+                    icon.className = 'fas fa-check-circle';
+                    designSpan.textContent = this.files[0].name;
+                } else {
+                    wrapper.classList.remove('has-file');
+                    icon.className = 'fas fa-cloud-upload-alt';
+                    designSpan.textContent = 'Click to upload or drag and drop';
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>
