@@ -1022,10 +1022,10 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // --- DIPLOMA PROGRAMS ACCORDION TOGGLE ---
-    window.toggleDiplomaSection = function () {
-        const body = document.getElementById('diploma-section');
-        const btn = document.getElementById('diplomaToggleBtn');
+    // --- ACCORDION TOGGLE ---
+    window.toggleAccordion = function (type) {
+        const body = document.getElementById(`${type}-body`);
+        const btn = document.querySelector(`button[onclick="toggleAccordion('${type}')"]`);
         if (!body || !btn) return;
 
         const isOpen = body.classList.contains('is-open');
@@ -1035,16 +1035,12 @@ document.addEventListener('DOMContentLoaded', function () {
             body.classList.remove('is-open');
             btn.setAttribute('aria-expanded', 'false');
             body.setAttribute('aria-hidden', 'true');
-            // Update subtitle text
-            const small = btn.querySelector('.diploma-toggle-text small');
-            if (small) small.textContent = '5 Courses \u2014 Click to expand';
         } else {
             // Open it
             body.classList.add('is-open');
             btn.setAttribute('aria-expanded', 'true');
             body.setAttribute('aria-hidden', 'false');
-            const small = btn.querySelector('.diploma-toggle-text small');
-            if (small) small.textContent = '5 Courses \u2014 Click to collapse';
+            
             // Smooth scroll to accordion
             setTimeout(function () {
                 const header = document.querySelector('.main-header');
@@ -1055,17 +1051,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // Open diploma accordion if URL hash is #diploma on load
+    // Open specific accordion if URL hash matches on load
     (function () {
-        if (window.location.hash.toLowerCase() === '#diploma') {
-            const body = document.getElementById('diploma-section');
-            const btn = document.getElementById('diplomaToggleBtn');
+        const hash = window.location.hash.toLowerCase().replace('#', '');
+        if (hash === 'diploma' || hash === 'degree') {
+            const body = document.getElementById(`${hash}-body`);
+            const btn = document.querySelector(`button[onclick="toggleAccordion('${hash}')"]`);
             if (body && btn) {
                 body.classList.add('is-open');
                 btn.setAttribute('aria-expanded', 'true');
                 body.setAttribute('aria-hidden', 'false');
-                const small = btn.querySelector('.diploma-toggle-text small');
-                if (small) small.textContent = '5 Courses \u2014 Click to collapse';
             }
         }
     })();
