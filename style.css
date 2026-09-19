@@ -917,7 +917,8 @@ h6 {
 /* Hero Section (Placeholder) */
 .hero {
     position: relative;
-    height: 600px;
+    min-height: 750px;
+    padding: 4rem 0;
     color: var(--white);
     display: flex;
     align-items: center;
@@ -970,8 +971,8 @@ h6 {
 }
 
 .hero-logo {
-    width: 250px;
-    max-height: 200px;
+    width: 350px;
+    max-height: 250px;
     object-fit: contain;
     margin-top: 3rem;
     margin-bottom: 1.5rem;
