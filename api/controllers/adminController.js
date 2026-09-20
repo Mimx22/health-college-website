@@ -61,17 +61,35 @@ const updateApplicationStatus = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Invalid status value provided' });
         }
 
-        const updatedApp = await Student.findByIdAndUpdate(
-            req.params.id,
-            { admissionStatus: status },
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedApp) {
+        // Spam Protection: Query the current state first
+        const student = await Student.findById(req.params.id);
+        if (!student) {
             return res.status(404).json({ success: false, message: 'Application not found' });
         }
 
-        res.status(200).json(updatedApp);
+        // If the status is the same, do nothing and return immediately (avoids duplicate emails)
+        if (student.admissionStatus === status) {
+            return res.status(200).json(student);
+        }
+
+        student.admissionStatus = status;
+        const updatedApp = await student.save();
+
+        // Send Email Notification
+        const { sendApprovalEmail, sendRejectionEmail } = require('../utils/emailService');
+        let emailSent = false;
+        
+        if (status === 'Approved') {
+            emailSent = await sendApprovalEmail(updatedApp.email, updatedApp.fullName, updatedApp.applicationNumber, updatedApp.program);
+        } else if (status === 'Rejected') {
+            emailSent = await sendRejectionEmail(updatedApp.email, updatedApp.fullName, updatedApp.applicationNumber);
+        }
+
+        // We convert to lean-like object to append emailSent flag cleanly
+        const responseApp = updatedApp.toObject();
+        responseApp.emailSent = emailSent;
+
+        res.status(200).json(responseApp);
     } catch (error) {
         next(error);
     }

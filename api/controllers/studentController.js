@@ -113,11 +113,16 @@ const registerStudent = async (req, res, next) => {
 
         await student.save();
 
-        // 7. Return Clean Success Response
+        // 7. Send Confirmation Email (Do not await tightly to avoid failing response if SMTP is down, but we will await to log it or handle cleanly)
+        const { sendConfirmationEmail } = require('../utils/emailService');
+        const emailSent = await sendConfirmationEmail(email, fullName, applicationNumber);
+
+        // 8. Return Clean Success Response
         res.status(201).json({
             success: true,
             message: 'Application submitted successfully.',
-            applicationNumber
+            applicationNumber,
+            emailSent
         });
 
     } catch (error) {
