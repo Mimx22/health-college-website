@@ -1,5 +1,6 @@
 const Student = require('../models/Student');
 const fs = require('fs');
+const { isValidMagicBytes } = require('../utils/magicBytes');
 
 // Helper to clean up uploaded files on error
 const cleanupFiles = (files) => {
@@ -44,6 +45,14 @@ const registerStudent = async (req, res, next) => {
         if (!req.files || req.files.length !== 6) {
             cleanupFiles(req.files);
             return res.status(400).json({ success: false, message: 'Exactly 6 documents are required.' });
+        }
+
+        // 1.5. Magic Byte Validation
+        for (const file of req.files) {
+            if (!isValidMagicBytes(file.path, file.mimetype)) {
+                cleanupFiles(req.files);
+                return res.status(400).json({ success: false, message: `File ${file.originalname} failed signature validation. Ensure it is a valid PDF, JPG, or PNG.` });
+            }
         }
 
         // 2. Extract and Validate Input Fields

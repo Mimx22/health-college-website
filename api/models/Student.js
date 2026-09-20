@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 
+function arrayLimit(val) {
+  return val.length === 6;
+}
+
 const documentSchema = new mongoose.Schema({
     originalName: { type: String, required: true },
     storedName: { type: String, required: true },
@@ -38,7 +42,10 @@ const studentSchema = new mongoose.Schema({
         sparse: true, // in case there are records without it before it's assigned
         index: true
     },
-    documents: [documentSchema],
+    documents: {
+        type: [documentSchema],
+        validate: [arrayLimit, '{PATH} must have exactly 6 documents']
+    },
     admissionStatus: {
         type: String,
         enum: ['Pending', 'Approved', 'Rejected'],
