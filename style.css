@@ -5,9 +5,9 @@
 
 :root {
     /* Colors */
-    --primary-color: #00a8e8;
+    --primary-color: #0d47a1;
     /* Professional Light Blue */
-    --primary-dark: #007ea7;
+    --primary-dark: #002171;
     --primary-light: #e3f2fd;
     --green-primary: #e53935;
     /* Medical Red - Now Accent */
@@ -445,7 +445,7 @@ h6 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 168, 232, 0.75);
+    background: rgba(13, 71, 161, 0.75);
     z-index: 1;
 }
 
@@ -669,7 +669,7 @@ h6 {
     outline: none;
     border-color: var(--primary-color);
     background-color: var(--white);
-    box-shadow: 0 0 0 4px rgba(0, 168, 232, 0.1);
+    box-shadow: 0 0 0 4px rgba(13, 71, 161, 0.1);
 }
 
 .label-info {
@@ -747,7 +747,7 @@ h6 {
 .file-upload-wrapper:hover .file-upload-design {
     border-color: var(--primary-color);
     color: var(--primary-color);
-    background-color: rgba(0, 168, 232, 0.05);
+    background-color: rgba(13, 71, 161, 0.05);
 }
 
 .file-upload-design i {
@@ -1414,7 +1414,7 @@ h6 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 168, 232, 0.75);
+    background: rgba(13, 71, 161, 0.75);
     z-index: 1;
 }
 
@@ -2909,7 +2909,7 @@ h6 {
     align-items: center;
     gap: 0.75rem;
     background: var(--primary-light);
-    border: 1.5px solid rgba(0, 168, 232, 0.2);
+    border: 1.5px solid rgba(13, 71, 161, 0.2);
     border-radius: 10px;
     padding: 0.9rem 1.1rem;
     font-weight: 600;
@@ -2930,7 +2930,7 @@ h6 {
 
 .requirements-list li:hover {
     border-color: var(--primary-color);
-    box-shadow: 0 4px 12px rgba(0, 168, 232, 0.15);
+    box-shadow: 0 4px 12px rgba(13, 71, 161, 0.15);
     transform: translateY(-2px);
 }
 
@@ -3024,7 +3024,7 @@ h6 {
 .form-group input[type="tel"]:focus,
 .form-group select:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(0, 168, 232, 0.12);
+    box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.12);
 }
 
 .form-group select {
@@ -3118,12 +3118,12 @@ h6 {
     border: none;
     cursor: pointer;
     transition: var(--transition);
-    box-shadow: 0 4px 15px rgba(0, 168, 232, 0.35);
+    box-shadow: 0 4px 15px rgba(13, 71, 161, 0.35);
 }
 
 .submit-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 168, 232, 0.45);
+    box-shadow: 0 8px 24px rgba(13, 71, 161, 0.45);
 }
 
 .submit-btn:active {
