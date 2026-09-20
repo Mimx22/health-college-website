@@ -77,4 +77,39 @@ const updateApplicationStatus = async (req, res, next) => {
     }
 };
 
-module.exports = { loginAdmin, getApplications, updateApplicationStatus };
+const path = require('path');
+const fs = require('fs');
+
+const downloadDocument = async (req, res, next) => {
+    try {
+        const { id, docIndex } = req.params;
+        
+        // Find the application
+        const student = await Student.findById(id);
+        if (!student) {
+            return res.status(404).json({ success: false, message: 'Application not found' });
+        }
+
+        // Validate index
+        const index = parseInt(docIndex, 10);
+        if (isNaN(index) || index < 0 || !student.documents || index >= student.documents.length) {
+            return res.status(404).json({ success: false, message: 'Document not found' });
+        }
+
+        const doc = student.documents[index];
+        const filePath = path.resolve(doc.storagePath);
+
+        // Verify the physical file exists
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ success: false, message: 'Physical file is missing from the server' });
+        }
+
+        // Send the file
+        res.set('Content-Type', doc.mimeType);
+        res.sendFile(filePath);
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { loginAdmin, getApplications, updateApplicationStatus, downloadDocument };

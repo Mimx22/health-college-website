@@ -513,21 +513,22 @@ document.addEventListener('DOMContentLoaded', function () {
         if (docs.length === 0) {
             docsList.innerHTML = '<p style="color:var(--text-light); text-align:center; padding:2rem;">No documents uploaded for this application.</p>';
         } else {
-            docsList.innerHTML = docs.map(function(docUrl, i) {
+            docsList.innerHTML = docs.map(function(doc, i) {
                 const label = DOC_LABELS[i] || ('Document ' + (i + 1));
-                const ext = docUrl.split('.').pop().toLowerCase();
-                const isImage = ['jpg','jpeg','png','gif','webp'].includes(ext);
-                const isPdf   = ext === 'pdf';
+                const originalName = doc.originalName || '';
+                const mimeType = doc.mimeType || '';
+                const isImage = mimeType.startsWith('image/');
+                const isPdf   = mimeType === 'application/pdf';
                 const icon    = isPdf ? 'fa-file-pdf' : isImage ? 'fa-file-image' : 'fa-file';
                 return `
                     <div class="doc-item">
-                        <div class="doc-item-info">
+                        <div class="doc-item-info" title="${originalName}">
                             <i class="fas ${icon} doc-icon"></i>
                             <span class="doc-label">${label}</span>
                         </div>
-                        <a href="${docUrl}" target="_blank" class="btn btn-sm btn-approve doc-download-btn">
+                        <button onclick="fetchSecureDocument('${app._id}', ${i}, '${originalName}')" class="btn btn-sm btn-approve doc-download-btn">
                             <i class="fas fa-external-link-alt"></i> Open
-                        </a>
+                        </button>
                     </div>
                 `;
             }).join('');
@@ -535,6 +536,45 @@ document.addEventListener('DOMContentLoaded', function () {
 
         modal.style.display = 'flex';
         setTimeout(() => modal.classList.add('active'), 10);
+    };
+
+    window.fetchSecureDocument = async function(appId, docIndex, fileName) {
+        const token = localStorage.getItem('jmc_token');
+        if (!token) {
+            showToast('Unauthorized. Please login again.', 'error');
+            return;
+        }
+        
+        try {
+            showToast('Opening document...', 'success');
+            const response = await fetch(`${API_BASE_URL}/admin/applications/${appId}/documents/${docIndex}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (!response.ok) {
+                if (response.status === 404) showToast('Document file is missing from server.', 'error');
+                else showToast('Failed to load document.', 'error');
+                return;
+            }
+
+            const blob = await response.blob();
+            const objectUrl = URL.createObjectURL(blob);
+            
+            // Open in new tab
+            const newTab = window.open(objectUrl, '_blank');
+            if (!newTab) {
+                showToast('Popup blocked! Please allow popups for this site.', 'error');
+            }
+            
+            // Optional cleanup (revoke after a short delay so the new tab can load it)
+            setTimeout(() => URL.revokeObjectURL(objectUrl), 10000);
+        } catch (error) {
+            console.error('Error fetching document:', error);
+            showToast('Network error while opening document.', 'error');
+        }
     };
 
     window.closeDocsModal = function() {
