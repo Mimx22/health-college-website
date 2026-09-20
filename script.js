@@ -1030,8 +1030,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const password = document.getElementById('adminPassword').value;
 
             try {
-                // Reuse student login endpoint as it returns role 'admin'
-                const response = await fetch(`${API_BASE_URL}/students/login`, {
+                // Use dedicated admin login endpoint
+                const response = await fetch(`${API_BASE_URL}/admin/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
