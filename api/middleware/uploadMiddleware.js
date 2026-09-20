@@ -23,6 +23,12 @@ const storage = multer.diskStorage({
 
 // File validation
 const fileFilter = (req, file, cb) => {
+    // Explicitly reject dangerous extensions anywhere in the filename
+    const dangerousExtensions = /\.(exe|sh|bat|cmd|php|js|html|htm|py|pl|rb)$/i;
+    if (dangerousExtensions.test(file.originalname)) {
+        return cb(new Error('Dangerous file types are not allowed!'));
+    }
+
     const filetypes = /jpg|jpeg|png|pdf/;
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = filetypes.test(file.mimetype);
