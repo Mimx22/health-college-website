@@ -1414,7 +1414,7 @@ h6 {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 168, 232, 0.75);
     z-index: 1;
 }
 
@@ -1652,7 +1652,7 @@ h6 {
 /* Mission & Vision Section */
 .about-mission-vision {
     padding: 6rem 0;
-    background: linear-gradient(135deg, #007ea7 0%, #00a8e8 100%);
+    background: #2d3748; /* Dark slate gray, away from primary blue */
     color: var(--white);
 }
 
