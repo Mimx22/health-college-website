@@ -106,19 +106,54 @@
             </div>
         </section>
 
-        <section class="section-home text-center"
-            style="min-height: 50vh; display: flex; align-items: center; justify-content: center;">
+        <section class="gallery-section section-home">
             <div class="container">
-                <i class="fas fa-hammer"
-                    style="font-size: 4rem; color: var(--green-primary); margin-bottom: 1.5rem;"></i>
-                <h2>Coming Soon</h2>
-                <p style="max-width: 600px; margin: 1rem auto; font-size: 1.1rem; color: var(--text-light);">
-                    We are currently building an immersive gallery experience to showcase the vibrant campus life,
-                    academic milestones, and events at Jos Medical College. Please check back later!
-                </p>
-                <a href="index.html" class="btn btn-primary" style="margin-top: 1.5rem;">Return to Homepage</a>
+                <div class="masonry-grid" id="gallery-grid">
+                    <div class="gallery-item">
+                        <img src="assets/goverment1.jpeg" alt="Gallery Image 1" class="gallery-img">
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/government2.jpeg" alt="Gallery Image 2" class="gallery-img">
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/government3.jpeg" alt="Gallery Image 3" class="gallery-img">
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/government4.jpeg" alt="Gallery Image 4" class="gallery-img">
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/hero_content1.jpeg" alt="Gallery Image 5" class="gallery-img">
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/hero_content2.jpg" alt="Gallery Image 6" class="gallery-img">
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/hero_content3.jpg" alt="Gallery Image 7" class="gallery-img">
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="assets/contact-image.jpeg" alt="Gallery Image 8" class="gallery-img">
+                        <div class="gallery-overlay"><i class="fas fa-search-plus"></i></div>
+                    </div>
+                </div>
             </div>
         </section>
+
+        <!-- Lightbox -->
+        <div class="lightbox" id="lightbox">
+            <span class="lightbox-close" id="lightbox-close">&times;</span>
+            <div class="lightbox-content-wrapper">
+                <button class="lightbox-nav prev" id="lightbox-prev"><i class="fas fa-chevron-left"></i></button>
+                <img class="lightbox-img" id="lightbox-img" src="" alt="Lightbox Image">
+                <button class="lightbox-nav next" id="lightbox-next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
     </main>
 
     <footer class="main-footer">

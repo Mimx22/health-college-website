@@ -1209,3 +1209,65 @@ document.addEventListener('DOMContentLoaded', function () {
     })();
 });
 
+
+/* --------------------------------- */
+/* Gallery Lightbox Logic */
+/* --------------------------------- */
+document.addEventListener('DOMContentLoaded', () => {
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxClose = document.getElementById('lightbox-close');
+    const lightboxPrev = document.getElementById('lightbox-prev');
+    const lightboxNext = document.getElementById('lightbox-next');
+
+    if (galleryItems.length > 0 && lightbox) {
+        let currentIndex = 0;
+        const images = Array.from(galleryItems).map(item => item.querySelector('.gallery-img').src);
+
+        function openLightbox(index) {
+            currentIndex = index;
+            lightboxImg.src = images[currentIndex];
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function showNext() {
+            currentIndex = (currentIndex + 1) % images.length;
+            lightboxImg.src = images[currentIndex];
+        }
+
+        function showPrev() {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            lightboxImg.src = images[currentIndex];
+        }
+
+        galleryItems.forEach((item, index) => {
+            item.addEventListener('click', () => openLightbox(index));
+        });
+
+        lightboxClose.addEventListener('click', closeLightbox);
+        lightboxNext.addEventListener('click', showNext);
+        lightboxPrev.addEventListener('click', showPrev);
+
+        // Close when clicking outside image
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox || e.target.classList.contains('lightbox-content-wrapper')) {
+                closeLightbox();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') showNext();
+            if (e.key === 'ArrowLeft') showPrev();
+        });
+    }
+});
