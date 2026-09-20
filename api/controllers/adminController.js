@@ -1,4 +1,5 @@
 const Admin = require('../models/Admin');
+const Student = require('../models/Student');
 const jwt = require('jsonwebtoken');
 
 // Generate JWT token
@@ -36,8 +37,16 @@ const loginAdmin = async (req, res, next) => {
 
 const getApplications = async (req, res, next) => {
     try {
-        // Implementation goes here
-        res.status(200).json({ success: true, message: 'Get applications endpoint placeholder' });
+        // Fetch all applications, newest first
+        const apps = await Student.find({}).sort({ createdAt: -1 }).lean();
+        
+        // Map createdAt to dateApplied for frontend compatibility
+        const mappedApps = apps.map(app => ({
+            ...app,
+            dateApplied: app.createdAt
+        }));
+
+        res.status(200).json(mappedApps);
     } catch (error) {
         next(error);
     }
@@ -45,8 +54,24 @@ const getApplications = async (req, res, next) => {
 
 const updateApplicationStatus = async (req, res, next) => {
     try {
-        // Implementation goes here
-        res.status(200).json({ success: true, message: 'Update application status endpoint placeholder' });
+        const { status } = req.body;
+        const validStatuses = ['Pending', 'Approved', 'Rejected'];
+
+        if (!status || !validStatuses.includes(status)) {
+            return res.status(400).json({ success: false, message: 'Invalid status value provided' });
+        }
+
+        const updatedApp = await Student.findByIdAndUpdate(
+            req.params.id,
+            { admissionStatus: status },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedApp) {
+            return res.status(404).json({ success: false, message: 'Application not found' });
+        }
+
+        res.status(200).json(updatedApp);
     } catch (error) {
         next(error);
     }
