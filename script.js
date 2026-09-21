@@ -1068,6 +1068,12 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             const email = document.getElementById('adminEmail').value.trim();
             const password = document.getElementById('adminPassword').value;
+            const submitBtn = adminLoginForm.querySelector('button[type="submit"]');
+
+            // --- Loading State ON ---
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+            submitBtn.disabled = true;
 
             try {
                 // Use dedicated admin login endpoint
@@ -1076,6 +1082,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email, password })
                 });
+
+                // Check if Vercel returned an HTML error page (like a 500 or 504 Gateway Timeout)
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") === -1) {
+                    throw new Error("Server returned an invalid response. This usually means your MongoDB IP is not whitelisted to allow Vercel, causing a crash.");
+                }
 
                 const data = await response.json();
 
@@ -1093,7 +1105,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             } catch (err) {
                 console.error('Admin Login Error:', err);
-                showToast(`Connection error: ${err.message || 'Check your internet'}.`, 'error');
+                showToast(`Error: ${err.message || 'Check your internet'}.`, 'error');
+            } finally {
+                // --- Loading State OFF ---
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
             }
         });
     }
