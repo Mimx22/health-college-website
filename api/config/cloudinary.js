@@ -14,6 +14,7 @@ const storage = new CloudinaryStorage({
         folder: 'jos_medical_college_applications',
         resource_type: 'auto', // Allows non-image files like PDFs
         allowed_formats: ['jpg', 'jpeg', 'png', 'pdf'],
+        type: 'private' // Ensures files are not publicly accessible without authentication
     },
 });
 

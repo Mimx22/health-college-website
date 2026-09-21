@@ -1,31 +1,34 @@
-const rateLimitMap = new Map();
-
-// Cleans up old entries every hour to prevent memory leaks
-setInterval(() => {
-    rateLimitMap.clear();
-}, 60 * 60 * 1000);
+const RateLimit = require('../models/RateLimit');
 
 const rateLimiter = (maxRequests, windowMs = 15 * 60 * 1000) => {
-    return (req, res, next) => {
-        const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        const now = Date.now();
-        const endpoint = req.originalUrl;
-        const key = `${clientIp}_${endpoint}`;
+    return async (req, res, next) => {
+        try {
+            const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+            const endpoint = req.originalUrl;
+            const key = `${clientIp}_${endpoint}`;
 
-        if (rateLimitMap.has(key)) {
-            const clientData = rateLimitMap.get(key);
-            if (now - clientData.startTime < windowMs) {
-                if (clientData.count >= maxRequests) {
+            // Find existing rate limit record
+            const record = await RateLimit.findOne({ key });
+
+            if (record) {
+                if (record.count >= maxRequests) {
                     return res.status(429).json({ success: false, message: 'Too many requests. Please try again later.' });
                 }
-                clientData.count++;
+                
+                // Increment count
+                record.count += 1;
+                await record.save();
             } else {
-                rateLimitMap.set(key, { count: 1, startTime: now });
+                // Create new record
+                await RateLimit.create({ key, count: 1 });
             }
-        } else {
-            rateLimitMap.set(key, { count: 1, startTime: now });
+
+            next();
+        } catch (error) {
+            console.error('Rate Limiter Error:', error);
+            // In case of DB error, let the request through rather than crashing the endpoint
+            next();
         }
-        next();
     };
 };
 
