@@ -15,7 +15,7 @@ const getApiBaseUrl = () => {
     }
 
     // Default to the production URL for everything else (Vercel Backend)
-    return 'https://jos-medical-college-api.vercel.app/api';
+    return 'https://health-college-website-4bp667pqz-mimx22s-projects.vercel.app/api';
 };
 
 const API_BASE_URL = getApiBaseUrl();
