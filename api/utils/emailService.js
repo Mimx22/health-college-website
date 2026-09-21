@@ -96,8 +96,40 @@ const sendRejectionEmail = async (toEmail, fullName, applicationNumber) => {
     }
 };
 
+const sendContactEmail = async (fullName, email, phone, subject, message) => {
+    try {
+        const transporter = createTransporter();
+        const html = `
+            <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                <h2 style="color: #0b2046;">New Contact Form Message</h2>
+                <p><strong>Name:</strong> ${fullName}</p>
+                <p><strong>Email:</strong> ${email}</p>
+                <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+                <p><strong>Subject:</strong> ${subject}</p>
+                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                <p><strong>Message:</strong></p>
+                <p style="white-space: pre-wrap; background: #f9f9f9; padding: 15px; border-radius: 5px;">${message}</p>
+            </div>
+        `;
+        
+        await transporter.sendMail({
+            from: process.env.SMTP_FROM,
+            to: process.env.CONTACT_RECIPIENT_EMAIL,
+            replyTo: email,
+            subject: `Contact Form: ${subject}`,
+            html
+        });
+        console.log(`Contact email sent from ${email}`);
+        return true;
+    } catch (error) {
+        console.error('Failed to send contact email:', error.message);
+        return false;
+    }
+};
+
 module.exports = {
     sendConfirmationEmail,
     sendApprovalEmail,
-    sendRejectionEmail
+    sendRejectionEmail,
+    sendContactEmail
 };

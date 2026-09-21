@@ -112,8 +112,34 @@
                 <!-- Contact Image and Info Grid -->
                 <div class="contact-layout">
                     <!-- Contact Image -->
-                    <div class="contact-image-wrapper">
-                        <img src="assets/contact-image.jpeg" alt="Contact Medical Career College" class="contact-image">
+                    <!-- Contact Form -->
+                    <div class="contact-form-container" style="background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                        <h2 style="margin-bottom: 1.5rem; color: var(--primary-color);">Send Us a Message</h2>
+                        <form id="contactForm" class="contact-form" style="display: flex; flex-direction: column; gap: 1rem;">
+                            <div class="form-group">
+                                <label for="contactFullName">Full Name *</label>
+                                <input type="text" id="contactFullName" name="fullName" required style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 6px; font-family: inherit;">
+                            </div>
+                            <div class="form-group">
+                                <label for="contactEmail">Email Address *</label>
+                                <input type="email" id="contactEmail" name="email" required style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 6px; font-family: inherit;">
+                            </div>
+                            <div class="form-group">
+                                <label for="contactPhone">Phone Number</label>
+                                <input type="tel" id="contactPhone" name="phone" style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 6px; font-family: inherit;">
+                            </div>
+                            <div class="form-group">
+                                <label for="contactSubject">Subject *</label>
+                                <input type="text" id="contactSubject" name="subject" required style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 6px; font-family: inherit;">
+                            </div>
+                            <div class="form-group">
+                                <label for="contactMessage">Message *</label>
+                                <textarea id="contactMessage" name="message" rows="5" required style="width: 100%; padding: 0.8rem; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; resize: vertical;"></textarea>
+                            </div>
+                            <button type="submit" id="submitContactBtn" class="btn btn-primary" style="padding: 1rem; border: none; border-radius: 6px; background-color: var(--primary-color); color: white; font-weight: 600; cursor: pointer; transition: opacity 0.3s;">
+                                Send Message
+                            </button>
+                        </form>
                     </div>
 
                     <!-- Contact Information Card -->
