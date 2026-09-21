@@ -24,11 +24,9 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Routes
-app.use('/api/health', healthRoutes);
-app.use('/api/students', studentRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/contact', contactRoutes);
+// Serve static frontend files (HTML, CSS, JS, images, uploads)
+const path = require('path');
+app.use(express.static(path.join(__dirname, '..')));
 
 // Error Handling Middleware
 app.use(notFound);

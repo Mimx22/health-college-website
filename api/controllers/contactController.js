@@ -1,4 +1,5 @@
 const { sendContactEmail } = require('../utils/emailService');
+const Contact = require('../models/Contact');
 
 // Helper to escape HTML to prevent injection
 const escapeHTML = (str) => {
@@ -44,15 +45,34 @@ const submitContactForm = async (req, res, next) => {
         const safeMessage = escapeHTML(message);
         const safeSubject = escapeHTML(subject);
 
-        // 2. Send Email
-        const emailSent = await sendContactEmail(fullName, email, phone, safeSubject, safeMessage);
+        // 2. Save Contact Message to MongoDB Fallback Database
+        const contactDoc = await Contact.create({
+            fullName,
+            email,
+            phone,
+            subject: safeSubject,
+            message: safeMessage,
+            emailSent: false
+        });
 
-        if (!emailSent) {
-            // Do NOT leak SMTP errors. Return 500 cleanly.
-            return res.status(500).json({ success: false, message: 'Failed to send message. Please try again later.' });
+        // 3. Attempt Email Dispatch via SMTP
+        let emailSent = false;
+        try {
+            emailSent = await sendContactEmail(fullName, email, phone, safeSubject, safeMessage);
+            if (emailSent) {
+                contactDoc.emailSent = true;
+                await contactDoc.save();
+            }
+        } catch (emailErr) {
+            console.error('Contact email dispatch failed:', emailErr.message);
         }
 
-        res.status(200).json({ success: true, message: 'Your message has been sent successfully!' });
+        // Return success response to user (message is safely recorded in database)
+        res.status(200).json({ 
+            success: true, 
+            message: 'Your message has been received! We will get back to you shortly.',
+            emailSent
+        });
 
     } catch (error) {
         next(error);

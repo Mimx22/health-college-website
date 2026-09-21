@@ -95,7 +95,8 @@ const updateApplicationStatus = async (req, res, next) => {
     }
 };
 
-const https = require('https');
+const path = require('path');
+const fs = require('fs');
 
 const downloadDocument = async (req, res, next) => {
     try {
@@ -114,22 +115,16 @@ const downloadDocument = async (req, res, next) => {
         }
 
         const doc = student.documents[index];
-        const fileUrl = doc.storagePath; // Cloudinary secure URL
+        const filePath = doc.storagePath; // Local path from multer disk storage
+        
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ success: false, message: 'Document file is missing from server storage' });
+        }
 
-        // Proxy the file from Cloudinary to the Admin securely
-        https.get(fileUrl, (proxyRes) => {
-            if (proxyRes.statusCode !== 200) {
-                return res.status(proxyRes.statusCode).json({ success: false, message: 'Failed to fetch document from cloud storage' });
+        res.download(filePath, doc.originalName, (err) => {
+            if (err) {
+                console.error("Error downloading file:", err);
             }
-            
-            res.set('Content-Type', doc.mimeType);
-            // We set Content-Disposition inline to allow viewing in browser
-            res.set('Content-Disposition', `inline; filename="${doc.originalName}"`);
-            
-            proxyRes.pipe(res);
-        }).on('error', (err) => {
-            console.error('Error fetching document from Cloudinary:', err);
-            res.status(500).json({ success: false, message: 'Server error while fetching document' });
         });
 
     } catch (error) {
@@ -137,4 +132,15 @@ const downloadDocument = async (req, res, next) => {
     }
 };
 
-module.exports = { loginAdmin, getApplications, updateApplicationStatus, downloadDocument };
+const Contact = require('../models/Contact');
+
+const getContactMessages = async (req, res, next) => {
+    try {
+        const messages = await Contact.find({}).sort({ createdAt: -1 }).lean();
+        res.status(200).json(messages);
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { loginAdmin, getApplications, updateApplicationStatus, downloadDocument, getContactMessages };

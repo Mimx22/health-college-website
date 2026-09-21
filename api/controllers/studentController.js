@@ -1,16 +1,16 @@
 const Student = require('../models/Student');
-const { cloudinary } = require('../config/cloudinary');
+const fs = require('fs');
 
-// Helper to clean up uploaded files on error from Cloudinary
+// Helper to clean up uploaded files on error from local storage
 const cleanupFiles = async (files) => {
     if (!files || !Array.isArray(files)) return;
     for (const file of files) {
         try {
-            if (file.filename) {
-                await cloudinary.uploader.destroy(file.filename);
+            if (file.path && fs.existsSync(file.path)) {
+                fs.unlinkSync(file.path);
             }
         } catch (err) {
-            console.error(`Failed to delete file from Cloudinary ${file.filename}:`, err);
+            console.error(`Failed to delete local file ${file.filename}:`, err);
         }
     }
 };
