@@ -1,19 +1,18 @@
 const Student = require('../models/Student');
-const fs = require('fs');
-const { isValidMagicBytes } = require('../utils/magicBytes');
+const { cloudinary } = require('../config/cloudinary');
 
-// Helper to clean up uploaded files on error
-const cleanupFiles = (files) => {
+// Helper to clean up uploaded files on error from Cloudinary
+const cleanupFiles = async (files) => {
     if (!files || !Array.isArray(files)) return;
-    files.forEach(file => {
-        if (fs.existsSync(file.path)) {
-            try {
-                fs.unlinkSync(file.path);
-            } catch (err) {
-                console.error(`Failed to delete file ${file.path}:`, err);
+    for (const file of files) {
+        try {
+            if (file.filename) {
+                await cloudinary.uploader.destroy(file.filename);
             }
+        } catch (err) {
+            console.error(`Failed to delete file from Cloudinary ${file.filename}:`, err);
         }
-    });
+    }
 };
 
 const generateApplicationNumber = async () => {
@@ -43,17 +42,11 @@ const registerStudent = async (req, res, next) => {
     try {
         // 1. Exactly 6 Documents Validation
         if (!req.files || req.files.length !== 6) {
-            cleanupFiles(req.files);
+            await cleanupFiles(req.files);
             return res.status(400).json({ success: false, message: 'Exactly 6 documents are required.' });
         }
 
-        // 1.5. Magic Byte Validation
-        for (const file of req.files) {
-            if (!isValidMagicBytes(file.path, file.mimetype)) {
-                cleanupFiles(req.files);
-                return res.status(400).json({ success: false, message: `File ${file.originalname} failed signature validation. Ensure it is a valid PDF, JPG, or PNG.` });
-            }
-        }
+        // Note: Magic byte validation is now handled automatically by Cloudinary's allowed_formats and resource type checks.
 
         // 2. Extract and Validate Input Fields
         let { fullName, email, phone, program } = req.body;
@@ -64,27 +57,27 @@ const registerStudent = async (req, res, next) => {
         program = program ? program.trim() : '';
 
         if (!fullName) {
-            cleanupFiles(req.files);
+            await cleanupFiles(req.files);
             return res.status(400).json({ success: false, message: 'Full name is required.' });
         }
         if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-            cleanupFiles(req.files);
+            await cleanupFiles(req.files);
             return res.status(400).json({ success: false, message: 'A valid email is required.' });
         }
         // Basic reasonable Nigerian phone validation, length >= 10
         if (!phone || phone.length < 10) {
-            cleanupFiles(req.files);
+            await cleanupFiles(req.files);
             return res.status(400).json({ success: false, message: 'A valid phone number is required.' });
         }
         if (!program) {
-            cleanupFiles(req.files);
+            await cleanupFiles(req.files);
             return res.status(400).json({ success: false, message: 'Program is required.' });
         }
 
         // 3. Duplicate Application Policy
         const existingStudent = await Student.findOne({ email, admissionStatus: 'Pending' });
         if (existingStudent) {
-            cleanupFiles(req.files);
+            await cleanupFiles(req.files);
             return res.status(409).json({ success: false, message: 'An application with this email is already pending.' });
         }
 
@@ -127,7 +120,7 @@ const registerStudent = async (req, res, next) => {
 
     } catch (error) {
         // Transaction safety: if saving fails, cleanup uploaded files
-        cleanupFiles(req.files);
+        await cleanupFiles(req.files);
         next(error);
     }
 };

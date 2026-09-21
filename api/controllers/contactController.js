@@ -1,8 +1,5 @@
 const { sendContactEmail } = require('../utils/emailService');
 
-// Simple in-memory rate limiter for the contact endpoint
-const rateLimitMap = new Map();
-
 // Helper to escape HTML to prevent injection
 const escapeHTML = (str) => {
     return str.replace(/[&<>'"]/g, 
@@ -18,29 +15,6 @@ const escapeHTML = (str) => {
 
 const submitContactForm = async (req, res, next) => {
     try {
-        const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        const now = Date.now();
-        
-        // Rate Limiting (5 requests per 15 mins per IP)
-        if (rateLimitMap.has(clientIp)) {
-            const clientData = rateLimitMap.get(clientIp);
-            if (now - clientData.startTime < 15 * 60 * 1000) {
-                if (clientData.count >= 5) {
-                    return res.status(429).json({ success: false, message: 'Too many requests. Please try again later.' });
-                }
-                clientData.count++;
-            } else {
-                // Reset limit after 15 mins
-                rateLimitMap.set(clientIp, { count: 1, startTime: now });
-            }
-        } else {
-            rateLimitMap.set(clientIp, { count: 1, startTime: now });
-        }
-
-        // Clean up old entries (optional, prevents memory leak if running indefinitely)
-        if (rateLimitMap.size > 1000) {
-            rateLimitMap.clear();
-        }
 
         // 1. Extract and Validate Input
         let { fullName, email, phone, subject, message } = req.body;

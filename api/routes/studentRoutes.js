@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middleware/uploadMiddleware');
+const { uploadCloudinary } = require('../config/cloudinary');
+const rateLimiter = require('../middleware/rateLimiter');
 const { registerStudent, loginStudent } = require('../controllers/studentController');
 
-// Multer configured to accept up to 6 files under the field 'documents'
-router.post('/register', upload.array('documents', 6), registerStudent);
-router.post('/login', loginStudent);
+// Multer configured to accept up to 6 files, using Cloudinary storage
+// Rate limit: Max 5 applications per 15 minutes per IP
+router.post('/register', rateLimiter(5), uploadCloudinary.array('documents', 6), registerStudent);
+router.post('/login', rateLimiter(10), loginStudent);
 
 module.exports = router;

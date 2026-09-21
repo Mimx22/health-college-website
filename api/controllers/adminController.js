@@ -95,8 +95,7 @@ const updateApplicationStatus = async (req, res, next) => {
     }
 };
 
-const path = require('path');
-const fs = require('fs');
+const https = require('https');
 
 const downloadDocument = async (req, res, next) => {
     try {
@@ -115,16 +114,24 @@ const downloadDocument = async (req, res, next) => {
         }
 
         const doc = student.documents[index];
-        const filePath = path.resolve(doc.storagePath);
+        const fileUrl = doc.storagePath; // Cloudinary secure URL
 
-        // Verify the physical file exists
-        if (!fs.existsSync(filePath)) {
-            return res.status(404).json({ success: false, message: 'Physical file is missing from the server' });
-        }
+        // Proxy the file from Cloudinary to the Admin securely
+        https.get(fileUrl, (proxyRes) => {
+            if (proxyRes.statusCode !== 200) {
+                return res.status(proxyRes.statusCode).json({ success: false, message: 'Failed to fetch document from cloud storage' });
+            }
+            
+            res.set('Content-Type', doc.mimeType);
+            // We set Content-Disposition inline to allow viewing in browser
+            res.set('Content-Disposition', `inline; filename="${doc.originalName}"`);
+            
+            proxyRes.pipe(res);
+        }).on('error', (err) => {
+            console.error('Error fetching document from Cloudinary:', err);
+            res.status(500).json({ success: false, message: 'Server error while fetching document' });
+        });
 
-        // Send the file
-        res.set('Content-Type', doc.mimeType);
-        res.sendFile(filePath);
     } catch (error) {
         next(error);
     }
