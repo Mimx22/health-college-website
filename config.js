@@ -14,8 +14,8 @@ const getApiBaseUrl = () => {
         return 'http://localhost:5000/api';
     }
 
-    // Default to the production URL for everything else (using the current domain)
-    return `${window.location.origin}/api`;
+    // Default to the production URL for everything else (Vercel Backend)
+    return 'https://jos-medical-college-api.vercel.app/api';
 };
 
 const API_BASE_URL = getApiBaseUrl();
