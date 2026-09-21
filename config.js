@@ -14,8 +14,8 @@ const getApiBaseUrl = () => {
         return 'http://localhost:5000/api';
     }
 
-    // Default to the production URL for everything else (Vercel Backend)
-    return 'https://health-college-website-4bp667pqz-mimx22s-projects.vercel.app/api';
+    // Default to the production URL for everything else (Hostafrica Backend)
+    return 'https://medicalcareeracademy.ng/api';
 };
 
 const API_BASE_URL = getApiBaseUrl();
