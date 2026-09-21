@@ -1,5 +1,9 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=public_html
-    - /bin/cp -R * $DEPLOYPATH
+    - export FRONTENDPATH=/home/medicalc/public_html
+    - export BACKENDPATH=/home/medicalc/app
+    - /bin/cp -R assets *.html *.css *.js *.pdf *.jpg $FRONTENDPATH
+    - /bin/cp -R api package.json package-lock.json .env config.js $BACKENDPATH
+    - mkdir -p $BACKENDPATH/tmp
+    - touch $BACKENDPATH/tmp/restart.txt
