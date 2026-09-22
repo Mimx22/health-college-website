@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const Admin = require('../models/Admin');
 
+let lastDbError = null;
+const getLastDbError = () => lastDbError;
+
 const connectDB = async () => {
     try {
         if (!process.env.MONGO_URI) {
@@ -27,9 +30,10 @@ const connectDB = async () => {
         }
 
     } catch (error) {
+        lastDbError = error.message;
         console.error(`Error connecting to MongoDB: ${error.message}`);
-        // Removed process.exit(1) to allow validation testing even if DB is down
     }
 };
 
 module.exports = connectDB;
+module.exports.getLastDbError = getLastDbError;
