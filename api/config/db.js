@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 const Admin = require('../models/Admin');
 
-let lastDbError = null;
-const getLastDbError = () => lastDbError;
+global.__dbError = null;
 
 const connectDB = async () => {
     try {
@@ -30,10 +29,9 @@ const connectDB = async () => {
         }
 
     } catch (error) {
-        lastDbError = error.message;
+        global.__dbError = error.message;
         console.error(`Error connecting to MongoDB: ${error.message}`);
     }
 };
 
 module.exports = connectDB;
-module.exports.getLastDbError = getLastDbError;
