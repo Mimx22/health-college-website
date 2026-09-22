@@ -12,9 +12,6 @@ const contactRoutes = require('./routes/contactRoutes');
 
 const app = express();
 
-// Connect to MongoDB
-connectDB();
-
 // Middleware
 app.use(helmet());
 app.use(cors({
@@ -40,8 +37,13 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-});
+// Connect to MongoDB FIRST, then start the server
+// This ensures no requests are processed before the DB is ready
+(async () => {
+    await connectDB();
+    app.listen(PORT, () => {
+        console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+    });
+})();
 
 module.exports = app;
