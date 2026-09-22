@@ -7,8 +7,7 @@ const connectDB = async () => {
             throw new Error('MONGO_URI is not defined in the environment variables.');
         }
 
-        // Reduced timeout so it fails faster if no DB
-        const conn = await mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 2000 });
+        const conn = await mongoose.connect(process.env.MONGO_URI);
         console.log(`MongoDB Connected: ${conn.connection.host}`);
         
         // Seed default admin if none exists
