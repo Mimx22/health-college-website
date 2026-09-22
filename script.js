@@ -176,22 +176,62 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (span) span.textContent = 'Click to upload or drag and drop';
             }
             
-            // Passport Live Preview Logic
-            if (field.id === 'passportPhoto') {
-                const previewContainer = document.getElementById('passportPreviewContainer');
-                const previewImg = document.getElementById('passportPreviewImg');
-                const previewName = document.getElementById('passportPreviewName');
-                
-                if (this.files && this.files[0]) {
-                    const file = this.files[0];
-                    const url = URL.createObjectURL(file);
-                    if (previewImg) previewImg.src = url;
-                    if (previewName) previewName.textContent = file.name;
-                    if (previewContainer) previewContainer.style.display = 'block';
-                } else {
-                    if (previewContainer) previewContainer.style.display = 'none';
-                    if (previewImg) previewImg.src = '';
+            // Generic Live Preview Logic for ALL file fields
+            let previewContainer = wrapper.nextElementSibling;
+            if (!previewContainer || !previewContainer.classList.contains('document-preview-container')) {
+                previewContainer = document.createElement('div');
+                previewContainer.className = 'document-preview-container';
+                previewContainer.style.display = 'none';
+                previewContainer.innerHTML = `
+                    <div class="passport-preview-card" style="margin-top: 15px; display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--bg-light); border-radius: 8px; border: 1px dashed var(--border-color);">
+                        <img class="preview-img" src="" alt="Preview" style="display:none; max-height: 80px; max-width: 80px; object-fit: cover; border-radius: 6px;">
+                        <i class="preview-icon fas fa-file-pdf" style="font-size: 3rem; color: var(--primary-color); display:none;"></i>
+                        <div class="passport-preview-info">
+                            <div style="display:flex; align-items: center; gap: 5px; margin-bottom: 5px;">
+                                <i class="fas fa-check-circle" style="color:#2ecc71;"></i>
+                                <strong>Document uploaded</strong>
+                            </div>
+                            <p class="preview-name" style="font-size:0.85rem; color:var(--text-light); word-break: break-all; margin: 0;"></p>
+                        </div>
+                    </div>
+                `;
+                if (field.id === 'passportPhoto') {
+                    const infoDiv = previewContainer.querySelector('.passport-preview-info');
+                    const tip = document.createElement('p');
+                    tip.className = 'passport-preview-tip';
+                    tip.style.cssText = 'margin-top: 8px; font-size: 0.8rem; color: var(--text-color);';
+                    tip.innerHTML = '<i class="fas fa-info-circle"></i> Make sure this is a clear photo of your face on a <strong>white background</strong>.';
+                    infoDiv.appendChild(tip);
                 }
+                wrapper.parentNode.insertBefore(previewContainer, wrapper.nextSibling);
+            }
+            
+            const previewImg = previewContainer.querySelector('.preview-img');
+            const previewIcon = previewContainer.querySelector('.preview-icon');
+            const previewName = previewContainer.querySelector('.preview-name');
+            
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                if (previewName) previewName.textContent = file.name;
+                
+                if (file.type.startsWith('image/')) {
+                    const url = URL.createObjectURL(file);
+                    if (previewImg) {
+                        previewImg.src = url;
+                        previewImg.style.display = 'block';
+                    }
+                    if (previewIcon) previewIcon.style.display = 'none';
+                } else {
+                    if (previewImg) {
+                        previewImg.src = '';
+                        previewImg.style.display = 'none';
+                    }
+                    if (previewIcon) previewIcon.style.display = 'block';
+                }
+                previewContainer.style.display = 'block';
+            } else {
+                previewContainer.style.display = 'none';
+                if (previewImg) previewImg.src = '';
             }
         });
     });
