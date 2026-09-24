@@ -9,7 +9,7 @@ const errorHandler = (err, req, res, next) => {
             message = 'Exactly 6 documents are required.';
         } else if (err.code === 'LIMIT_FILE_SIZE') {
             statusCode = 413;
-            message = 'File is too large. Maximum size is 5MB.';
+            message = 'File too large. Each document must not exceed 5 MB.';
         }
     }
     

@@ -7,18 +7,23 @@
     <title>Jos Medical College - Excellence in Healthcare Education</title>
     <meta name="description"
         content="Jos Medical College is a premier institution dedicated to medical education, research, and healthcare excellence.">
-    <link rel="stylesheet" href="style.css?v=2.0">
+    <link rel="stylesheet" href="style.css?v=3.7">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="toast.js"></script>
     <script src="config.js"></script>
-    <script src="script.js?v=2.0" defer></script>
+    <script src="script.js?v=3.7" defer></script>
+    <!-- Medical Career College Official Favicons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 </head>
 
 <body>
-    <header class="main-header">
+        <header class="main-header">
         <div class="container header-container">
             <div class="logo-container">
                 <a href="index.html" class="logo-link">
@@ -46,7 +51,6 @@
                                 <ul class="submenu">
                                     <li><a href="programs.html#degree">Nursing Sciences</a></li>
                                     <li><a href="programs.html#degree">Medical Laboratory Sciences</a></li>
-                                    <li><a href="programs.html#degree">Pharmacy</a></li>
                                     <li><a href="programs.html#degree">Public Health</a></li>
                                     <li><a href="programs.html#degree">Health Information Management</a></li>
                                     <li><a href="programs.html#degree">Biochemistry</a></li>
@@ -93,7 +97,7 @@
                         </ul>
                     </li>
                     <li><a href="admissions.html" class="nav-link">Admissions</a></li>
-                    <li><a href="#news" class="nav-link">News & Events</a></li>
+                    <li><a href="news.html" class="nav-link">News & Events</a></li>
                     <li><a href="contact.html" class="nav-link btn-contact">Contact</a></li>
                 </ul>
             </nav>
@@ -108,8 +112,22 @@
             </div>
             <div class="hero-overlay"></div>
             <div class="container hero-content">
-                <img src="assets/newlogo.png" alt="College Logo" class="hero-logo">
-                <h1>Medical College of Health Science and Technology Jos</h1>
+                <div class="hero-affiliates">
+                    <p class="hero-affiliates-label">Academic Affiliations</p>
+                    <div class="hero-affiliates-logos">
+                        <div class="hero-affiliate-item">
+                            <img src="assets/aff1.png" alt="Affiliate University Logo 1" class="hero-affiliate-logo">
+                        </div>
+                        <div class="hero-affiliate-item">
+                            <img src="assets/aff2.png" alt="Affiliate University Logo 2" class="hero-affiliate-logo">
+                        </div>
+                        <div class="hero-affiliate-item">
+                            <img src="assets/aff3.png" alt="Affiliate University Logo 3" class="hero-affiliate-logo">
+                        </div>
+                    </div>
+                </div>
+                <h1>Medical Career College of Health Sciences and Technology</h1>
+                <p class="hero-subtitle" style="font-size: 1.25rem; font-weight: 500; margin-top: 0.5rem; margin-bottom: 1.5rem; color: #f0fdf4; text-shadow: 0 2px 4px rgba(0,0,0,0.6);">Affiliated to Evangel University Akaeze</p>
                 <div class="hero-buttons">
                     <a href="admissions.html" class="btn btn-primary">Apply Now</a>
                     <div class="dropdown" style="display: inline-block;">
@@ -122,7 +140,6 @@
                                 <ul class="submenu">
                                     <li><a href="programs.html#degree">Nursing Sciences</a></li>
                                     <li><a href="programs.html#degree">Medical Laboratory Sciences</a></li>
-                                    <li><a href="programs.html#degree">Pharmacy</a></li>
                                     <li><a href="programs.html#degree">Public Health</a></li>
                                     <li><a href="programs.html#degree">Health Information Management</a></li>
                                     <li><a href="programs.html#degree">Biochemistry</a></li>
@@ -205,6 +222,23 @@
                 </div>
 
                 <a href="gallery.html" class="btn btn-primary" style="margin-top: 2.5rem;">View Full Gallery</a>
+            </div>
+        </section>
+
+        <!-- Dynamic News & Events Section on Homepage -->
+        <section id="news" class="section-home">
+            <div class="container text-center">
+                <span class="section-label">Campus Bulletin</span>
+                <h2 class="home-section-title">Latest News & Announcements</h2>
+                <p class="section-intro">Keep abreast of current developments, admissions updates, and college activities.</p>
+
+                <div class="news-grid" id="homeNewsGrid" style="text-align: left; margin-top: 2rem;">
+                    <!-- Populated dynamically via script.js -->
+                </div>
+
+                <div class="text-center mt-large" style="margin-top: 2.5rem;">
+                    <a href="news.html" class="btn btn-secondary">Explore All News & Events</a>
+                </div>
             </div>
         </section>
 
@@ -382,37 +416,12 @@
                     <span class="section-label">Updates</span>
                     <h2 class="home-section-title">Latest News & Events</h2>
 
-                    <div class="feature-grid">
-                        <div class="feature-card" style="text-align: left;">
-                            <span class="date">May 15, 2026</span>
-                            <h3>2026 Admission Form Out</h3>
-                            <p>Applications are now open for all degree and diploma programs for the upcoming
-                                session.</p>
-                            <a href="#"
-                                style="color: var(--green-primary); font-weight: 600; margin-top: 1rem; display: inline-block;">Read
-                                More →</a>
-                        </div>
-                        <div class="feature-card" style="text-align: left;">
-                            <span class="date">June 02, 2026</span>
-                            <h3>New Clinical Lab Open</h3>
-                            <p>We have commissioned our state-of-the-art diagnostic wing for practical rotations.
-                            </p>
-                            <a href="#"
-                                style="color: var(--green-primary); font-weight: 600; margin-top: 1rem; display: inline-block;">Read
-                                More →</a>
-                        </div>
-                        <div class="feature-card" style="text-align: left;">
-                            <span class="date">June 20, 2026</span>
-                            <h3>Graduation Ceremony</h3>
-                            <p>Celebrating the success of our latest batch of nursing and pharmacy technicians.</p>
-                            <a href="#"
-                                style="color: var(--green-primary); font-weight: 600; margin-top: 1rem; display: inline-block;">Read
-                                More →</a>
-                        </div>
+                    <div class="feature-grid" id="homeNewsGrid">
+                        <!-- Populated dynamically via script.js -->
                     </div>
 
                     <div class="text-center mt-large" style="margin-top: 3rem;">
-                        <a href="#" class="btn btn-secondary">View All News</a>
+                        <a href="news.html" class="btn btn-secondary">View All News & Events</a>
                     </div>
                 </div>
             </section>
@@ -446,7 +455,6 @@
                 <ul>
                     <li><a href="programs.html#degree">Nursing Sciences</a></li>
                     <li><a href="programs.html#degree">Medical Laboratory Sciences</a></li>
-                    <li><a href="programs.html#degree">Pharmacy</a></li>
                     <li><a href="programs.html#degree">Public Health</a></li>
                     <li><a href="programs.html#degree">Biochemistry</a></li>
                     <li><a href="programs.html#diploma">Mass Communication</a></li>

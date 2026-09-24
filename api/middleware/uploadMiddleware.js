@@ -23,27 +23,61 @@ const storage = multer.diskStorage({
 
 // File validation
 const fileFilter = (req, file, cb) => {
-    // Explicitly reject dangerous extensions anywhere in the filename
+    // Explicitly reject dangerous executable extensions
     const dangerousExtensions = /\.(exe|sh|bat|cmd|php|js|html|htm|py|pl|rb)$/i;
     if (dangerousExtensions.test(file.originalname)) {
         return cb(new Error('Dangerous file types are not allowed!'));
     }
 
-    const filetypes = /jpg|jpeg|png|pdf/;
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
+    const allowedExtensions = /jpg|jpeg|png|webp|gif|pdf|mp4|webm|ogg|mov|mkv|mp3|wav|aac|m4a/;
+    const extname = allowedExtensions.test(path.extname(file.originalname).toLowerCase());
+    
+    // Check if mime matches image, pdf, video, or audio
+    const isMimeValid = file.mimetype.startsWith('image/') || 
+                        file.mimetype.startsWith('video/') || 
+                        file.mimetype.startsWith('audio/') || 
+                        file.mimetype === 'application/pdf';
 
-    if (extname && mimetype) {
+    if (extname && isMimeValid) {
         return cb(null, true);
     } else {
-        cb(new Error('Images and PDFs only!'));
+        cb(new Error('Only images, PDFs, videos (MP4, WebM, MOV), and audio files (MP3, WAV, AAC) are allowed!'));
     }
 };
 
 const upload = multer({
     storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit to accommodate video and audio uploads
     fileFilter
 });
 
+// Admissions document upload: strictly enforce 5MB per file and PDF/JPG/PNG only
+const admissionFileFilter = (req, file, cb) => {
+    const dangerousExtensions = /\.(exe|sh|bat|cmd|php|js|html|htm|py|pl|rb)$/i;
+    if (dangerousExtensions.test(file.originalname)) {
+        return cb(new Error('Dangerous file types are not allowed!'));
+    }
+
+    const allowedExtensions = /^(jpg|jpeg|png|pdf)$/i;
+    const ext = path.extname(file.originalname).replace('.', '').toLowerCase();
+    const isAllowedExt = allowedExtensions.test(ext);
+    
+    const allowedMimes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+    const isAllowedMime = allowedMimes.includes(file.mimetype.toLowerCase());
+
+    if (isAllowedExt && isAllowedMime) {
+        return cb(null, true);
+    } else {
+        cb(new Error('Invalid file type. Please upload a valid PDF, JPG, JPEG, or PNG file.'));
+    }
+};
+
+const admissionUpload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // Strictly 5MB per document
+    fileFilter: admissionFileFilter
+});
+
 module.exports = upload;
+module.exports.upload = upload;
+module.exports.admissionUpload = admissionUpload;

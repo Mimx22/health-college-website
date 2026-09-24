@@ -6,18 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Programs - Jos Medical College</title>
     <meta name="description" content="Accredited degree and diploma programs in health sciences.">
-    <link rel="stylesheet" href="style.css?v=2.0">
+    <link rel="stylesheet" href="style.css?v=3.7">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="toast.js"></script>
     <script src="config.js"></script>
-    <script src="script.js?v=2.0" defer></script>
+    <script src="script.js?v=3.7" defer></script>
+    <!-- Medical Career College Official Favicons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 </head>
 
 <body>
-    <header class="main-header">
+        <header class="main-header">
         <div class="container header-container">
             <div class="logo-container">
                 <a href="index.html" class="logo-link">
@@ -37,43 +42,31 @@
                     <li><a href="about.html" class="nav-link">About</a></li>
                     <li><a href="gallery.html" class="nav-link">Gallery</a></li>
                     <li class="dropdown">
-                        <a href="programs.html" class="nav-link active">Academic Programs <span
-                                class="arrow">▼</span></a>
+                        <a href="programs.html" class="nav-link active">Explore Programs <span class="arrow">▼</span></a>
                         <ul class="dropdown-menu">
                             <li class="dropdown-submenu">
-                                <a href="#degree" class="submenu-toggle" onclick="openProgramSection('degree')">Degree Programs <span
+                                <a href="programs.html#degree" class="submenu-toggle">Degree Programs <span
                                         class="arrow-right">▸</span></a>
                                 <ul class="submenu">
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Nursing Sciences</a>
-                                    </li>
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Medical Laboratory
-                                            Sciences</a></li>
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Pharmacy</a></li>
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Public Health</a></li>
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Health Information
-                                            Management</a></li>
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Biochemistry</a></li>
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Microbiology</a></li>
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Community Health</a>
-                                    </li>
-                                    <li><a href="#degree" onclick="openProgramSection('degree')">Computer Sciences</a>
-                                    </li>
+                                    <li><a href="programs.html#degree">Nursing Sciences</a></li>
+                                    <li><a href="programs.html#degree">Medical Laboratory Sciences</a></li>
+                                    <li><a href="programs.html#degree">Public Health</a></li>
+                                    <li><a href="programs.html#degree">Health Information Management</a></li>
+                                    <li><a href="programs.html#degree">Biochemistry</a></li>
+                                    <li><a href="programs.html#degree">Microbiology</a></li>
+                                    <li><a href="programs.html#degree">Community Health</a></li>
+                                    <li><a href="programs.html#degree">Computer Sciences</a></li>
                                 </ul>
                             </li>
                             <li class="dropdown-submenu">
-                                <a href="#diploma" class="submenu-toggle" onclick="openProgramSection('diploma')">Diploma Programs <span
+                                <a href="programs.html#diploma" class="submenu-toggle">Diploma Programs <span
                                         class="arrow-right">▸</span></a>
                                 <ul class="submenu">
-                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Mass
-                                            Communication</a></li>
-                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Public
-                                            Administration</a></li>
-                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Business
-                                            Administration</a></li>
-                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Office and Hotel
-                                            Management</a></li>
-                                    <li><a href="#diploma" onclick="openProgramSection('diploma')">Computer Science</a>
-                                    </li>
+                                    <li><a href="programs.html#diploma">Mass Communication</a></li>
+                                    <li><a href="programs.html#diploma">Public Administration</a></li>
+                                    <li><a href="programs.html#diploma">Business Administration</a></li>
+                                    <li><a href="programs.html#diploma">Office and Hotel Management</a></li>
+                                    <li><a href="programs.html#diploma">Computer Science</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -103,7 +96,7 @@
                         </ul>
                     </li>
                     <li><a href="admissions.html" class="nav-link">Admissions</a></li>
-                    <li><a href="index.html#news" class="nav-link">News & Events</a></li>
+                    <li><a href="news.html" class="nav-link">News & Events</a></li>
                     <li><a href="contact.html" class="nav-link btn-contact">Contact</a></li>
                 </ul>
             </nav>
@@ -118,6 +111,16 @@
         </section>
         <section class="programs-section">
             <div class="container">
+
+                <!-- Program Category Filter Buttons -->
+                <div class="program-category-tabs" style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2.5rem; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-primary program-tab-btn" id="btn-show-degree" onclick="window.openProgramSection('degree')">
+                        <i class="fas fa-graduation-cap"></i> Degree Programs
+                    </button>
+                    <button type="button" class="btn btn-secondary program-tab-btn" id="btn-show-diploma" onclick="window.openProgramSection('diploma')">
+                        <i class="fas fa-certificate"></i> Diploma Programs
+                    </button>
+                </div>
 
                 <!-- Degree Programs Section -->
                 <div id="degree-section" class="program-section" style="display: block;">
@@ -167,34 +170,6 @@
                                 <div class="detail-item">
                                     <strong>Accreditation</strong>
                                     <p>Accredited by the Medical Laboratory Science Council of Nigeria (MLSCN).</p>
-                                </div>
-                            </div>
-                            <div class="course-actions"
-                                style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
-                                <a href="javascript:void(0)" class="btn-read-more" onclick="toggleCourse(this)"
-                                    style="margin-top: 0; align-self: flex-start;">Read More →</a>
-                                <a href="admissions.html" class="btn btn-primary"
-                                    style="width: 100%; text-align: center; box-sizing: border-box;">Apply Now</a>
-                            </div>
-                        </div>
-                        <div class="course-card">
-                            <h3>Pharmacy</h3>
-                            <p>Study pharmaceutical sciences, drug compounding, and patient medication therapy
-                                management.
-                            </p>
-                            <div class="course-details">
-                                <div class="detail-item">
-                                    <strong>Duration</strong>
-                                    <p>5 Years</p>
-                                </div>
-                                <div class="detail-item">
-                                    <strong>Career Prospects</strong>
-                                    <p>Pharmacist, Pharmaceutical Researcher, Drug Regulatory Officer, Clinical
-                                        Pharmacologist.</p>
-                                </div>
-                                <div class="detail-item">
-                                    <strong>Accreditation</strong>
-                                    <p>Fully accredited by the Pharmacists Council of Nigeria (PCN).</p>
                                 </div>
                             </div>
                             <div class="course-actions"
@@ -526,7 +501,7 @@
                     <li><a href="index.html#about">About Us</a></li>
                     <li><a href="index.html#academics">Academics</a></li>
                     <li><a href="index.html#admissions">Admissions</a></li>
-                    <li><a href="index.html#news">News & Events</a></li>
+                    <li><a href="news.html">News & Events</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -534,7 +509,6 @@
                 <ul>
                     <li><a href="programs.html#degree">Nursing Sciences</a></li>
                     <li><a href="programs.html#degree">Medical Laboratory Sciences</a></li>
-                    <li><a href="programs.html#degree">Pharmacy</a></li>
                     <li><a href="programs.html#degree">Public Health</a></li>
                     <li><a href="programs.html#degree">Biochemistry</a></li>
                     <li><a href="programs.html#diploma">Mass Communication</a></li>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News & Events - Jos Medical College</title>
+    <link rel="stylesheet" href="style.css?v=3.7">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="toast.js"></script>
+    <script src="config.js"></script>
+    <script src="script.js?v=3.7" defer></script>
+    <style>
+        .news-hero {
+            background: linear-gradient(135deg, rgba(11, 32, 70, 0.95), rgba(0, 168, 232, 0.85)), url('assets/hero_content1.jpeg');
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            padding: 5rem 1rem;
+            text-align: center;
+        }
+
+        .news-hero h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .news-hero p {
+            font-size: 1.15rem;
+            max-width: 650px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .news-page-container {
+            padding: 4rem 0;
+        }
+
+        .news-toggle-bar {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .toggle-tab-btn {
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 30px;
+            border: 2px solid var(--primary-color);
+            background: #fff;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toggle-tab-btn.active, .toggle-tab-btn:hover {
+            background: var(--primary-color);
+            color: #fff;
+            box-shadow: var(--shadow-md);
+        }
+
+        /* News Cards Grid */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .news-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .news-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .news-card-img {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+            background: #e9ecef;
+        }
+
+        .news-card-body {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .news-card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+        }
+
+        .news-badge {
+            background: #e3f2fd;
+            color: var(--secondary-color);
+            padding: 0.25rem 0.65rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .news-card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 0.75rem;
+            line-height: 1.4;
+        }
+
+        .news-card-excerpt {
+            font-size: 0.92rem;
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+            flex: 1;
+        }
+
+        .news-read-more {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            transition: gap 0.2s;
+        }
+
+        .news-read-more:hover {
+            gap: 0.6rem;
+            text-decoration: underline;
+        }
+
+        /* Event Cards Grid */
+        .event-card {
+            background: var(--white);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: flex;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .event-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .event-date-box {
+            background: var(--secondary-color);
+            color: #fff;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 110px;
+            text-align: center;
+        }
+
+        .event-date-box .day {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .event-date-box .month {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.3rem;
+        }
+
+        .event-body {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .event-meta {
+            display: flex;
+            gap: 1.25rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .event-meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .event-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        @media(max-width: 600px) {
+            .event-card { flex-direction: column; }
+            .event-date-box { flex-direction: row; gap: 0.75rem; padding: 0.75rem; }
+        }
+    </style>
+    <!-- Medical Career College Official Favicons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+</head>
+
+<body>
+        <header class="main-header">
+        <div class="container header-container">
+            <div class="logo-container">
+                <a href="index.html" class="logo-link">
+                    <img src="assets/newlogo.png" alt="Jos Medical College Logo" class="logo-img">
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" aria-label="Toggle navigation">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+
+            <nav class="main-nav">
+                <ul class="nav-list">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="about.html" class="nav-link">About</a></li>
+                    <li><a href="gallery.html" class="nav-link">Gallery</a></li>
+                    <li class="dropdown">
+                        <a href="programs.html" class="nav-link">Explore Programs <span class="arrow">▼</span></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-submenu">
+                                <a href="programs.html#degree" class="submenu-toggle">Degree Programs <span
+                                        class="arrow-right">▸</span></a>
+                                <ul class="submenu">
+                                    <li><a href="programs.html#degree">Nursing Sciences</a></li>
+                                    <li><a href="programs.html#degree">Medical Laboratory Sciences</a></li>
+                                    <li><a href="programs.html#degree">Pharmacy</a></li>
+                                    <li><a href="programs.html#degree">Public Health</a></li>
+                                    <li><a href="programs.html#degree">Health Information Management</a></li>
+                                    <li><a href="programs.html#degree">Biochemistry</a></li>
+                                    <li><a href="programs.html#degree">Microbiology</a></li>
+                                    <li><a href="programs.html#degree">Community Health</a></li>
+                                    <li><a href="programs.html#degree">Computer Sciences</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                                <a href="programs.html#diploma" class="submenu-toggle">Diploma Programs <span
+                                        class="arrow-right">▸</span></a>
+                                <ul class="submenu">
+                                    <li><a href="programs.html#diploma">Mass Communication</a></li>
+                                    <li><a href="programs.html#diploma">Public Administration</a></li>
+                                    <li><a href="programs.html#diploma">Business Administration</a></li>
+                                    <li><a href="programs.html#diploma">Office and Hotel Management</a></li>
+                                    <li><a href="programs.html#diploma">Computer Science</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="portal.html" class="nav-link">Portal Access <span class="arrow">▼</span></a>
+                        <ul class="dropdown-menu">
+                            <li class="dropdown-header-info">
+                                <p>Access your dedicated portal for students, staff, or administrators.</p>
+                            </li>
+                            <li>
+                                <a href="student-login.html">Student Portal
+                                    <span class="dropdown-item-desc">Access course materials and results.</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="staff-login.html">Staff Portal
+                                    <span class="dropdown-item-desc">Teaching resources and staff tools.</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="admin-login.html">Admin Portal
+                                    <span class="badge-nav badge-restricted">Restricted</span>
+                                    <span class="dropdown-item-desc">Institutional system management.</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="admissions.html" class="nav-link">Admissions</a></li>
+                    <li><a href="news.html" class="nav-link active">News & Events</a></li>
+                    <li><a href="contact.html" class="nav-link btn-contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="news-hero">
+            <div class="container">
+                <h1>News & Campus Events</h1>
+                <p>Stay updated with academic breakthroughs, administrative announcements, and vibrant campus life at Jos Medical College.</p>
+            </div>
+        </section>
+
+        <section class="news-page-container">
+            <div class="container">
+                <div class="news-toggle-bar">
+                    <button id="toggleNewsBtn" class="toggle-tab-btn active" onclick="switchPublicFeed('news')">
+                        <i class="fas fa-newspaper"></i> Latest News Articles
+                    </button>
+                    <button id="toggleEventsBtn" class="toggle-tab-btn" onclick="switchPublicFeed('events')">
+                        <i class="fas fa-calendar-alt"></i> Upcoming Campus Events
+                    </button>
+                </div>
+
+                <!-- NEWS SECTION -->
+                <div id="publicNewsFeed">
+                    <div class="news-grid" id="publicNewsGrid">
+                        <!-- Loaded via script.js -->
+                    </div>
+                    <div id="publicNewsEmpty" class="empty-state" style="display: none;">
+                        <i class="fas fa-newspaper"></i>
+                        <p>No news articles have been published yet. Check back soon!</p>
+                    </div>
+                </div>
+
+                <!-- EVENTS SECTION -->
+                <div id="publicEventsFeed" style="display: none;">
+                    <div id="publicEventsList">
+                        <!-- Loaded via script.js -->
+                    </div>
+                    <div id="publicEventsEmpty" class="empty-state" style="display: none;">
+                        <i class="fas fa-calendar-times"></i>
+                        <p>No upcoming events scheduled at this time.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container footer-grid">
+            <div class="footer-col brand-col">
+                <div class="footer-logo">
+                    <img src="assets/newlogo.png" alt="Jos Medical College" class="footer-logo-img">
+                </div>
+                <p>Let us help you help others</p>
+            </div>
+            <div class="footer-col contact-col">
+                <h3>Contact Us</h3>
+                <address>
+                    <p>No.2 Rikkos Jos</p>
+                    <p>Plateau State, Nigeria</p>
+                    <p style="margin-top: 0.5rem;"><i class="fab fa-whatsapp" style="color: #25D366;"></i> <a href="https://wa.me/2349066498487" style="color: inherit; text-decoration: none;">09066498487</a></p>
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:e.medicalcareeracademy.edu@gmail.com" style="color: inherit; text-decoration: none;">e.medicalcareeracademy.edu@gmail.com</a></p>
+                </address>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Jos Medical College. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

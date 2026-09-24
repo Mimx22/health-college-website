@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Login - Jos Medical College</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=4.6">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="toast.js"></script>
-    <script src="config.js"></script>
-    <script src="script.js" defer></script>
+    <script src="toast.js?v=4.6"></script>
+    <script src="config.js?v=4.6"></script>
+    <script src="script.js?v=4.6" defer></script>
     <style>
         .login-section {
             min-height: 80vh;
@@ -26,11 +26,33 @@
         .login-card {
             background: var(--white);
             width: 100%;
-            max-width: 450px;
-            padding: 3rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow-lg);
+            max-width: 520px;
+            padding: 3rem 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 35px rgba(0, 33, 113, 0.1);
+            border: 1px solid rgba(0, 70, 150, 0.08);
             border-top: 6px solid var(--primary-color);
+        }
+
+        .login-form input[type="text"],
+        .login-form input[type="password"] {
+            width: 100%;
+            padding: 0.95rem 1.1rem;
+            border: 1.5px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            color: var(--text-color);
+            background: #fff;
+            transition: all 0.25s ease;
+            box-sizing: border-box;
+        }
+
+        .login-form input[type="text"]:focus,
+        .login-form input[type="password"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(13, 71, 161, 0.12);
         }
 
         .login-header {
@@ -116,6 +138,11 @@
             color: var(--secondary-color);
         }
     </style>
+    <!-- Medical Career College Official Favicons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 </head>
 
 <body>
@@ -138,25 +165,25 @@
 
     <main>
         <section class="login-section">
-            <div class="login-card">
+            <div class="login-card" style="max-width: 500px;">
                 <div class="login-header">
                     <h1>Student Portal Login</h1>
-                    <p>Enter your Student ID and Password to access your dashboard.</p>
+                    <p>Enter your assigned Student ID and Password to access your portal.</p>
                 </div>
 
                 <form id="studentLoginForm" class="login-form">
                     <div class="form-group">
                         <label for="studentId">Student ID</label>
-                        <input type="text" id="studentId" name="studentId" placeholder="e.g. JMC/2026/123" required>
+                        <input type="text" id="studentId" name="studentId" placeholder="e.g. JMC-2026-564412" autocomplete="username" spellcheck="false" style="font-size: 1.05rem; padding: 0.95rem 1.1rem; width: 100%; letter-spacing: 0.5px; text-transform: uppercase;" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" placeholder="••••••••" required>
+                        <input type="password" id="password" name="password" placeholder="Enter your portal password" autocomplete="current-password" style="font-size: 1.05rem; padding: 0.95rem 1.1rem; width: 100%;" required>
                     </div>
 
                     <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
 
-                    <button type="submit" class="btn btn-primary login-btn">Login to Portal</button>
+                    <button type="submit" class="btn btn-primary login-btn" style="padding: 1rem; font-size: 1.05rem; border-radius: 8px;">Login to Portal</button>
                 </form>
 
                 <div class="login-footer">
@@ -226,13 +253,71 @@
                     <a href="admin-login.html" style="font-size: 0.75rem; opacity: 0.5; color: var(--white);"><i
                             class="fas fa-lock"></i> Admin Panel</a>
                 </div>
-                <div class="social-links">
-                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                </div>
             </div>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('studentLoginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const rawInput = document.getElementById('studentId').value.trim();
+                    const password = document.getElementById('password').value;
+                    const submitBtn = loginForm.querySelector('button[type="submit"]');
+
+                    // Normalize slashes to hyphens and uppercase (e.g. jmc/2026/1550 -> JMC-2026-1550)
+                    const studentId = rawInput.replace(/\//g, '-').toUpperCase();
+
+                    if (!studentId || !password) {
+                        if (typeof showToast === 'function') showToast('Please enter both Student ID and Password', 'error');
+                        return;
+                    }
+
+                    submitBtn.disabled = true;
+                    submitBtn.innerText = 'Logging in...';
+
+                    try {
+                        const baseUrl = (typeof API_BASE_URL !== 'undefined') ? API_BASE_URL : 'https://medicalcareeracademy.ng/api';
+                        const response = await fetch(`${baseUrl}/students/login`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ studentId, password })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.token) {
+                            localStorage.setItem('jmc_token', data.token);
+                            localStorage.setItem('jmc_logged_student', JSON.stringify(data));
+                            if (typeof showToast === 'function') showToast('Login successful! Redirecting...', 'success');
+                            setTimeout(() => {
+                                window.location.href = 'student-dashboard.html';
+                            }, 800);
+                        } else {
+                            if (typeof showToast === 'function') {
+                                showToast(data.message || 'Invalid Student ID or password', 'error');
+                            } else {
+                                alert(data.message || 'Invalid Student ID or password');
+                            }
+                            submitBtn.disabled = false;
+                            submitBtn.innerText = 'Login to Portal';
+                        }
+                    } catch (err) {
+                        console.error('Login Error:', err);
+                        if (typeof showToast === 'function') {
+                            showToast('Connection failed. Please check your internet.', 'error');
+                        } else {
+                            alert('Connection failed. Please check your internet.');
+                        }
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = 'Login to Portal';
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

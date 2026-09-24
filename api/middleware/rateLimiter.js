@@ -12,7 +12,10 @@ const rateLimiter = (maxRequests, windowMs = 15 * 60 * 1000) => {
 
             if (record) {
                 if (record.count >= maxRequests) {
-                    return res.status(429).json({ success: false, message: 'Too many requests. Please try again later.' });
+                    const msg = endpoint.includes('/register') 
+                        ? 'Too many submission attempts. Please wait a few minutes and try again.'
+                        : 'Too many requests. Please try again later.';
+                    return res.status(429).json({ success: false, message: msg });
                 }
                 
                 // Increment count

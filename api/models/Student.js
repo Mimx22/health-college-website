@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 function arrayLimit(val) {
   return val.length === 6;
@@ -39,7 +40,7 @@ const studentSchema = new mongoose.Schema({
     applicationNumber: {
         type: String,
         unique: true,
-        sparse: true, // in case there are records without it before it's assigned
+        sparse: true,
         index: true
     },
     documents: {
@@ -53,10 +54,62 @@ const studentSchema = new mongoose.Schema({
     },
     studentId: {
         type: String,
+        default: null,
+        sparse: true,
+        index: true
+    },
+    // Authentication & Portal Fields
+    password: {
+        type: String,
+        select: false // Excluded from default queries for security
+    },
+    role: {
+        type: String,
+        default: 'student'
+    },
+    accountStatus: {
+        type: String,
+        enum: ['inactive', 'active', 'suspended'],
+        default: 'inactive'
+    },
+    activationToken: {
+        type: String,
+        select: false
+    },
+    activationExpires: {
+        type: Date,
+        select: false
+    },
+    resetPasswordToken: {
+        type: String,
+        select: false
+    },
+    resetPasswordExpires: {
+        type: Date,
+        select: false
+    },
+    profilePic: {
+        type: String,
         default: null
     }
 }, {
     timestamps: true
+});
+
+// Method to verify password
+studentSchema.methods.matchPassword = async function (enteredPassword) {
+    if (!this.password) return false;
+    return await bcrypt.compare(enteredPassword, this.password);
+};
+
+// Pre-save middleware to hash password if it was modified
+studentSchema.pre('save', async function (next) {
+    if (!this.isModified('password') || !this.password) {
+        return next();
+    }
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
 });
 
 const Student = mongoose.model('Student', studentSchema);

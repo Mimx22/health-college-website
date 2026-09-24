@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Dashboard - Jos Medical College</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3.7">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="toast.js"></script>
     <script src="config.js"></script>
-    <script src="script.js" defer></script>
+    <script src="script.js?v=3.7" defer></script>
     <style>
         .dashboard-container {
             padding: 4rem 0;
@@ -229,6 +229,11 @@
             }
         }
     </style>
+    <!-- Medical Career College Official Favicons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 </head>
 
 <body>
@@ -249,14 +254,6 @@
     </header>
 
     <main class="dashboard-container">
-        <!-- Demo Mode Notice -->
-        <div class="container" style="margin-bottom: 1.5rem;">
-            <div
-                style="background: var(--primary-light); color: var(--primary-color); padding: 0.8rem 1.5rem; border-radius: 8px; border-left: 5px solid var(--primary-color); font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 0.8rem;">
-                <i class="fas fa-info-circle"></i>
-                <span><strong>Demo Mode</strong> – Authentication will be connected to database later.</span>
-            </div>
-        </div>
         <div class="container dashboard-grid">
             <aside class="sidebar-nav">
                 <div class="staff-short-info">
@@ -304,8 +301,12 @@
                                     placeholder="Update your phone">
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="margin-top: 2rem;">Save Contact
-                            Updates</button>
+                        <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
+                            <button type="submit" class="btn btn-primary" id="saveStaffPhoneBtn">Save Contact Updates</button>
+                            <button type="button" class="btn btn-secondary" onclick="openStaffChangePassModal()">
+                                <i class="fas fa-key"></i> Change Password
+                            </button>
+                        </div>
                     </form>
                 </div>
 
@@ -415,6 +416,34 @@
             </section>
         </div>
     </main>
+
+    <!-- Staff Change Password Modal -->
+    <div id="staffChangePasswordModal" class="modal-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000;">
+        <div class="modal-card" style="background: var(--white); padding: 2.5rem; border-radius: 12px; max-width: 440px; width: 90%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin: 0; color: var(--secondary-color); font-size: 1.3rem;">Change Password</h3>
+                <button type="button" onclick="closeStaffChangePassModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">&times;</button>
+            </div>
+            <form id="staffChangePassForm">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">Current Password</label>
+                    <input type="password" id="staffCurrentPass" class="form-control" required placeholder="••••••••" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">New Password</label>
+                    <input type="password" id="staffNewPass" class="form-control" required minlength="6" placeholder="••••••••" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem;">Confirm New Password</label>
+                    <input type="password" id="staffConfirmPass" class="form-control" required minlength="6" placeholder="••••••••" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;">
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+                    <button type="button" class="btn btn-cancel" onclick="closeStaffChangePassModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="staffPassSubmitBtn">Save Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <footer class="main-footer">
         <div class="container footer-grid">

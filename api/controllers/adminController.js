@@ -1,6 +1,11 @@
 const Admin = require('../models/Admin');
 const Student = require('../models/Student');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const path = require('path');
+const fs = require('fs');
+const Contact = require('../models/Contact');
+const { sendApprovalEmail, sendRejectionEmail } = require('../utils/emailService');
 
 // Generate JWT token
 const generateToken = (id, role) => {
@@ -17,7 +22,8 @@ const loginAdmin = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Please provide email and password' });
         }
 
-        const admin = await Admin.findOne({ email });
+        const cleanEmail = email.trim().toLowerCase();
+        const admin = await Admin.findOne({ email: { $regex: new RegExp(`^${cleanEmail}$`, 'i') } });
 
         if (admin && (await admin.matchPassword(password))) {
             res.status(200).json({
@@ -61,33 +67,63 @@ const updateApplicationStatus = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Invalid status value provided' });
         }
 
-        // Spam Protection: Query the current state first
-        const student = await Student.findById(req.params.id);
+        // Query current state
+        const student = await Student.findById(req.params.id).select('+activationToken +activationExpires');
         if (!student) {
             return res.status(404).json({ success: false, message: 'Application not found' });
         }
 
-        // If the status is the same, do nothing and return immediately (avoids duplicate emails)
+        // If the status is the same and already processed, avoid duplicate email
         if (student.admissionStatus === status) {
             return res.status(200).json(student);
         }
 
         student.admissionStatus = status;
-        const updatedApp = await student.save();
 
-        // Send Email Notification
-        const { sendApprovalEmail, sendRejectionEmail } = require('../utils/emailService');
         let emailSent = false;
-        
+        let activationToken = null;
+
         if (status === 'Approved') {
-            emailSent = await sendApprovalEmail(updatedApp.email, updatedApp.fullName, updatedApp.applicationNumber, updatedApp.program);
+            // Assign studentId if not already present
+            if (!student.studentId) {
+                student.studentId = student.applicationNumber; // Or use assigned matric number
+            }
+            
+            // Generate secure one-time activation token valid for 24h
+            activationToken = crypto.randomBytes(32).toString('hex');
+            student.activationToken = crypto.createHash('sha256').update(activationToken).digest('hex');
+            student.activationExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+
+            await student.save();
+
+            // Build activation link
+            const baseUrl = process.env.BASE_URL || 'https://medicalcareeracademy.ng';
+            const activationLink = `${baseUrl}/reset-password.html?token=${activationToken}&setup=true`;
+
+            emailSent = await sendApprovalEmail(
+                student.email,
+                student.fullName,
+                student.applicationNumber,
+                student.program,
+                activationLink
+            );
         } else if (status === 'Rejected') {
-            emailSent = await sendRejectionEmail(updatedApp.email, updatedApp.fullName, updatedApp.applicationNumber);
+            await student.save();
+            emailSent = await sendRejectionEmail(
+                student.email,
+                student.fullName,
+                student.applicationNumber
+            );
+        } else {
+            await student.save();
         }
 
-        // We convert to lean-like object to append emailSent flag cleanly
-        const responseApp = updatedApp.toObject();
+        const responseApp = student.toObject();
         responseApp.emailSent = emailSent;
+        // Never leak tokens in the response
+        delete responseApp.activationToken;
+        delete responseApp.activationExpires;
+        delete responseApp.password;
 
         res.status(200).json(responseApp);
     } catch (error) {
@@ -95,27 +131,22 @@ const updateApplicationStatus = async (req, res, next) => {
     }
 };
 
-const path = require('path');
-const fs = require('fs');
-
 const downloadDocument = async (req, res, next) => {
     try {
         const { id, docIndex } = req.params;
         
-        // Find the application
         const student = await Student.findById(id);
         if (!student) {
             return res.status(404).json({ success: false, message: 'Application not found' });
         }
 
-        // Validate index
         const index = parseInt(docIndex, 10);
         if (isNaN(index) || index < 0 || !student.documents || index >= student.documents.length) {
             return res.status(404).json({ success: false, message: 'Document not found' });
         }
 
         const doc = student.documents[index];
-        const filePath = doc.storagePath; // Local path from multer disk storage
+        const filePath = doc.storagePath;
         
         if (!fs.existsSync(filePath)) {
             return res.status(404).json({ success: false, message: 'Document file is missing from server storage' });
@@ -132,8 +163,6 @@ const downloadDocument = async (req, res, next) => {
     }
 };
 
-const Contact = require('../models/Contact');
-
 const getContactMessages = async (req, res, next) => {
     try {
         const messages = await Contact.find({}).sort({ createdAt: -1 }).lean();
@@ -143,4 +172,62 @@ const getContactMessages = async (req, res, next) => {
     }
 };
 
-module.exports = { loginAdmin, getApplications, updateApplicationStatus, downloadDocument, getContactMessages };
+const setStudentPassword = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { password } = req.body;
+
+        if (!password || password.length < 6) {
+            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+        }
+
+        const student = await Student.findById(id).select('+password');
+        if (!student) {
+            return res.status(404).json({ success: false, message: 'Student application not found' });
+        }
+
+        student.password = password;
+        student.accountStatus = 'active';
+        if (!student.studentId) {
+            student.studentId = student.applicationNumber;
+        }
+
+        await student.save();
+
+        res.status(200).json({
+            success: true,
+            message: `Password successfully set for ${student.fullName}. Account is now active.`,
+            studentId: student.studentId || student.applicationNumber,
+            fullName: student.fullName,
+            email: student.email
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const uploadImage = async (req, res, next) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'Please select a file to upload' });
+        }
+
+        // Return relative path accessible via web
+        const fileUrl = `/api/uploads/${req.file.filename}`;
+
+        res.status(200).json({
+            success: true,
+            message: 'File uploaded successfully',
+            fileUrl,
+            imageUrl: fileUrl,
+            videoUrl: fileUrl,
+            filename: req.file.filename,
+            size: req.file.size
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { loginAdmin, getApplications, updateApplicationStatus, downloadDocument, getContactMessages, setStudentPassword, uploadImage };
+

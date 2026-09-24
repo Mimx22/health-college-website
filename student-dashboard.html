@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - Jos Medical College</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3.7">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="toast.js"></script>
     <script src="config.js"></script>
-    <script src="script.js" defer></script>
+    <script src="script.js?v=3.7" defer></script>
     <style>
         .dashboard-container {
             padding: 4rem 0;
@@ -98,7 +98,6 @@
         /* Main Content Areas */
         .dashboard-content {
             display: none;
-            /* Switched via script */
         }
 
         .dashboard-content.active {
@@ -174,6 +173,36 @@
             color: var(--text-light);
         }
 
+        /* Documents Styles */
+        .doc-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .doc-card {
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-light);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .doc-card i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .doc-card h4 {
+            font-size: 0.95rem;
+            color: var(--secondary-color);
+            margin: 0.5rem 0;
+        }
+
         /* Notification Styles */
         .notification-list {
             display: grid;
@@ -204,6 +233,11 @@
             }
         }
     </style>
+    <!-- Medical Career College Official Favicons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 </head>
 
 <body>
@@ -232,36 +266,19 @@
                     <p id="sidebarEmail">student@email.com</p>
                 </div>
                 <ul class="sidebar-menu">
-                    <li><a href="#" class="active" onclick="switchTab('profile')"><i class="fas fa-user"></i> My
-                            Profile</a></li>
-                    <li><a href="#" onclick="switchTab('admission')"><i class="fas fa-file-pdf"></i> Admission
-                            Letter</a></li>
-                    <li><a href="#" onclick="switchTab('courses')"><i class="fas fa-book-medical"></i> Courses &
-                            Staff</a></li>
-                    <li><a href="#" onclick="switchTab('notifications')"><i class="fas fa-bell"></i> Notifications</a>
-                    </li>
+                    <li><a href="#" class="active" onclick="switchTab('profile')"><i class="fas fa-user"></i> My Profile</a></li>
+                    <li><a href="#" onclick="switchTab('admission')"><i class="fas fa-file-pdf"></i> Admission Letter</a></li>
+                    <li><a href="#" onclick="switchTab('documents')"><i class="fas fa-folder-open"></i> My Documents</a></li>
+                    <li><a href="#" onclick="switchTab('courses')"><i class="fas fa-book-medical"></i> Courses & Staff</a></li>
+                    <li><a href="#" onclick="switchTab('notifications')"><i class="fas fa-bell"></i> Notifications</a></li>
                 </ul>
             </aside>
 
             <section class="dashboard-main">
                 <!-- Profile Tab -->
                 <div id="tab-profile" class="dashboard-content content-card active">
-                    <div class="profile-header">
-                        <div class="profile-pic-container" id="profilePicTrigger">
-                            <img id="currentProfilePic" src="" alt="Profile Photo" style="display: none;">
-                            <i class="fas fa-user" id="defaultAvatar"></i>
-                            <div class="photo-overlay edit-mode-only"
-                                onclick="document.getElementById('photoUpload').click()">
-                                <span>Change Photo</span>
-                            </div>
-                        </div>
-                        <input type="file" id="photoUpload" accept="image/png, image/jpeg" style="display: none;">
-                        <div id="photoPreviewLabel" class="edit-mode-only"
-                            style="font-size: 0.85rem; color: var(--primary-color); margin-top: -1rem; margin-bottom: 1rem; cursor: pointer;"
-                            onclick="document.getElementById('photoUpload').click()">
-                            Click to change photo
-                        </div>
-                        <h3 id="profileNameHeader" style="margin-bottom: 0.2rem;">Loading...</h3>
+                    <div class="profile-header" style="text-align: center; margin-bottom: 2rem;">
+                        <h3 id="profileNameHeader" style="margin-bottom: 0.2rem; font-size: 1.5rem; color: var(--secondary-color);">Loading...</h3>
                         <p id="profileIdHeader" style="color: var(--text-light); font-size: 0.9rem;">ID: Loading...</p>
                     </div>
 
@@ -274,7 +291,7 @@
                                     title="Full name cannot be changed here.">
                             </div>
                             <div class="profile-item">
-                                <label>Student ID</label>
+                                <label>Student ID / App No</label>
                                 <p id="viewId" class="view-text view-mode-only">Loading...</p>
                                 <input type="text" id="editId" class="form-control edit-mode-only" disabled
                                     title="Student ID cannot be changed.">
@@ -288,19 +305,26 @@
                             <div class="profile-item">
                                 <label>Email Address</label>
                                 <p id="viewEmail" class="view-text view-mode-only">Loading...</p>
-                                <input type="email" id="editEmail" class="form-control edit-mode-only" required>
+                                <input type="email" id="editEmail" class="form-control edit-mode-only" disabled title="Email is tied to your account.">
                             </div>
                             <div class="profile-item">
                                 <label>Phone Number</label>
                                 <p id="viewPhone" class="view-text view-mode-only">Loading...</p>
                                 <input type="tel" id="editPhone" class="form-control edit-mode-only" required>
                             </div>
+                            <div class="profile-item">
+                                <label>Admission Status</label>
+                                <p id="viewStatus" style="color: #2e7d32; font-weight: bold;">Approved</p>
+                            </div>
                         </div>
 
-                        <div style="margin-top: 3rem; display: flex; gap: 1rem; justify-content: flex-end;">
+                        <div style="margin-top: 2.5rem; display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-secondary view-mode-only" onclick="openModal('changePasswordModal')">
+                                <i class="fas fa-key"></i> Change Password
+                            </button>
                             <button type="button" id="editProfileBtn" class="btn btn-primary view-mode-only"
                                 onclick="enterEditMode()">
-                                <i class="fas fa-edit"></i> Edit Profile
+                                <i class="fas fa-edit"></i> Edit Phone
                             </button>
                             <button type="button" id="cancelEditBtn" class="btn btn-cancel edit-mode-only"
                                 onclick="exitEditMode()">
@@ -311,80 +335,81 @@
                             </button>
                         </div>
                     </form>
+                </div>
 
-                    <!-- Quick Actions Row -->
-                    <div class="view-mode-only"
-                        style="margin-top: 3rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
-                        <button class="btn btn-secondary" onclick="openModal('receiptModal')"><i
-                                class="fas fa-upload"></i> Upload Receipt</button>
-                        <button class="btn btn-secondary" onclick="openModal('announcementModal')"><i
-                                class="fas fa-bullhorn"></i> Current Announcements</button>
-                    </div>
-
-                    <!-- Toast Notification -->
-                    <div id="successToast"
-                        style="position: fixed; bottom: 2rem; right: 2rem; background: #4caf50; color: white; padding: 1rem 2rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; z-index: 3000;">
-                        <i class="fas fa-check-circle"></i> Profile updated successfully!
+                <!-- Documents Tab -->
+                <div id="tab-documents" class="dashboard-content content-card">
+                    <h2><i class="fas fa-folder-open"></i> My Submitted Documents</h2>
+                    <p style="color: var(--text-light); margin-bottom: 2rem;">Access your authenticated application uploads securely from the server.</p>
+                    <div class="doc-list" id="studentDocsGrid">
+                        <div class="doc-card">
+                            <i class="fas fa-file-pdf"></i>
+                            <h4>SSCE / WAEC / NECO Result</h4>
+                            <button class="btn btn-secondary" onclick="downloadStudentDoc(0)"><i class="fas fa-download"></i> View File</button>
+                        </div>
+                        <div class="doc-card">
+                            <i class="fas fa-id-card"></i>
+                            <h4>Birth Certificate / Declaration</h4>
+                            <button class="btn btn-secondary" onclick="downloadStudentDoc(1)"><i class="fas fa-download"></i> View File</button>
+                        </div>
+                        <div class="doc-card">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <h4>LGA Certificate of Origin</h4>
+                            <button class="btn btn-secondary" onclick="downloadStudentDoc(2)"><i class="fas fa-download"></i> View File</button>
+                        </div>
+                        <div class="doc-card">
+                            <i class="fas fa-user-circle"></i>
+                            <h4>Passport Photograph</h4>
+                            <button class="btn btn-secondary" onclick="downloadStudentDoc(3)"><i class="fas fa-download"></i> View File</button>
+                        </div>
+                        <div class="doc-card">
+                            <i class="fas fa-file-signature"></i>
+                            <h4>Primary School Certificate</h4>
+                            <button class="btn btn-secondary" onclick="downloadStudentDoc(4)"><i class="fas fa-download"></i> View File</button>
+                        </div>
+                        <div class="doc-card">
+                            <i class="fas fa-file-medical"></i>
+                            <h4>Medical Certificate / Other</h4>
+                            <button class="btn btn-secondary" onclick="downloadStudentDoc(5)"><i class="fas fa-download"></i> View File</button>
+                        </div>
                     </div>
                 </div>
 
-
-
-                <!-- Upload Receipt Modal -->
-                <div id="receiptModal" class="modal-overlay">
+                <!-- Change Password Modal -->
+                <div id="changePasswordModal" class="modal-overlay">
                     <div class="modal-card">
-                        <span class="modal-close-x" onclick="closeModal('receiptModal')">&times;</span>
+                        <span class="modal-close-x" onclick="closeModal('changePasswordModal')">&times;</span>
                         <div class="modal-header">
-                            <h2>Upload Payment Receipt</h2>
-                            <p>Please upload a clear copy of your payment evidence</p>
+                            <h2>Change Password</h2>
+                            <p>Update your portal account password.</p>
                         </div>
-                        <form id="receiptUploadForm">
+                        <form id="changePasswordForm">
                             <div class="form-group" style="margin-bottom: 1rem;">
-                                <label for="receiptType">Payment Type</label>
-                                <select id="receiptType" class="form-control" required>
-                                    <option value="Tuition">Tuition Fee</option>
-                                    <option value="Registration">Registration Fee</option>
-                                    <option value="Hostel">Hostel Fee</option>
-                                </select>
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword" class="form-control" required placeholder="••••••••">
                             </div>
                             <div class="form-group" style="margin-bottom: 1rem;">
-                                <label for="receiptFile">Select File (PDF/JPG)</label>
-                                <input type="file" id="receiptFile" class="form-control" required>
+                                <label for="newPortalPassword">New Password</label>
+                                <input type="password" id="newPortalPassword" class="form-control" required minlength="6" placeholder="••••••••">
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-cancel"
-                                    onclick="closeModal('receiptModal')">Cancel</button>
-                                <button type="submit" class="btn btn-primary">Upload Receipt</button>
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label for="confirmPortalPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPortalPassword" class="form-control" required minlength="6" placeholder="••••••••">
+                            </div>
+                            <div class="modal-footer" style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem;">
+                                <button type="button" class="btn btn-cancel" onclick="closeModal('changePasswordModal')">Cancel</button>
+                                <button type="submit" class="btn btn-primary" id="changePassSubmitBtn">Update Password</button>
                             </div>
                         </form>
                     </div>
                 </div>
-
-                <!-- Announcement Modal -->
-                <div id="announcementModal" class="modal-overlay">
-                    <div class="modal-card">
-                        <span class="modal-close-x" onclick="closeModal('announcementModal')">&times;</span>
-                        <div class="modal-header">
-                            <h2>Announcements</h2>
-                        </div>
-                        <div class="notification-list" id="modalAnnouncementList">
-                            <!-- Populated from notifications -->
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" onclick="closeModal('announcementModal')">Got
-                                it</button>
-                        </div>
-                    </div>
-                </div>
-
 
                 <!-- Admission Letter Tab -->
                 <div id="tab-admission" class="dashboard-content content-card">
                     <h2><i class="fas fa-certificate"></i> Admission Letter</h2>
                     <div style="text-align: center; padding: 2rem;">
                         <i class="fas fa-file-pdf" style="font-size: 5rem; color: #e53935; margin-bottom: 2rem;"></i>
-                        <p style="margin-bottom: 2rem; font-size: 1.1rem;">Your provisional admission letter is ready
-                            for download.</p>
+                        <p style="margin-bottom: 2rem; font-size: 1.1rem;">Your provisional admission letter is ready for download.</p>
                         <div style="display: flex; gap: 1rem; justify-content: center;">
                             <button class="btn btn-primary" onclick="downloadLetterPortal()"><i
                                     class="fas fa-download"></i> Download PDF</button>
@@ -422,14 +447,12 @@
                     <h2><i class="fas fa-envelope-open-text"></i> Notifications</h2>
                     <div class="notification-list">
                         <div class="notification-item">
-                            <div class="notification-date">February 14, 2026</div>
-                            <div class="notification-text">Welcome to Jos Medical College! Your admission has been
-                                confirmed.</div>
+                            <div class="notification-date">Current Session</div>
+                            <div class="notification-text">Welcome to Jos Medical College! Your admission has been confirmed and account activated.</div>
                         </div>
                         <div class="notification-item">
-                            <div class="notification-date">February 12, 2026</div>
-                            <div class="notification-text">Registration for the 2026/2027 academic session is now open.
-                            </div>
+                            <div class="notification-date">Academic Notice</div>
+                            <div class="notification-text">Registration for the 2026/2027 academic session is now open.</div>
                         </div>
                     </div>
                 </div>
@@ -444,14 +467,8 @@
                     <img src="assets/newlogo.png" alt="Jos Medical College" class="footer-logo-img">
                 </div>
                 <p>Let us help you help others</p>
-                <p
-                    style="font-size: 0.85rem; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
-                    “Official website of Medical Career College of Health Science and Technology, Jos — built with
-                    modern web technologies.”
-                </p>
             </div>
             <div class="footer-col contact-col" id="adminSupportDashboard">
-                <!-- Fetched from common area -->
             </div>
         </div>
         <div class="footer-bottom">

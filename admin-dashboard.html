@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Jos Medical College</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3.7">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -13,23 +13,66 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="toast.js"></script>
     <script src="config.js"></script>
-    <script src="script.js" defer></script>
+    <script src="script.js?v=3.7" defer></script>
     <style>
         .admin-container {
-            padding: 4rem 0;
+            padding: 2.5rem 0 4rem;
             min-height: 80vh;
+        }
+
+        /* Top Module Navigation Tabs */
+        .admin-nav-tabs {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-tab-btn {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-light);
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .admin-tab-btn:hover {
+            color: var(--primary-color);
+            background: var(--bg-light);
+        }
+
+        .admin-tab-btn.active {
+            color: #fff;
+            background: var(--primary-color);
+        }
+
+        .admin-tab-content {
+            display: none;
+        }
+
+        .admin-tab-content.active {
+            display: block;
         }
 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
         }
 
         .stat-card {
             background: var(--white);
-            padding: 2rem;
+            padding: 1.75rem;
             border-radius: 12px;
             box-shadow: var(--shadow-sm);
             border: 1px solid var(--border-color);
@@ -37,7 +80,7 @@
         }
 
         .stat-card h3 {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: var(--text-light);
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -45,7 +88,7 @@
         }
 
         .stat-card .value {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 700;
             color: var(--secondary-color);
         }
@@ -66,51 +109,51 @@
 
         th {
             background-color: var(--bg-light);
-            padding: 1.2rem;
+            padding: 1rem 1.2rem;
             font-weight: 600;
+            font-size: 0.9rem;
             color: var(--secondary-color);
             border-bottom: 2px solid var(--border-color);
         }
 
         td {
-            padding: 1.2rem;
+            padding: 1rem 1.2rem;
             border-bottom: 1px solid var(--border-color);
             vertical-align: middle;
+            font-size: 0.92rem;
         }
 
         tr:last-child td {
             border-bottom: none;
         }
 
-        /* --- Status Badges --- */
         .status-badge {
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
-            padding: 0.35rem 0.85rem;
+            padding: 0.3rem 0.75rem;
             border-radius: 20px;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.3px;
         }
 
-        .status-pending {
+        .status-pending, .status-draft {
             background: #fff8e1;
             color: #e65100;
         }
 
-        .status-approved {
+        .status-approved, .status-published {
             background: #e8f5e9;
             color: #1b5e20;
         }
 
-        .status-rejected {
+        .status-rejected, .status-archived {
             background: #ffebee;
             color: #b71c1c;
         }
 
-        /* --- Actions Cell --- */
         .actions {
             display: flex;
             gap: 0.5rem;
@@ -118,35 +161,33 @@
         }
 
         .btn-sm {
-            padding: 0.45rem 1rem;
-            font-size: 0.82rem;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.8rem;
             border-radius: 6px;
-            cursor: pointer;
-            border: none;
-            font-weight: 600;
-            transition: opacity 0.2s;
         }
 
-        .btn-sm:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        /* --- Filter Bar --- */
         .filter-bar {
             display: flex;
-            gap: 0.6rem;
-            margin-bottom: 1.2rem;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn-group {
+            display: flex;
+            gap: 0.5rem;
             flex-wrap: wrap;
         }
 
         .filter-btn {
-            padding: 0.5rem 1.4rem;
-            border-radius: 24px;
-            border: 2px solid var(--border-color);
+            padding: 0.45rem 1.1rem;
+            border-radius: 20px;
+            border: 1.5px solid var(--border-color);
             background: var(--white);
             color: var(--text-light);
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -163,44 +204,22 @@
             color: #fff;
         }
 
-        .filter-btn[data-filter="Pending"].active {
-            background: #e65100;
-            border-color: #e65100;
-        }
-
-        .filter-btn[data-filter="Approved"].active {
-            background: #1b5e20;
-            border-color: #1b5e20;
-        }
-
-        .filter-btn[data-filter="Rejected"].active {
-            background: #b71c1c;
-            border-color: #b71c1c;
-        }
-
-        .btn-approve {
-            background-color: var(--primary-color);
-            color: var(--white);
-        }
-
-        .btn-reject {
-            background-color: #e53935;
-            color: var(--white);
-        }
+        .btn-approve { background-color: var(--primary-color); color: var(--white); }
+        .btn-reject { background-color: #e53935; color: var(--white); }
 
         .empty-state {
-            padding: 5rem;
+            padding: 4rem 2rem;
             text-align: center;
             color: var(--text-light);
         }
 
         .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1.5rem;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
             opacity: 0.3;
         }
 
-        /* --- Docs Modal --- */
+        /* Modal Overlay & Card */
         .docs-modal-overlay {
             display: none;
             position: fixed;
@@ -213,24 +232,22 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        .docs-modal-overlay.active {
-            opacity: 1;
-        }
+        .docs-modal-overlay.active { opacity: 1; }
+        
         .docs-modal {
             background: var(--white);
             border-radius: 16px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.25);
             width: 100%;
-            max-width: 560px;
-            max-height: 85vh;
+            max-width: 620px;
+            max-height: 90vh;
             display: flex;
             flex-direction: column;
             transform: translateY(20px);
             transition: transform 0.3s ease;
         }
-        .docs-modal-overlay.active .docs-modal {
-            transform: translateY(0);
-        }
+        .docs-modal-overlay.active .docs-modal { transform: translateY(0); }
+
         .docs-modal-header {
             display: flex;
             align-items: center;
@@ -239,7 +256,7 @@
             border-bottom: 1px solid var(--border-color);
         }
         .docs-modal-header h3 {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--secondary-color);
             margin: 0;
@@ -260,41 +277,66 @@
         .docs-modal-close:hover { background: #e0e0e0; }
         .docs-modal-body {
             overflow-y: auto;
-            padding: 1rem 1.5rem;
+            padding: 1.5rem;
             flex: 1;
         }
-        .doc-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.85rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            margin-bottom: 0.6rem;
-            transition: border-color 0.2s;
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
         }
-        .doc-item:hover { border-color: var(--primary-color); }
-        .doc-item-info {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
+        @media(max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
         }
-        .doc-icon {
-            font-size: 1.4rem;
-            color: var(--primary-color);
-            width: 24px;
-            text-align: center;
+
+        .cms-form-group {
+            margin-bottom: 1.25rem;
         }
-        .doc-label {
+        .cms-form-group label {
+            display: block;
+            font-size: 0.85rem;
             font-weight: 600;
-            font-size: 0.88rem;
+            margin-bottom: 0.4rem;
             color: var(--secondary-color);
         }
-        .doc-download-btn {
-            white-space: nowrap;
-            font-size: 0.82rem;
+        .cms-form-group input,
+        .cms-form-group select,
+        .cms-form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+        .cms-form-group input:focus,
+        .cms-form-group select:focus,
+        .cms-form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .image-preview-box {
+            margin-top: 0.5rem;
+            display: none;
+            border-radius: 8px;
+            overflow: hidden;
+            max-height: 150px;
+            border: 1px solid var(--border-color);
+        }
+        .image-preview-box img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
         }
     </style>
+    <!-- Medical Career College Official Favicons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 </head>
 
 <body>
@@ -308,7 +350,8 @@
             <nav class="main-nav">
                 <ul class="nav-list">
                     <li><a href="index.html" class="nav-link">Home</a></li>
-                    <li><a href="portal.html" class="nav-link">Portal Access</a></li>
+                    <li><a href="news.html" class="nav-link">News & Events</a></li>
+                    <li><a href="portal.html" class="nav-link">Portals</a></li>
                     <li><a href="#" class="nav-link active">Admin Dashboard</a></li>
                 </ul>
             </nav>
@@ -318,60 +361,146 @@
     <main>
         <section class="page-header">
             <div class="container">
-                <h1>Admission Management</h1>
-                <p>Review and process student applications.</p>
+                <h1>Institutional Management Portal</h1>
+                <p>Manage admissions, academic news articles, campus events, and announcements.</p>
             </div>
         </section>
 
         <div class="container admin-container">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Total Applications</h3>
-                    <div class="value" id="totalApps">0</div>
+            <!-- Navigation Tabs -->
+            <div class="admin-nav-tabs">
+                <button class="admin-tab-btn active" onclick="switchAdminTab('admissions')">
+                    <i class="fas fa-user-graduate"></i> Admissions
+                </button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('news')">
+                    <i class="fas fa-newspaper"></i> News Articles
+                </button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('events')">
+                    <i class="fas fa-calendar-alt"></i> Campus Events
+                </button>
+            </div>
+
+            <!-- TAB 1: ADMISSIONS -->
+            <div id="tabContent-admissions" class="admin-tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Applications</h3>
+                        <div class="value" id="totalApps">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending</h3>
+                        <div class="value" id="pendingApps" style="color: #e65100;">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Approved</h3>
+                        <div class="value" id="approvedApps" style="color: #1b5e20;">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Rejected</h3>
+                        <div class="value" id="rejectedApps" style="color: #b71c1c;">0</div>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <h3>Pending</h3>
-                    <div class="value" id="pendingApps" style="color: #e65100;">0</div>
+
+                <div class="filter-bar">
+                    <div class="filter-btn-group" id="filterBar">
+                        <button class="filter-btn active" data-filter="All">All</button>
+                        <button class="filter-btn" data-filter="Pending">🟡 Pending</button>
+                        <button class="filter-btn" data-filter="Approved">🟢 Approved</button>
+                        <button class="filter-btn" data-filter="Rejected">🔴 Rejected</button>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <h3>Approved</h3>
-                    <div class="value" id="approvedApps" style="color: #1b5e20;">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Rejected</h3>
-                    <div class="value" id="rejectedApps" style="color: #b71c1c;">0</div>
+
+                <div class="applications-table-wrapper">
+                    <table id="applicationsTable">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Program</th>
+                                <th>Date Applied</th>
+                                <th>Status</th>
+                                <th>Documents</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicationsBody">
+                            <!-- Populated via script.js -->
+                        </tbody>
+                    </table>
+                    <div id="emptyState" class="empty-state" style="display: none;">
+                        <i class="fas fa-inbox"></i>
+                        <p>No applications found for this filter.</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Filter Buttons -->
-            <div class="filter-bar" id="filterBar">
-                <button class="filter-btn active" data-filter="All">All</button>
-                <button class="filter-btn" data-filter="Pending">🟡 Pending</button>
-                <button class="filter-btn" data-filter="Approved">🟢 Approved</button>
-                <button class="filter-btn" data-filter="Rejected">🔴 Rejected</button>
-            </div>
+            <!-- TAB 2: NEWS ARTICLES CMS -->
+            <div id="tabContent-news" class="admin-tab-content">
+                <div class="filter-bar">
+                    <div>
+                        <h2 style="font-size: 1.3rem; color: var(--secondary-color); margin: 0;">Published & Draft Articles</h2>
+                        <p style="font-size: 0.85rem; color: var(--text-light); margin: 0;">Create and publish announcements or academic news.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openCreateNewsModal()">
+                        <i class="fas fa-plus"></i> Create Article
+                    </button>
+                </div>
 
-            <div class="applications-table-wrapper">
-                <table id="applicationsTable">
-                    <thead>
-                        <tr>
-                            <th>Student Name</th>
-                            <th>Program</th>
-                            <th>Date Applied</th>
-                            <th>Status</th>
-                            <th>Documents</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="applicationsBody">
-                        <!-- Content loaded via script.js -->
-                    </tbody>
-                </table>
-                <div id="emptyState" class="empty-state" style="display: none;">
-                    <i class="fas fa-inbox"></i>
-                    <p>No applications found for this filter.</p>
+                <div class="applications-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title & Excerpt</th>
+                                <th>Category</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminNewsBody">
+                            <!-- Populated via script.js -->
+                        </tbody>
+                    </table>
+                    <div id="emptyNewsState" class="empty-state" style="display: none;">
+                        <i class="fas fa-newspaper"></i>
+                        <p>No news articles created yet. Click "Create Article" to publish one.</p>
+                    </div>
                 </div>
             </div>
+
+            <!-- TAB 3: CAMPUS EVENTS CMS -->
+            <div id="tabContent-events" class="admin-tab-content">
+                <div class="filter-bar">
+                    <div>
+                        <h2 style="font-size: 1.3rem; color: var(--secondary-color); margin: 0;">Institutional Events & Schedules</h2>
+                        <p style="font-size: 0.85rem; color: var(--text-light); margin: 0;">Schedule ceremonies, workshops, and academic calendar dates.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openCreateEventModal()">
+                        <i class="fas fa-plus"></i> Create Event
+                    </button>
+                </div>
+
+                <div class="applications-table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Event Title & Venue</th>
+                                <th>Date & Time</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminEventsBody">
+                            <!-- Populated via script.js -->
+                        </tbody>
+                    </table>
+                    <div id="emptyEventsState" class="empty-state" style="display: none;">
+                        <i class="fas fa-calendar-alt"></i>
+                        <p>No events scheduled yet. Click "Create Event" to add one.</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -382,10 +511,8 @@
                     <img src="assets/newlogo.png" alt="Jos Medical College" class="footer-logo-img">
                 </div>
                 <p>Let us help you help others</p>
-                <p
-                    style="font-size: 0.85rem; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
-                    “Official website of Medical Career College of Health Science and Technology, Jos — built with
-                    modern web technologies.”
+                <p style="font-size: 0.85rem; opacity: 0.7; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem; margin-top: 1rem;">
+                    “Official website of Medical Career College of Health Science and Technology, Jos — built with modern web technologies.”
                 </p>
             </div>
             <div class="footer-col contact-col">
@@ -393,11 +520,8 @@
                 <address>
                     <p>No.2 Rikkos Jos</p>
                     <p>Plateau State, Nigeria</p>
-                    <p style="margin-top: 0.5rem;"><i class="fab fa-whatsapp" style="color: #25D366;"></i> <a
-                            href="https://wa.me/2349066498487"
-                            style="color: inherit; text-decoration: none;">09066498487</a></p>
-                    <p><i class="fas fa-envelope"></i> <a href="mailto:e.medicalcareeracademy.edu@gmail.com"
-                            style="color: inherit; text-decoration: none;">e.medicalcareeracademy.edu@gmail.com</a></p>
+                    <p style="margin-top: 0.5rem;"><i class="fab fa-whatsapp" style="color: #25D366;"></i> <a href="https://wa.me/2349066498487" style="color: inherit; text-decoration: none;">09066498487</a></p>
+                    <p><i class="fas fa-envelope"></i> <a href="mailto:e.medicalcareeracademy.edu@gmail.com" style="color: inherit; text-decoration: none;">e.medicalcareeracademy.edu@gmail.com</a></p>
                 </address>
             </div>
         </div>
@@ -419,6 +543,189 @@
             </div>
             <div class="docs-modal-body" id="docsModalList">
                 <!-- Populated by script.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- News Article Editor Modal -->
+    <div id="newsModal" class="docs-modal-overlay" onclick="if(event.target===this)closeNewsModal()">
+        <div class="docs-modal">
+            <div class="docs-modal-header">
+                <h3 id="newsModalTitle">Create News Article</h3>
+                <button class="docs-modal-close" onclick="closeNewsModal()" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="docs-modal-body">
+                <form id="newsEditorForm">
+                    <input type="hidden" id="newsEditId">
+                    <input type="hidden" id="newsFeaturedImageUrl">
+
+                    <div class="cms-form-group">
+                        <label for="newsTitleInput">Article Title *</label>
+                        <input type="text" id="newsTitleInput" required placeholder="e.g. 2026 Academic Matriculation Ceremony Announced">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="cms-form-group">
+                            <label for="newsCategorySelect">Category *</label>
+                            <select id="newsCategorySelect" required>
+                                <option value="Academic">Academic</option>
+                                <option value="Admissions">Admissions</option>
+                                <option value="Campus Life">Campus Life</option>
+                                <option value="Health & Research">Health & Research</option>
+                                <option value="General Announcement">General Announcement</option>
+                            </select>
+                        </div>
+                        <div class="cms-form-group">
+                            <label for="newsStatusSelect">Status *</label>
+                            <select id="newsStatusSelect" required>
+                                <option value="published">Published (Live immediately)</option>
+                                <option value="draft">Draft (Private admin preview)</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="cms-form-group">
+                        <label for="newsExcerptInput">Summary / Excerpt * (Max 300 chars)</label>
+                        <textarea id="newsExcerptInput" rows="2" required maxlength="300" placeholder="Brief 1-2 sentence preview for cards and search results..."></textarea>
+                    </div>
+
+                    <div class="cms-form-group">
+                        <label for="newsContentInput">Full Article Body *</label>
+                        <textarea id="newsContentInput" rows="6" required placeholder="Write the complete news article details here..."></textarea>
+                    </div>
+
+                    <input type="hidden" id="newsVideoUrl">
+
+                    <div class="cms-form-group">
+                        <label for="newsImageFileInput">Featured Image (Optional)</label>
+                        <input type="file" id="newsImageFileInput" accept="image/jpeg,image/png,image/jpg,image/webp">
+                        <div id="newsImagePreviewBox" class="image-preview-box">
+                            <img id="newsImagePreviewImg" src="" alt="Image Preview">
+                        </div>
+                    </div>
+
+                    <div class="cms-form-group">
+                        <label for="newsVideoFileInput"><i class="fas fa-play-circle"></i> Upload Video or Audio from Device (MP4, MP3, WebM, MOV, WAV)</label>
+                        <input type="file" id="newsVideoFileInput" accept="video/mp4,video/webm,video/ogg,video/quicktime,video/x-matroska,audio/mp3,audio/mpeg,audio/wav,audio/ogg,audio/aac,audio/m4a">
+                        <div id="newsVideoPreviewBox" style="display:none; margin-top:0.5rem; border-radius:8px; overflow:hidden; border:1px solid var(--border-color);">
+                            <video id="newsVideoPreviewPlayer" controls style="width:100%; max-height:220px; display:block; background:#000;"></video>
+                            <audio id="newsAudioPreviewPlayer" controls style="width:100%; display:none; padding:0.5rem; background:#f8f9fa;"></audio>
+                        </div>
+                    </div>
+
+                    <div class="cms-form-group">
+                        <label for="newsVideoUrlInput">Or Paste Video Link (YouTube / Vimeo / Web URL)</label>
+                        <input type="url" id="newsVideoUrlInput" placeholder="e.g. https://www.youtube.com/watch?v=... or https://youtu.be/...">
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+                        <button type="button" class="btn btn-secondary" onclick="closeNewsModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="saveNewsBtn">Save Article</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Editor Modal -->
+    <div id="eventModal" class="docs-modal-overlay" onclick="if(event.target===this)closeEventModal()">
+        <div class="docs-modal">
+            <div class="docs-modal-header">
+                <h3 id="eventModalTitle">Schedule Campus Event</h3>
+                <button class="docs-modal-close" onclick="closeEventModal()" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="docs-modal-body">
+                <form id="eventEditorForm">
+                    <input type="hidden" id="eventEditId">
+                    <input type="hidden" id="eventFeaturedImageUrl">
+
+                    <div class="cms-form-group">
+                        <label for="eventTitleInput">Event Title *</label>
+                        <input type="text" id="eventTitleInput" required placeholder="e.g. Annual Community Health Outreach 2026">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="cms-form-group">
+                            <label for="eventCategorySelect">Category *</label>
+                            <select id="eventCategorySelect" required>
+                                <option value="Academic Schedule">Academic Schedule</option>
+                                <option value="Ceremony">Ceremony</option>
+                                <option value="Workshop">Workshop</option>
+                                <option value="Seminar">Seminar</option>
+                                <option value="Health Outreach">Health Outreach</option>
+                                <option value="Sports & Social">Sports & Social</option>
+                            </select>
+                        </div>
+                        <div class="cms-form-group">
+                            <label for="eventStatusSelect">Status *</label>
+                            <select id="eventStatusSelect" required>
+                                <option value="published">Published (Live immediately)</option>
+                                <option value="draft">Draft (Private admin preview)</option>
+                                <option value="archived">Archived</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="cms-form-group">
+                            <label for="eventDateInput">Event Date *</label>
+                            <input type="date" id="eventDateInput" required>
+                        </div>
+                        <div class="cms-form-group">
+                            <label for="eventStartTimeInput">Start Time *</label>
+                            <input type="text" id="eventStartTimeInput" required placeholder="e.g. 10:00 AM">
+                        </div>
+                    </div>
+
+                    <div class="cms-form-group">
+                        <label for="eventLocationInput">Venue / Location *</label>
+                        <input type="text" id="eventLocationInput" required placeholder="e.g. College Main Auditorium, Jos">
+                    </div>
+
+                    <div class="cms-form-group">
+                        <label for="eventShortDescInput">Short Description *</label>
+                        <textarea id="eventShortDescInput" rows="2" required maxlength="300" placeholder="Brief summary of the event..."></textarea>
+                    </div>
+
+                    <div class="cms-form-group">
+                        <label for="eventFullDescInput">Full Event Details *</label>
+                        <textarea id="eventFullDescInput" rows="5" required placeholder="Comprehensive schedule, speakers, and requirements..."></textarea>
+                    </div>
+
+                    <input type="hidden" id="eventVideoUrl">
+
+                    <div class="cms-form-group">
+                        <label for="eventImageFileInput">Event Banner / Image (Optional)</label>
+                        <input type="file" id="eventImageFileInput" accept="image/jpeg,image/png,image/jpg,image/webp">
+                        <div id="eventImagePreviewBox" class="image-preview-box">
+                            <img id="eventImagePreviewImg" src="" alt="Image Preview">
+                        </div>
+                    </div>
+
+                    <div class="cms-form-group">
+                        <label for="eventVideoFileInput"><i class="fas fa-play-circle"></i> Upload Event Video or Audio from Device (MP4, MP3, WebM, MOV, WAV)</label>
+                        <input type="file" id="eventVideoFileInput" accept="video/mp4,video/webm,video/ogg,video/quicktime,video/x-matroska,audio/mp3,audio/mpeg,audio/wav,audio/ogg,audio/aac,audio/m4a">
+                        <div id="eventVideoPreviewBox" style="display:none; margin-top:0.5rem; border-radius:8px; overflow:hidden; border:1px solid var(--border-color);">
+                            <video id="eventVideoPreviewPlayer" controls style="width:100%; max-height:220px; display:block; background:#000;"></video>
+                            <audio id="eventAudioPreviewPlayer" controls style="width:100%; display:none; padding:0.5rem; background:#f8f9fa;"></audio>
+                        </div>
+                    </div>
+
+                    <div class="cms-form-group">
+                        <label for="eventVideoUrlInput">Or Paste Event Video Link (YouTube / Vimeo / Web URL)</label>
+                        <input type="url" id="eventVideoUrlInput" placeholder="e.g. https://www.youtube.com/watch?v=...">
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+                        <button type="button" class="btn btn-secondary" onclick="closeEventModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="saveEventBtn">Save Event</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
