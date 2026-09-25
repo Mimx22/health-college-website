@@ -135,6 +135,11 @@ const downloadDocument = async (req, res, next) => {
     try {
         const { id, docIndex } = req.params;
         
+        // Ensure id is a valid 24-character hexadecimal ObjectId
+        if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ success: false, message: 'Invalid application ID format' });
+        }
+
         const student = await Student.findById(id);
         if (!student) {
             return res.status(404).json({ success: false, message: 'Application not found' });
@@ -146,14 +151,22 @@ const downloadDocument = async (req, res, next) => {
         }
 
         const doc = student.documents[index];
-        const filePath = doc.storagePath;
+        const filePath = path.resolve(doc.storagePath);
+        const uploadsDir = path.resolve(__dirname, '../uploads');
+
+        // Path traversal guard: verify file resides within intended uploads directory
+        if (!filePath.startsWith(uploadsDir)) {
+            return res.status(403).json({ success: false, message: 'Invalid document storage path' });
+        }
         
         if (!fs.existsSync(filePath)) {
             return res.status(404).json({ success: false, message: 'Document file is missing from server storage' });
         }
 
-        res.download(filePath, doc.originalName, (err) => {
-            if (err) {
+        const safeDownloadName = path.basename(doc.originalName).replace(/[^a-zA-Z0-9._\-]/g, '_');
+
+        res.download(filePath, safeDownloadName, (err) => {
+            if (err && !res.headersSent) {
                 console.error("Error downloading file:", err);
             }
         });

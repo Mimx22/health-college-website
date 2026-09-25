@@ -16,9 +16,17 @@ const errorHandler = (err, req, res, next) => {
     // Catch file filter rejections (dangerous/unsupported types from fileFilter cb)
     if (
         message.includes('Dangerous file types') ||
-        message.includes('Images and PDFs only')
+        message.includes('Invalid file type') ||
+        message.includes('Invalid filename') ||
+        message.includes('Images and PDFs only') ||
+        message.includes('Path traversal')
     ) {
         statusCode = 400;
+    }
+
+    if (err.type === 'entity.too.large') {
+        statusCode = 413;
+        message = 'Request entity too large.';
     }
 
     res.status(statusCode).json({

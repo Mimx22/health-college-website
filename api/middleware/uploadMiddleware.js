@@ -53,13 +53,20 @@ const upload = multer({
 
 // Admissions document upload: strictly enforce 5MB per file and PDF/JPG/PNG only
 const admissionFileFilter = (req, file, cb) => {
-    const dangerousExtensions = /\.(exe|sh|bat|cmd|php|js|html|htm|py|pl|rb)$/i;
-    if (dangerousExtensions.test(file.originalname)) {
+    // Check for suspicious/path traversal characters in originalname
+    const cleanBasename = path.basename(file.originalname);
+    if (!cleanBasename || cleanBasename.includes('..') || cleanBasename.includes('/') || cleanBasename.includes('\\')) {
+        return cb(new Error('Invalid filename. Path traversal detected.'));
+    }
+
+    // Explicitly reject dangerous executable/script extensions
+    const dangerousExtensions = /\.(exe|sh|bat|cmd|php|phtml|php5|js|html|htm|py|pl|rb|cgi|vbs|wsf|jar|svg|scr|dll)$/i;
+    if (dangerousExtensions.test(cleanBasename)) {
         return cb(new Error('Dangerous file types are not allowed!'));
     }
 
     const allowedExtensions = /^(jpg|jpeg|png|pdf)$/i;
-    const ext = path.extname(file.originalname).replace('.', '').toLowerCase();
+    const ext = path.extname(cleanBasename).replace('.', '').toLowerCase();
     const isAllowedExt = allowedExtensions.test(ext);
     
     const allowedMimes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
@@ -74,7 +81,10 @@ const admissionFileFilter = (req, file, cb) => {
 
 const admissionUpload = multer({
     storage,
-    limits: { fileSize: 5 * 1024 * 1024 }, // Strictly 5MB per document
+    limits: { 
+        fileSize: 5 * 1024 * 1024, // Strictly 5MB per document
+        files: 6 // Strictly max 6 files
+    },
     fileFilter: admissionFileFilter
 });
 

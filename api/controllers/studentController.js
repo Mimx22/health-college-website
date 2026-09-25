@@ -48,6 +48,38 @@ const generateApplicationNumber = async () => {
     return appNumber;
 };
 
+// List of valid programs recognized by the institution
+const ALLOWED_PROGRAMS = [
+    'Nursing Sciences',
+    'Medical Laboratory Sciences',
+    'Pharmacy',
+    'Public Health',
+    'Biochemistry',
+    'Microbiology',
+    'Community Health',
+    'Computer Sciences',
+    'Health Information Management',
+    'Mass Communication',
+    'Public Administration',
+    'Business Administration',
+    'Office and Hotel Management',
+    'Computer Science'
+];
+
+// Helper to escape HTML characters for safe rendering in emails and views
+const escapeHTML = (str) => {
+    if (!str || typeof str !== 'string') return '';
+    return str.replace(/[&<>'"]/g, 
+        tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag] || tag)
+    );
+};
+
 // 1. Admission Application Submission
 const registerStudent = async (req, res, next) => {
     try {
@@ -56,18 +88,35 @@ const registerStudent = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Exactly 6 documents are required.' });
         }
 
+        // Whitelist allowed fields from req.body to reject unexpected fields or object injection
+        const allowedBodyKeys = ['fullName', 'email', 'phone', 'program', 'password'];
+        const receivedKeys = Object.keys(req.body);
+        for (const key of receivedKeys) {
+            if (!allowedBodyKeys.includes(key)) {
+                await cleanupFiles(req.files);
+                return res.status(400).json({ success: false, message: `Unexpected field in request: ${key}` });
+            }
+        }
+
         let { fullName, email, phone, program } = req.body;
         
-        fullName = fullName ? fullName.trim() : '';
-        email = email ? email.trim().toLowerCase() : '';
-        phone = phone ? phone.trim() : '';
-        program = program ? program.trim() : '';
-
-        if (!fullName || fullName.length > 100) {
+        // Strict type enforcement to prevent NoSQL operator objects ({ $gt: "" })
+        if (typeof fullName !== 'string' || typeof email !== 'string' || typeof phone !== 'string' || typeof program !== 'string') {
             await cleanupFiles(req.files);
-            return res.status(400).json({ success: false, message: 'A valid full name (maximum 100 characters) is required.' });
+            return res.status(400).json({ success: false, message: 'Invalid field types in request.' });
         }
-        if (!email || email.length > 100 || !/^\S+@\S+\.\S+$/.test(email)) {
+
+        fullName = fullName.trim();
+        email = email.trim().toLowerCase();
+        phone = phone.trim();
+        program = program.trim();
+
+        // Length and regex validation
+        if (!fullName || fullName.length < 2 || fullName.length > 100) {
+            await cleanupFiles(req.files);
+            return res.status(400).json({ success: false, message: 'A valid full name (2 to 100 characters) is required.' });
+        }
+        if (!email || email.length > 100 || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
             await cleanupFiles(req.files);
             return res.status(400).json({ success: false, message: 'A valid email address is required.' });
         }
@@ -75,9 +124,9 @@ const registerStudent = async (req, res, next) => {
             await cleanupFiles(req.files);
             return res.status(400).json({ success: false, message: 'A valid phone number is required.' });
         }
-        if (!program || program.length > 100) {
+        if (!program || !ALLOWED_PROGRAMS.includes(program)) {
             await cleanupFiles(req.files);
-            return res.status(400).json({ success: false, message: 'A valid program is required.' });
+            return res.status(400).json({ success: false, message: 'Please select a valid program from the offered programs list.' });
         }
 
         // Validate each uploaded document for size (<= 5MB) and true file signature (magic bytes)
@@ -103,24 +152,29 @@ const registerStudent = async (req, res, next) => {
             }
         }
 
-        const existingStudent = await Student.findOne({ email, admissionStatus: 'Pending' });
+        // Check for existing pending application (prevent duplicate submissions)
+        const existingStudent = await Student.findOne({ email: String(email), admissionStatus: 'Pending' });
         if (existingStudent) {
             await cleanupFiles(req.files);
             return res.status(409).json({ success: false, message: 'An application with this email is already pending.' });
         }
 
+        // Strip path traversal characters from originalName before storing metadata
         const documentsMetadata = req.files.map(file => ({
-            originalName: file.originalname,
+            originalName: path.basename(file.originalname).replace(/[^a-zA-Z0-9._\-]/g, '_'),
             storedName: file.filename,
-            mimeType: file.mimetype,
+            mimeType: file.mimetype.toLowerCase(),
             size: file.size,
             storagePath: file.path
         }));
 
         const applicationNumber = await generateApplicationNumber();
 
+        // Escape HTML for XSS prevention in display contexts while keeping text clean
+        const safeFullName = escapeHTML(fullName);
+
         const student = new Student({
-            fullName,
+            fullName: safeFullName,
             email,
             phone,
             program,
@@ -133,7 +187,7 @@ const registerStudent = async (req, res, next) => {
 
         await student.save();
 
-        const emailSent = await sendConfirmationEmail(email, fullName, applicationNumber);
+        const emailSent = await sendConfirmationEmail(email, safeFullName, applicationNumber);
 
         res.status(201).json({
             success: true,
@@ -455,6 +509,10 @@ const resetPassword = async (req, res, next) => {
 const getStudentDocument = async (req, res, next) => {
     try {
         const { docIndex } = req.params;
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ success: false, message: 'Authentication required' });
+        }
+
         const student = await Student.findById(req.user.id);
 
         if (!student) {
@@ -467,14 +525,22 @@ const getStudentDocument = async (req, res, next) => {
         }
 
         const doc = student.documents[index];
-        const filePath = doc.storagePath;
+        const filePath = path.resolve(doc.storagePath);
+        const uploadsDir = path.resolve(__dirname, '../uploads');
+
+        // Path traversal guard: verify file resides within intended uploads directory
+        if (!filePath.startsWith(uploadsDir)) {
+            return res.status(403).json({ success: false, message: 'Invalid document storage path' });
+        }
 
         if (!fs.existsSync(filePath)) {
             return res.status(404).json({ success: false, message: 'Document file is missing from server storage' });
         }
 
-        res.download(filePath, doc.originalName, (err) => {
-            if (err) {
+        const safeDownloadName = path.basename(doc.originalName).replace(/[^a-zA-Z0-9._\-]/g, '_');
+
+        res.download(filePath, safeDownloadName, (err) => {
+            if (err && !res.headersSent) {
                 console.error('Error downloading student document:', err);
             }
         });
