@@ -1323,6 +1323,23 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Mobile / Touch Submenu Toggle (Degree & Diploma accordion on mobile)
+    document.querySelectorAll('.submenu-toggle').forEach(function (subToggle) {
+        subToggle.addEventListener('click', function (e) {
+            if (window.innerWidth <= 768) {
+                const subParent = this.closest('.dropdown-submenu');
+                if (subParent) {
+                    const subMenu = subParent.querySelector('.submenu');
+                    if (subMenu) {
+                        e.preventDefault();
+                        const isSubVisible = window.getComputedStyle(subMenu).display === 'block';
+                        subMenu.style.display = isSubVisible ? 'none' : 'block';
+                    }
+                }
+            }
+        });
+    });
+
     // --- PROGRAM SECTION NAV TOGGLE ---
     window.openProgramSection = function (type) {
         const degreeSection = document.getElementById('degree-section');
