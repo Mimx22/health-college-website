@@ -265,18 +265,19 @@ button[disabled]:active,
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: var(--white);
-    box-shadow: var(--shadow-md);
-    min-width: 200px;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    min-width: 230px;
     opacity: 0;
     visibility: hidden;
     transform: translateY(10px);
     transition: var(--transition);
-    border-radius: 4px;
-    overflow: hidden;
+    border-radius: 8px;
+    overflow: visible;
     padding: 0.5rem 0;
     z-index: 1001;
-    /* Ensure above header shadow/content */
+    border: 1px solid rgba(0, 70, 150, 0.1);
 }
 
 .dropdown:hover .dropdown-menu {
@@ -380,16 +381,32 @@ button[disabled]:active,
         position: absolute;
         top: 0;
         left: 100%;
-        background-color: var(--white);
-        box-shadow: var(--shadow-md);
-        min-width: 220px;
+        background-color: #ffffff !important;
+        background: #ffffff !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        min-width: 250px;
         opacity: 0;
         visibility: hidden;
         transform: translateX(10px);
         transition: var(--transition);
-        border-radius: 4px;
+        border-radius: 8px;
         padding: 0.5rem 0;
         z-index: 1002;
+        border: 1px solid rgba(0, 70, 150, 0.1);
+    }
+
+    .submenu li a {
+        display: block;
+        padding: 0.75rem 1.4rem;
+        color: #334155 !important;
+        font-size: 0.92rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .submenu li a:hover {
+        background-color: #f1f5f9 !important;
+        color: var(--primary-color) !important;
     }
 
     .dropdown-submenu:hover .submenu {
@@ -4143,15 +4160,17 @@ button[disabled]:active,
 }
 
 #admissions-preview .btn-secondary {
-    background-color: #ffffff !important;
-    color: #007ea7 !important;
+    background-color: #007ea7 !important;
+    color: #ffffff !important;
     border: 2px solid #007ea7 !important;
 }
 
 #admissions-preview .btn-secondary:hover {
-    background-color: #007ea7 !important;
+    background-color: #00a8e8 !important;
     color: #ffffff !important;
-    border-color: #007ea7 !important;
+    border-color: #00a8e8 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 168, 232, 0.35);
 }
 
 /* Mobile & Small Screen Tweaks */
@@ -4532,12 +4551,13 @@ button[disabled]:active,
     }
 
     .dropdown-menu {
-        background: #ffffff;
+        background: #ffffff !important;
         box-shadow: 0 16px 45px rgba(0, 33, 113, 0.12), 0 2px 8px rgba(0,0,0,0.04);
         border-radius: 12px;
         border: 1px solid rgba(0, 70, 150, 0.08);
         padding: 0.6rem 0;
         min-width: 260px;
+        overflow: visible !important;
         transform: translateY(12px);
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }

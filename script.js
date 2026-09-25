@@ -103,41 +103,53 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Smooth Scrolling & Hash Handling
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    document.querySelectorAll('a[href^="#"], a[href*="programs.html#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
-            const targetId = this.getAttribute('href');
-            if (targetId === '#' || targetId === '') return;
+            const rawHref = this.getAttribute('href');
+            if (!rawHref || rawHref === '#') return;
+
+            const isProgramsPage = window.location.pathname.endsWith('programs.html') || window.location.pathname.endsWith('programs');
+            const hasHash = rawHref.indexOf('#') !== -1;
+            const targetHash = hasHash ? rawHref.substring(rawHref.indexOf('#')) : '';
 
             // Handle special program filter anchors on programs page
-            if (targetId === '#degree' || targetId === '#diploma' || targetId === '#all-programs') {
+            if (isProgramsPage && (targetHash === '#degree' || targetHash === '#diploma' || targetHash === '#all-programs')) {
                 const hasProgramSections = document.getElementById('degree-section') || document.getElementById('diploma-section');
                 if (hasProgramSections) {
                     e.preventDefault();
                     if (mainNav && mainNav.classList.contains('active')) {
                         mainNav.classList.remove('active');
                     }
-                    const filterName = targetId === '#degree' ? 'degree' : (targetId === '#diploma' ? 'diploma' : 'all');
+                    const filterName = targetHash === '#degree' ? 'degree' : (targetHash === '#diploma' ? 'diploma' : 'all');
                     if (typeof window.openProgramSection === 'function') {
                         window.openProgramSection(filterName);
-                        return;
-                    } else if (typeof window.filterPrograms === 'function') {
-                        window.filterPrograms(filterName, true);
+                        history.pushState(null, '', targetHash);
                         return;
                     }
                 }
             }
 
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                e.preventDefault();
-                if (mainNav && mainNav.classList.contains('active')) {
-                    mainNav.classList.remove('active');
+            if (rawHref.startsWith('#')) {
+                const targetElement = document.querySelector(rawHref);
+                if (targetElement) {
+                    e.preventDefault();
+                    if (mainNav && mainNav.classList.contains('active')) {
+                        mainNav.classList.remove('active');
+                    }
+                    const headerHeight = header ? header.offsetHeight : 0;
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - headerHeight;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
                 }
-                const headerHeight = header ? header.offsetHeight : 0;
-                const targetPosition = targetElement.getBoundingClientRect().top + window.scrollY - headerHeight;
-                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
             }
         });
+    });
+
+    // Listen to hashchange on window to handle navigation from other pages or browser history
+    window.addEventListener('hashchange', function () {
+        const hash = window.location.hash.toLowerCase().replace('#', '');
+        if ((hash === 'diploma' || hash === 'degree') && typeof window.openProgramSection === 'function') {
+            window.openProgramSection(hash);
+        }
     });
 
     // Hero Background Slider
