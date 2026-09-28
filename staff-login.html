@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Login - Jos Medical College</title>
-    <link rel="stylesheet" href="style.css?v=3.7">
+    <link rel="stylesheet" href="style.css?v=5.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -136,28 +136,19 @@
         <section class="login-section">
             <div class="login-card">
                 <div class="login-header">
-                    <h1>Staff Portal Login</h1>
-                    <p>Enter your Email and Password to access the teaching dashboard.</p>
+                    <h1>Staff Portal</h1>
+                    <p style="color: #e65100; background: #fff3e0; padding: 0.75rem; border-radius: 8px; margin-top: 1rem; font-weight: 500;">
+                        <i class="fas fa-tools"></i> The Staff Portal is temporarily undergoing scheduled maintenance. Please check back shortly or contact the College Administration.
+                    </p>
                 </div>
 
-                <form id="staffLoginForm" class="login-form">
-                    <div class="form-group">
-                        <label for="staffEmail">Email Address</label>
-                        <input type="email" id="staffEmail" name="staffEmail" placeholder="e.g. staff@josmed.edu.ng"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label for="staffPassword">Password</label>
-                        <input type="password" id="staffPassword" name="staffPassword" placeholder="••••••••" required>
-                    </div>
-
-                    <a href="staff-forgot-password.html" class="forgot-password">Forgot Password?</a>
-
-                    <button type="submit" class="btn btn-primary login-btn">Login to Staff Portal</button>
-                </form>
+                <div style="text-align: center; margin: 2rem 0;">
+                    <a href="index.html" class="btn btn-secondary" style="display: inline-block; padding: 0.85rem 1.75rem; border-radius: 6px;">Return to Home</a>
+                </div>
 
                 <div class="login-footer">
-                    <p>Issues with access? <a href="contact.html">Contact IT Support</a></p>
+                    <p>Teaching accounts are provisioned by the College Administration.</p>
+                    <p style="margin-top: 0.5rem;"><a href="contact.html">Contact Administration / Support</a></p>
                 </div>
             </div>
         </section>
@@ -216,7 +207,7 @@
 
     <script src="toast.js"></script>
     <script src="config.js"></script>
-    <script src="script.js?v=3.7"></script>
+    <script src="script.js?v=5.0"></script>
 </body>
 
 </html>

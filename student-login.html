@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Login - Jos Medical College</title>
-    <link rel="stylesheet" href="style.css?v=4.6">
+    <link rel="stylesheet" href="style.css?v=5.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="toast.js?v=4.6"></script>
     <script src="config.js?v=4.6"></script>
-    <script src="script.js?v=4.6" defer></script>
+    <script src="script.js?v=5.0" defer></script>
     <style>
         .login-section {
             min-height: 80vh;
@@ -203,11 +203,14 @@
                 <form id="passwordSetupForm">
                     <div class="form-group">
                         <label for="newPassword">New Password</label>
-                        <input type="password" id="newPassword" required minlength="6">
+                        <input type="password" id="newPassword" required minlength="8">
+                        <small style="display: block; margin-top: 0.35rem; font-size: 0.82rem; color: var(--text-light); line-height: 1.4;">
+                            Password must be at least 8 characters and begin with an uppercase letter.
+                        </small>
                     </div>
                     <div class="form-group">
                         <label for="confirmPassword">Confirm Password</label>
-                        <input type="password" id="confirmPassword" required minlength="6">
+                        <input type="password" id="confirmPassword" required minlength="8">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-cancel"

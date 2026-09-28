@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const { sendConfirmationEmail, sendPasswordResetEmail } = require('../utils/emailService');
 const { isValidMagicBytes } = require('../utils/magicBytes');
+const { validateStudentPassword } = require('../utils/passwordValidator');
 
 // Helper to clean up uploaded files on error from local storage
 const cleanupFiles = async (files) => {
@@ -211,8 +212,9 @@ const setupPassword = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Token and password are required' });
         }
 
-        if (password.length < 6) {
-            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+        const passwordValidation = validateStudentPassword(password);
+        if (!passwordValidation.isValid) {
+            return res.status(400).json({ success: false, message: passwordValidation.message });
         }
 
         const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
@@ -399,8 +401,9 @@ const changePassword = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Please provide current and new password' });
         }
 
-        if (newPassword.length < 6) {
-            return res.status(400).json({ success: false, message: 'New password must be at least 6 characters long' });
+        const passwordValidation = validateStudentPassword(newPassword);
+        if (!passwordValidation.isValid) {
+            return res.status(400).json({ success: false, message: passwordValidation.message });
         }
 
         const student = await Student.findById(req.user.id).select('+password');
@@ -474,8 +477,9 @@ const resetPassword = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Token and new password are required' });
         }
 
-        if (password.length < 6) {
-            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+        const passwordValidation = validateStudentPassword(password);
+        if (!passwordValidation.isValid) {
+            return res.status(400).json({ success: false, message: passwordValidation.message });
         }
 
         const hashedToken = crypto.createHash('sha256').update(token).digest('hex');

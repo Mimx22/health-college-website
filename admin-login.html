@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - Jos Medical College</title>
-    <link rel="stylesheet" href="style.css?v=3.7">
+    <link rel="stylesheet" href="style.css?v=5.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="toast.js"></script>
     <script src="config.js"></script>
-    <script src="script.js?v=3.7" defer></script>
+    <script src="script.js?v=5.0" defer></script>
     <style>
         .login-section {
             min-height: 80vh;
@@ -171,6 +171,9 @@
                 const data = await response.json();
                 
                 if (data.success && data.token) {
+                    localStorage.removeItem('jmc_logged_staff');
+                    localStorage.removeItem('jmc_staff_token');
+                    localStorage.removeItem('jmc_logged_student');
                     localStorage.setItem('jmc_token', data.token);
                     localStorage.setItem('adminToken', data.token);
                     if (typeof showToast === 'function') {

@@ -8,7 +8,11 @@ const {
     downloadDocument, 
     getContactMessages, 
     setStudentPassword,
-    uploadImage
+    uploadImage,
+    getAllStaffAdmin,
+    createStaffAdmin,
+    resetStaffPasswordAdmin,
+    deleteStaffAdmin
 } = require('../controllers/adminController');
 const {
     getAllNewsAdmin,
@@ -36,6 +40,12 @@ router.put('/applications/:id/status', protect, authorizeRoles('admin'), updateA
 router.post('/applications/:id/password', protect, authorizeRoles('admin'), setStudentPassword);
 router.get('/applications/:id/documents/:docIndex', protect, authorizeRoles('admin'), downloadDocument);
 router.get('/messages', protect, authorizeRoles('admin'), getContactMessages);
+
+// Admin Staff Management Endpoints
+router.get('/staff', protect, authorizeRoles('admin'), getAllStaffAdmin);
+router.post('/staff', protect, authorizeRoles('admin'), createStaffAdmin);
+router.put('/staff/:id/password', protect, authorizeRoles('admin'), resetStaffPasswordAdmin);
+router.delete('/staff/:id', protect, authorizeRoles('admin'), deleteStaffAdmin);
 
 // Admin Image Upload
 router.post('/upload-image', protect, authorizeRoles('admin'), upload.single('image'), uploadImage);

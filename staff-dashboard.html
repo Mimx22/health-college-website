@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Staff Dashboard - Jos Medical College</title>
-    <link rel="stylesheet" href="style.css?v=3.7">
+    <link rel="stylesheet" href="style.css?v=5.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="toast.js"></script>
     <script src="config.js"></script>
-    <script src="script.js?v=3.7" defer></script>
+    <script src="script.js?v=5.0" defer></script>
     <style>
         .dashboard-container {
             padding: 4rem 0;
@@ -254,7 +254,18 @@
     </header>
 
     <main class="dashboard-container">
-        <div class="container dashboard-grid">
+        <div class="container" style="max-width: 700px; margin: 4rem auto; text-align: center; background: var(--white); padding: 3rem; border-radius: 12px; box-shadow: var(--shadow-md);">
+            <div style="font-size: 3.5rem; color: #e65100; margin-bottom: 1.5rem;">
+                <i class="fas fa-tools"></i>
+            </div>
+            <h2 style="color: var(--secondary-color); margin-bottom: 1rem;">Staff Portal Maintenance</h2>
+            <p style="color: var(--text-light); line-height: 1.6; margin-bottom: 2rem;">
+                The Teaching Staff Portal is temporarily offline for scheduled administrative upgrades. Internal staff tools will be restored shortly.
+            </p>
+            <a href="index.html" class="btn btn-primary" style="display: inline-block; padding: 0.85rem 1.75rem; border-radius: 6px;">Return to Main Website</a>
+        </div>
+        <!-- Temporarily Disabled Staff Dashboard Layout
+        <div class="container dashboard-grid" style="display: none;">
             <aside class="sidebar-nav">
                 <div class="staff-short-info">
                     <div class="staff-avatar" id="staffAvatarInitial">T</div>
@@ -415,6 +426,7 @@
                 </div>
             </section>
         </div>
+        -->
     </main>
 
     <!-- Staff Change Password Modal -->

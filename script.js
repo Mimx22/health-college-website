@@ -966,8 +966,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                if (newPassword.length < 6) {
-                    showToast('Password must be at least 6 characters long.', 'error');
+                if (newPassword.length < 8) {
+                    showToast('Password must be at least 8 characters long.', 'error');
+                    return;
+                }
+
+                if (!/^[A-Z]/.test(newPassword)) {
+                    showToast('Password must begin with an uppercase letter (A-Z).', 'error');
                     return;
                 }
 
@@ -1285,20 +1290,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- ADMIN LOGIN LOGIC ---
 
-    // RBAC - Access Restrictions
+    // RBAC - Access Restrictions (Student Protection)
     function enforceRBAC() {
         const path = window.location.pathname;
         const student = localStorage.getItem('jmc_logged_student');
-        const staff = localStorage.getItem('jmc_logged_staff');
 
-        if (path.includes('admin-dashboard.html') && staff) {
-            showToast('Access denied: Staff cannot access the admin panel.', 'error');
-            setTimeout(() => window.location.href = 'staff-dashboard.html', 1500);
-        }
-        if (path.includes('staff-dashboard.html') && student) {
-            showToast('Access denied: Students cannot access the staff portal.', 'error');
-            setTimeout(() => window.location.href = 'student-dashboard.html', 1500);
-        }
+        // Protect student dashboard from unauthorized cross-role confusion if needed
     }
     enforceRBAC();
 
@@ -1526,6 +1523,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (tabName === 'news') loadAdminNews();
         if (tabName === 'events') loadAdminEvents();
+        if (tabName === 'staff') loadAdminStaff();
     };
 
     // --- Admin News Logic ---
@@ -2118,6 +2116,240 @@ document.addEventListener('DOMContentLoaded', () => {
             } finally {
                 saveBtn.disabled = false;
                 saveBtn.innerText = 'Save Event';
+            }
+        });
+    }
+
+    // ==========================================
+    // STAFF MANAGEMENT CMS (ADMIN DASHBOARD)
+    // ==========================================
+    let allAdminStaff = [];
+
+    async function loadAdminStaff() {
+        const token = localStorage.getItem('jmc_token');
+        if (!token) return;
+
+        const body = document.getElementById('adminStaffBody');
+        const empty = document.getElementById('emptyStaffState');
+        if (!body) return;
+
+        body.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:2rem;"><i class="fas fa-spinner fa-spin"></i> Loading staff members...</td></tr>`;
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/admin/staff`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const result = await res.json();
+
+            if (res.ok && result.data) {
+                allAdminStaff = result.data;
+                renderAdminStaff(allAdminStaff);
+            } else {
+                body.innerHTML = `<tr><td colspan="6" style="text-align:center;color:red;">Failed to load staff list</td></tr>`;
+            }
+        } catch (err) {
+            console.error('Admin staff fetch error:', err);
+            body.innerHTML = `<tr><td colspan="6" style="text-align:center;color:red;">Error connecting to server</td></tr>`;
+        }
+    }
+
+    function renderAdminStaff(staffList) {
+        const body = document.getElementById('adminStaffBody');
+        const empty = document.getElementById('emptyStaffState');
+        if (!body) return;
+
+        body.innerHTML = '';
+        if (staffList.length === 0) {
+            if (empty) empty.style.display = 'block';
+            return;
+        }
+        if (empty) empty.style.display = 'none';
+
+        staffList.forEach(member => {
+            const tr = document.createElement('tr');
+            const statusClass = member.accountStatus === 'active' ? 'status-approved' : 'status-pending';
+
+            tr.innerHTML = `
+                <td>
+                    <div style="font-weight:600; color:var(--secondary-color); font-size:0.95rem;">${member.fullName}</div>
+                    <div style="font-size:0.82rem; color:var(--text-light); margin-top:0.15rem;">
+                        <i class="fas fa-envelope"></i> ${member.email}
+                    </div>
+                </td>
+                <td><strong style="color:var(--primary-color);">${member.staffId || 'Pending'}</strong></td>
+                <td>${member.department || 'General Health Sciences'}</td>
+                <td>${member.phone || '<span style="color:var(--text-light);">None</span>'}</td>
+                <td><span class="status-badge ${statusClass}">${member.accountStatus || 'active'}</span></td>
+                <td class="actions">
+                    <button class="btn btn-sm btn-secondary" onclick="openAdminResetStaffPassModal('${member._id}', '${member.fullName.replace(/'/g, "\\'")}')" title="Reset Staff Password">
+                        <i class="fas fa-key"></i> Reset Pass
+                    </button>
+                    <button class="btn btn-sm btn-reject" onclick="deleteStaffAdmin('${member._id}', '${member.fullName.replace(/'/g, "\\'")}')" title="Remove Staff Account">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+            `;
+            body.appendChild(tr);
+        });
+    }
+
+    window.openCreateStaffModal = function() {
+        const form = document.getElementById('createStaffForm');
+        if (form) form.reset();
+        const modal = document.getElementById('staffModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+    };
+
+    window.closeCreateStaffModal = function() {
+        const modal = document.getElementById('staffModal');
+        if (modal) {
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+    };
+
+    window.openAdminResetStaffPassModal = function(staffId, staffName) {
+        document.getElementById('resetStaffIdHidden').value = staffId;
+        const sub = document.getElementById('resetStaffModalSubtitle');
+        if (sub) sub.innerText = `Update login password for ${staffName}.`;
+        document.getElementById('adminNewStaffPassword').value = '';
+        const modal = document.getElementById('adminResetStaffPassModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+    };
+
+    window.closeAdminResetStaffPassModal = function() {
+        const modal = document.getElementById('adminResetStaffPassModal');
+        if (modal) {
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+    };
+
+    window.deleteStaffAdmin = async function(staffId, staffName) {
+        if (!confirm(`Are you sure you want to remove staff member "${staffName}"? This cannot be undone.`)) {
+            return;
+        }
+
+        const token = localStorage.getItem('jmc_token');
+        try {
+            const res = await fetch(`${API_BASE_URL}/admin/staff/${staffId}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (res.ok) {
+                showToast(data.message || 'Staff removed successfully', 'success');
+                loadAdminStaff();
+            } else {
+                showToast(data.message || 'Failed to remove staff', 'error');
+            }
+        } catch (err) {
+            console.error('Delete staff error:', err);
+            showToast('Network error while deleting staff member', 'error');
+        }
+    };
+
+    // Staff form submissions in Admin Dashboard
+    const createStaffForm = document.getElementById('createStaffForm');
+    if (createStaffForm) {
+        createStaffForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const token = localStorage.getItem('jmc_token');
+            const submitBtn = document.getElementById('saveStaffBtn');
+
+            const fullName = document.getElementById('newStaffName').value.trim();
+            const email = document.getElementById('newStaffEmail').value.trim();
+            const phone = document.getElementById('newStaffPhone').value.trim();
+            const department = document.getElementById('newStaffDept').value;
+            const staffId = document.getElementById('newStaffId').value.trim();
+            const password = document.getElementById('newStaffPassword').value;
+
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters long.', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Creating Staff...';
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/staff`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ fullName, email, phone, department, staffId, password })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    showToast(data.message || 'Staff account created successfully!', 'success', 5000);
+                    closeCreateStaffModal();
+                    createStaffForm.reset();
+                    loadAdminStaff();
+                } else {
+                    showToast(data.message || 'Failed to create staff account', 'error');
+                }
+            } catch (err) {
+                console.error('Staff creation error:', err);
+                showToast('Network error while creating staff account', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Create Staff Account';
+            }
+        });
+    }
+
+    const adminResetStaffPassForm = document.getElementById('adminResetStaffPassForm');
+    if (adminResetStaffPassForm) {
+        adminResetStaffPassForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const token = localStorage.getItem('jmc_token');
+            const submitBtn = document.getElementById('adminSaveStaffPassBtn');
+            const staffId = document.getElementById('resetStaffIdHidden').value;
+            const newPassword = document.getElementById('adminNewStaffPassword').value;
+
+            if (newPassword.length < 6) {
+                showToast('New password must be at least 6 characters long.', 'error');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Updating Password...';
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/admin/staff/${staffId}/password`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ newPassword })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    showToast(data.message || 'Password updated successfully!', 'success');
+                    closeAdminResetStaffPassModal();
+                    adminResetStaffPassForm.reset();
+                } else {
+                    showToast(data.message || 'Failed to update staff password', 'error');
+                }
+            } catch (err) {
+                console.error('Staff reset pass error:', err);
+                showToast('Network error while resetting password', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Update Password';
             }
         });
     }

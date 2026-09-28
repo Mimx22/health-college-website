@@ -1,11 +1,17 @@
-const Admin = require('../models/Admin');
+const mongoose = require('mongoose');
+let Admin = require('../models/Admin');
+if (!Admin || typeof Admin.findOne !== 'function') {
+    Admin = mongoose.models.Admin || mongoose.model('Admin');
+}
 const Student = require('../models/Student');
+const Staff = require('../models/Staff');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 const Contact = require('../models/Contact');
 const { sendApprovalEmail, sendRejectionEmail } = require('../utils/emailService');
+const { validateStudentPassword } = require('../utils/passwordValidator');
 
 // Generate JWT token
 const generateToken = (id, role) => {
@@ -190,8 +196,9 @@ const setStudentPassword = async (req, res, next) => {
         const { id } = req.params;
         const { password } = req.body;
 
-        if (!password || password.length < 6) {
-            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+        const passwordValidation = validateStudentPassword(password);
+        if (!passwordValidation.isValid) {
+            return res.status(400).json({ success: false, message: passwordValidation.message });
         }
 
         const student = await Student.findById(id).select('+password');
@@ -242,5 +249,131 @@ const uploadImage = async (req, res, next) => {
     }
 };
 
-module.exports = { loginAdmin, getApplications, updateApplicationStatus, downloadDocument, getContactMessages, setStudentPassword, uploadImage };
+// Staff Administrative Management (Admin Only)
+const getAllStaffAdmin = async (req, res, next) => {
+    try {
+        const staffList = await Staff.find({})
+            .sort({ createdAt: -1 })
+            .select('-password -resetPasswordToken -resetPasswordExpires')
+            .lean();
+        res.status(200).json({ success: true, count: staffList.length, data: staffList });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const createStaffAdmin = async (req, res, next) => {
+    try {
+        const { fullName, email, phone, department, staffId, password } = req.body;
+
+        if (!fullName || !email || !password) {
+            return res.status(400).json({ success: false, message: 'Full name, email, and password are required' });
+        }
+
+        if (password.length < 6) {
+            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+        }
+
+        const cleanEmail = email.trim().toLowerCase();
+        const existingStaff = await Staff.findOne({ email: cleanEmail });
+        if (existingStaff) {
+            return res.status(409).json({ success: false, message: 'A staff member with this email already exists' });
+        }
+
+        let assignedStaffId = staffId ? staffId.trim() : null;
+        if (!assignedStaffId) {
+            const year = new Date().getFullYear();
+            const randomCode = Math.floor(100 + Math.random() * 900);
+            assignedStaffId = `STF/${year}/${randomCode}`;
+        }
+
+        // Check if staffId already taken
+        const existingId = await Staff.findOne({ staffId: assignedStaffId });
+        if (existingId) {
+            assignedStaffId = `STF/${new Date().getFullYear()}/${Math.floor(1000 + Math.random() * 9000)}`;
+        }
+
+        const staff = new Staff({
+            fullName: fullName.trim(),
+            email: cleanEmail,
+            phone: phone ? phone.trim() : '',
+            staffId: assignedStaffId,
+            department: department ? department.trim() : 'General Health Sciences',
+            role: 'staff',
+            password: password,
+            accountStatus: 'active'
+        });
+
+        await staff.save();
+
+        const staffData = staff.toObject();
+        delete staffData.password;
+
+        res.status(201).json({
+            success: true,
+            message: `Staff account successfully created for ${staff.fullName}`,
+            data: staffData
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const resetStaffPasswordAdmin = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { newPassword } = req.body;
+
+        if (!newPassword || newPassword.length < 6) {
+            return res.status(400).json({ success: false, message: 'New password must be at least 6 characters long' });
+        }
+
+        const staff = await Staff.findById(id).select('+password');
+        if (!staff) {
+            return res.status(404).json({ success: false, message: 'Staff member not found' });
+        }
+
+        staff.password = newPassword;
+        staff.accountStatus = 'active';
+        await staff.save();
+
+        res.status(200).json({
+            success: true,
+            message: `Password successfully updated for ${staff.fullName}`
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+const deleteStaffAdmin = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const staff = await Staff.findByIdAndDelete(id);
+        if (!staff) {
+            return res.status(404).json({ success: false, message: 'Staff member not found' });
+        }
+        res.status(200).json({
+            success: true,
+            message: `Staff account for ${staff.fullName} removed successfully`
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = {
+    loginAdmin,
+    getApplications,
+    updateApplicationStatus,
+    downloadDocument,
+    getContactMessages,
+    setStudentPassword,
+    uploadImage,
+    getAllStaffAdmin,
+    createStaffAdmin,
+    resetStaffPasswordAdmin,
+    deleteStaffAdmin
+};
+
 
