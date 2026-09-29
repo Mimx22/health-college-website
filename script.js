@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
         { id: 'stateOrigin',      label: 'Certificate of State of Origin' },
         { id: 'birthCertificate', label: 'Birth Certificate' },
         { id: 'nin',              label: 'NIN (National Identification Number)' },
-        { id: 'medicalFitness',   label: 'Medical Fitness Report' },
+        { id: 'jamb',             label: 'JAMB Result / Admission Slip' },
         { id: 'passportPhoto',    label: 'Passport Photograph' }
     ];
 
@@ -555,7 +555,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'Certificate of State of Origin',
             'Birth Certificate',
             'NIN (National Identification Number)',
-            'Medical Fitness Report',
+            'JAMB Result / Admission Slip',
             'Passport Photograph'
         ];
 
@@ -705,58 +705,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const studentIdInput = document.getElementById('studentId');
     if (studentIdInput) {
         studentIdInput.addEventListener('input', function (e) {
-            let cursorPosition = e.target.selectionStart;
-            let originalValue = e.target.value.toUpperCase();
-
-            // Extract just the alphanumeric characters
-            let digits = originalValue.replace(/[^A-Z0-9]/g, '');
-
-            // If they just type numbers, auto-prefix JMC
-            if (/^\d/.test(digits) && !digits.startsWith('JMC')) {
-                digits = 'JMC' + digits;
-            }
-
-            let formatted = '';
-            if (digits.length > 0) {
-                // PART 1: JMC
-                formatted = digits.substring(0, 3);
-
-                // PART 2: YYYY
-                if (digits.length > 3) {
-                    formatted += '/' + digits.substring(3, 7);
-                }
-
-                // PART 3: NNN
-                if (digits.length > 7) {
-                    formatted += '/' + digits.substring(7, 11);
-                }
-            }
-
-            // Only update if it actually changed to prevent cursor jumps
-            if (e.target.value !== formatted) {
-                e.target.value = formatted;
-
-                // Try to maintain cursor position (simple logic)
-                if (cursorPosition) {
-                    // If we added a slash, adjust cursor
-                    let slashesBefore = (formatted.substring(0, cursorPosition).match(/\//g) || []).length;
-                    let slashesAfter = (originalValue.substring(0, cursorPosition).match(/\//g) || []).length;
-                    if (slashesBefore > slashesAfter) cursorPosition++;
-                    e.target.setSelectionRange(cursorPosition, cursorPosition);
-                }
-            }
-        });
-
-        // Also handle backspace specifically for slashes
-        studentIdInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Backspace') {
-                const pos = this.selectionStart;
-                if (this.value[pos - 1] === '/') {
-                    // If they delete a slash, delete the character before it too
-                    this.value = this.value.substring(0, pos - 2) + this.value.substring(pos);
-                    this.setSelectionRange(pos - 2, pos - 2);
-                    e.preventDefault();
-                }
+            // Automatically uppercase input while allowing normal user typing of slashes or hyphens
+            const originalValue = e.target.value;
+            const upper = originalValue.toUpperCase();
+            if (originalValue !== upper) {
+                const pos = e.target.selectionStart;
+                e.target.value = upper;
+                if (pos) e.target.setSelectionRange(pos, pos);
             }
         });
     }
@@ -805,8 +760,8 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
 
             const rawId = document.getElementById('studentId').value.trim();
-            // Automatically convert slashes to hyphens and uppercase (e.g. jmc/2026/1550 -> JMC-2026-1550)
-            const studentId = rawId.replace(/\//g, '-').toUpperCase();
+            // Retain uppercase format directly supporting both MCH/2026/NS/56 and legacy JMC-2026-XXXX
+            const studentId = rawId.toUpperCase();
             const password = document.getElementById('password').value;
 
             try {

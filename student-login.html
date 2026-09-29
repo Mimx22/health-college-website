@@ -174,7 +174,7 @@
                 <form id="studentLoginForm" class="login-form">
                     <div class="form-group">
                         <label for="studentId">Student ID</label>
-                        <input type="text" id="studentId" name="studentId" placeholder="e.g. JMC-2026-564412" autocomplete="username" spellcheck="false" style="font-size: 1.05rem; padding: 0.95rem 1.1rem; width: 100%; letter-spacing: 0.5px; text-transform: uppercase;" required>
+                        <input type="text" id="studentId" name="studentId" placeholder="e.g. MCH/2026/NS/56" autocomplete="username" spellcheck="false" style="font-size: 1.05rem; padding: 0.95rem 1.1rem; width: 100%; letter-spacing: 0.5px; text-transform: uppercase;" required>
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
@@ -270,8 +270,8 @@
                     const password = document.getElementById('password').value;
                     const submitBtn = loginForm.querySelector('button[type="submit"]');
 
-                    // Normalize slashes to hyphens and uppercase (e.g. jmc/2026/1550 -> JMC-2026-1550)
-                    const studentId = rawInput.replace(/\//g, '-').toUpperCase();
+                    // Trim and uppercase ID (e.g. MCH/2026/NS/56 or historical JMC-2026-1550)
+                    const studentId = rawInput.toUpperCase();
 
                     if (!studentId || !password) {
                         if (typeof showToast === 'function') showToast('Please enter both Student ID and Password', 'error');

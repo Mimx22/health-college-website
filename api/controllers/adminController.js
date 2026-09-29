@@ -12,6 +12,7 @@ const fs = require('fs');
 const Contact = require('../models/Contact');
 const { sendApprovalEmail, sendRejectionEmail } = require('../utils/emailService');
 const { validateStudentPassword } = require('../utils/passwordValidator');
+const { generateStudentId } = require('../utils/idGenerator');
 
 // Generate JWT token
 const generateToken = (id, role) => {
@@ -90,9 +91,10 @@ const updateApplicationStatus = async (req, res, next) => {
         let activationToken = null;
 
         if (status === 'Approved') {
-            // Assign studentId if not already present
+            // Assign studentId in MCH format if not already present
             if (!student.studentId) {
-                student.studentId = student.applicationNumber; // Or use assigned matric number
+                const admissionYear = student.createdAt ? new Date(student.createdAt).getFullYear() : new Date().getFullYear();
+                student.studentId = await generateStudentId(admissionYear, student.program, student._id);
             }
             
             // Generate secure one-time activation token valid for 24h
@@ -209,7 +211,8 @@ const setStudentPassword = async (req, res, next) => {
         student.password = password;
         student.accountStatus = 'active';
         if (!student.studentId) {
-            student.studentId = student.applicationNumber;
+            const admissionYear = student.createdAt ? new Date(student.createdAt).getFullYear() : new Date().getFullYear();
+            student.studentId = await generateStudentId(admissionYear, student.program, student._id);
         }
 
         await student.save();

@@ -56,7 +56,12 @@ const studentSchema = new mongoose.Schema({
         type: String,
         default: null,
         sparse: true,
+        unique: true,
         index: true
+    },
+    legacyStudentId: {
+        type: String,
+        default: null
     },
     // Authentication & Portal Fields
     password: {

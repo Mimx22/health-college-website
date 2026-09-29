@@ -51,6 +51,7 @@ const generateApplicationNumber = async () => {
 
 // List of valid programs recognized by the institution
 const ALLOWED_PROGRAMS = [
+    // Degree Programs
     'Nursing Sciences',
     'Medical Laboratory Sciences',
     'Pharmacy',
@@ -60,6 +61,12 @@ const ALLOWED_PROGRAMS = [
     'Community Health',
     'Computer Sciences',
     'Health Information Management',
+    // New Official Diploma Programs
+    'Diploma in Community Health Extension Worker (CHEW)',
+    'Diploma in Public Health',
+    'Diploma in Dental Technology',
+    // Legacy / Historical Programs (Preserved to avoid breaking existing student data)
+    'Dental Technology',
     'Mass Communication',
     'Public Administration',
     'Business Administration',
