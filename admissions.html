@@ -100,6 +100,7 @@
                         <li>CERTIFICATE OF STATE OF ORIGIN</li>
                         <li>BIRTH CERTIFICATE</li>
                         <li>NIN (National Identification Number)</li>
+                        <li>JAMB RESULT</li>
                         <li>MEDICAL FITNESS REPORT</li>
                         <li>PASSPORT PHOTOGRAPHS (WHITE BACKGROUND)</li>
                     </ul>
@@ -193,9 +194,20 @@
                             </div>
 
                             <div class="form-group full-width">
-                                <label for="jamb">JAMB RESULT / ADMISSION SLIP <span class="label-info">PDF, JPG (Max 5MB)</span></label>
+                                <label for="jamb">JAMB RESULT <span class="label-info">PDF, JPG (Max 5MB)</span></label>
                                 <div class="file-upload-wrapper">
                                     <input type="file" id="jamb" name="jamb" accept=".pdf,.jpg,.jpeg" required>
+                                    <div class="file-upload-design">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <span>Click to upload or drag and drop</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="medicalFitness">MEDICAL FITNESS REPORT <span class="label-info">PDF, JPG (Max 5MB)</span></label>
+                                <div class="file-upload-wrapper">
+                                    <input type="file" id="medicalFitness" name="medicalFitness" accept=".pdf,.jpg,.jpeg" required>
                                     <div class="file-upload-design">
                                         <i class="fas fa-cloud-upload-alt"></i>
                                         <span>Click to upload or drag and drop</span>

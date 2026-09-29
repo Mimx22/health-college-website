@@ -91,9 +91,9 @@ const escapeHTML = (str) => {
 // 1. Admission Application Submission
 const registerStudent = async (req, res, next) => {
     try {
-        if (!req.files || req.files.length !== 6) {
+        if (!req.files || req.files.length !== 7) {
             await cleanupFiles(req.files);
-            return res.status(400).json({ success: false, message: 'Exactly 6 documents are required.' });
+            return res.status(400).json({ success: false, message: 'Exactly 7 documents are required.' });
         }
 
         // Whitelist allowed fields from req.body to reject unexpected fields or object injection

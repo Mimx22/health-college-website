@@ -83,7 +83,7 @@ const admissionUpload = multer({
     storage,
     limits: { 
         fileSize: 5 * 1024 * 1024, // Strictly 5MB per document
-        files: 6 // Strictly max 6 files
+        files: 7 // Strictly max 7 files
     },
     fileFilter: admissionFileFilter
 });

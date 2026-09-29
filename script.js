@@ -171,7 +171,8 @@ document.addEventListener('DOMContentLoaded', function () {
         { id: 'stateOrigin',      label: 'Certificate of State of Origin' },
         { id: 'birthCertificate', label: 'Birth Certificate' },
         { id: 'nin',              label: 'NIN (National Identification Number)' },
-        { id: 'jamb',             label: 'JAMB Result / Admission Slip' },
+        { id: 'jamb',             label: 'JAMB Result' },
+        { id: 'medicalFitness',   label: 'Medical Fitness Report' },
         { id: 'passportPhoto',    label: 'Passport Photograph' }
     ];
 
@@ -754,6 +755,40 @@ document.addEventListener('DOMContentLoaded', function () {
     // --- STUDENT PORTAL LOGIC ---
 
     // Student Login Handler - FULL API INTEGRATION
+    const studentIdInput = document.getElementById('studentId');
+    if (studentIdInput) {
+        studentIdInput.addEventListener('input', function() {
+            let val = this.value.toUpperCase();
+            if (val.startsWith('JMC')) return;
+            let clean = val.replace(/[^A-Z0-9]/g, '');
+            if (clean.startsWith('MCH')) {
+                let parts = ['MCH'];
+                let rem = clean.substring(3);
+                if (rem.length > 0) {
+                    let year = rem.substring(0, 4);
+                    parts.push(year);
+                    let afterYear = rem.substring(4);
+                    if (afterYear.length > 0) {
+                        let lettersMatch = afterYear.match(/^[A-Z]+/);
+                        if (lettersMatch) {
+                            let prog = lettersMatch[0].substring(0, 3);
+                            parts.push(prog);
+                            let afterProg = afterYear.substring(prog.length);
+                            if (afterProg.length > 0) {
+                                let num = afterProg.replace(/[^0-9]/g, '');
+                                if (num) parts.push(num);
+                            }
+                        } else {
+                            let digits = afterYear.replace(/[^0-9]/g, '');
+                            if (digits) parts.push(digits);
+                        }
+                    }
+                }
+                this.value = parts.join('/');
+            }
+        });
+    }
+
     const loginForm = document.getElementById('studentLoginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', async function (e) {

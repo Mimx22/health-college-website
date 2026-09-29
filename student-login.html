@@ -262,6 +262,61 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const studentIdInput = document.getElementById('studentId');
+            
+            // Smart auto-formatter for Student ID (e.g. MCH/2026/NS/56)
+            if (studentIdInput) {
+                studentIdInput.addEventListener('input', function(e) {
+                    let val = this.value.toUpperCase();
+                    
+                    // Allow legacy formats starting with JMC
+                    if (val.startsWith('JMC')) {
+                        return;
+                    }
+
+                    // Remove all characters except alphanumeric
+                    let clean = val.replace(/[^A-Z0-9]/g, '');
+
+                    // Auto-prefix MCH if user starts typing digits or other characters
+                    // But if typing MCH..., format as MCH/YYYY/PROGRAM/NUM
+                    if (clean.startsWith('MCH')) {
+                        let parts = [];
+                        let rem = clean.substring(3); // after MCH
+                        parts.push('MCH');
+
+                        if (rem.length > 0) {
+                            // Year part (up to 4 digits)
+                            let year = rem.substring(0, 4);
+                            parts.push(year);
+
+                            let afterYear = rem.substring(4);
+                            if (afterYear.length > 0) {
+                                // Program code letters (up to 2-3 letters)
+                                let lettersMatch = afterYear.match(/^[A-Z]+/);
+                                if (lettersMatch) {
+                                    let prog = lettersMatch[0].substring(0, 3);
+                                    parts.push(prog);
+                                    let afterProg = afterYear.substring(prog.length);
+                                    if (afterProg.length > 0) {
+                                        // Number part (digits)
+                                        let num = afterProg.replace(/[^0-9]/g, '');
+                                        if (num) parts.push(num);
+                                    }
+                                } else {
+                                    // If digits typed directly after year, treat as number or keep raw
+                                    let digits = afterYear.replace(/[^0-9]/g, '');
+                                    if (digits) parts.push(digits);
+                                }
+                            }
+                        }
+                        this.value = parts.join('/');
+                    } else if (clean.length > 0) {
+                        // User typed something else (e.g., year 2026 or letters)
+                        this.value = val;
+                    }
+                });
+            }
+
             const loginForm = document.getElementById('studentLoginForm');
             if (loginForm) {
                 loginForm.addEventListener('submit', async function(e) {
