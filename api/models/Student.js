@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 function arrayLimit(val) {
-  return val.length === 6;
+  return val.length === 7;
 }
 
 const documentSchema = new mongoose.Schema({
@@ -45,7 +45,7 @@ const studentSchema = new mongoose.Schema({
     },
     documents: {
         type: [documentSchema],
-        validate: [arrayLimit, '{PATH} must have exactly 6 documents']
+        validate: [arrayLimit, '{PATH} must have exactly 7 documents']
     },
     admissionStatus: {
         type: String,
