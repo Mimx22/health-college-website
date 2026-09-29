@@ -16,7 +16,7 @@ const {
 } = require('../controllers/studentController');
 
 // Public endpoints
-router.post('/register', rateLimiter(10), admissionUpload.array('documents', 6), registerStudent);
+router.post('/register', rateLimiter(10), admissionUpload.array('documents', 7), registerStudent);
 router.post('/login', rateLimiter(10), loginStudent);
 router.post('/setup-password', rateLimiter(10), setupPassword);
 router.post('/forgot-password', rateLimiter(5), forgotPassword);
