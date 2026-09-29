@@ -702,20 +702,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // --- STUDENT ID AUTO-FORMATTER ---
-    const studentIdInput = document.getElementById('studentId');
-    if (studentIdInput) {
-        studentIdInput.addEventListener('input', function (e) {
-            // Automatically uppercase input while allowing normal user typing of slashes or hyphens
-            const originalValue = e.target.value;
-            const upper = originalValue.toUpperCase();
-            if (originalValue !== upper) {
-                const pos = e.target.selectionStart;
-                e.target.value = upper;
-                if (pos) e.target.setSelectionRange(pos, pos);
-            }
-        });
-    }
 
     function generatePDF(app) {
         const { jsPDF } = window.jspdf;
