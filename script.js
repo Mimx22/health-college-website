@@ -177,9 +177,62 @@ document.addEventListener('DOMContentLoaded', function () {
     ];
 
     // Wire per-field upload visual feedback
+    // Wire per-field upload visual feedback
     ADMISSION_DOC_FIELDS.forEach(function(field) {
         const input = document.getElementById(field.id);
         if (!input) return;
+
+        // Dedicated Passport Box handling
+        if (field.id === 'passportPhoto') {
+            input.addEventListener('change', function() {
+                const box = document.getElementById('passportBox');
+                const placeholder = document.getElementById('passportPlaceholder');
+                const previewImg = document.getElementById('passportPreviewImg');
+                const changeOverlay = document.getElementById('passportChangeOverlay');
+
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+
+                    // Client-side strict image validation
+                    const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                    const hasValidExt = /\.(jpe?g|png)$/i.test(file.name);
+
+                    if (!validImageTypes.includes(file.type.toLowerCase()) && !hasValidExt) {
+                        showToast('Invalid format for Passport Photograph. Please upload a JPG or PNG image, not a PDF.', 'error', 6000);
+                        this.value = '';
+                        if (box) box.classList.remove('has-photo');
+                        if (placeholder) placeholder.style.display = 'flex';
+                        if (previewImg) { previewImg.style.display = 'none'; previewImg.src = ''; }
+                        if (changeOverlay) changeOverlay.style.display = 'none';
+                        return;
+                    }
+
+                    if (file.size > 5 * 1024 * 1024) {
+                        showToast('Passport photograph is too large (maximum size is 5MB).', 'error', 5000);
+                        this.value = '';
+                        return;
+                    }
+
+                    // Render preview in passport box
+                    const url = URL.createObjectURL(file);
+                    if (previewImg) {
+                        previewImg.src = url;
+                        previewImg.style.display = 'block';
+                    }
+                    if (placeholder) placeholder.style.display = 'none';
+                    if (changeOverlay) changeOverlay.style.display = 'block';
+                    if (box) box.classList.add('has-photo');
+                    showToast('Passport photograph selected successfully.', 'success');
+                } else {
+                    if (box) box.classList.remove('has-photo');
+                    if (placeholder) placeholder.style.display = 'flex';
+                    if (previewImg) { previewImg.style.display = 'none'; previewImg.src = ''; }
+                    if (changeOverlay) changeOverlay.style.display = 'none';
+                }
+            });
+            return;
+        }
+
         input.addEventListener('change', function() {
             const wrapper = this.closest('.file-upload-wrapper');
             if (!wrapper) return;
@@ -195,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (span) span.textContent = 'Click to upload or drag and drop';
             }
             
-            // Generic Live Preview Logic for ALL file fields
+            // Generic Live Preview Logic for file fields
             let previewContainer = wrapper.nextElementSibling;
             if (!previewContainer || !previewContainer.classList.contains('document-preview-container')) {
                 previewContainer = document.createElement('div');
@@ -214,14 +267,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                     </div>
                 `;
-                if (field.id === 'passportPhoto') {
-                    const infoDiv = previewContainer.querySelector('.passport-preview-info');
-                    const tip = document.createElement('p');
-                    tip.className = 'passport-preview-tip';
-                    tip.style.cssText = 'margin-top: 8px; font-size: 0.8rem; color: var(--text-color);';
-                    tip.innerHTML = '<i class="fas fa-info-circle"></i> Make sure this is a clear photo of your face on a <strong>white background</strong>.';
-                    infoDiv.appendChild(tip);
-                }
                 wrapper.parentNode.insertBefore(previewContainer, wrapper.nextSibling);
             }
             
@@ -255,17 +300,34 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Helper: reset all 6 upload boxes to default state
+    // Helper: reset all upload boxes to default state
     function resetAllUploadBoxes() {
         ADMISSION_DOC_FIELDS.forEach(function(field) {
             const input = document.getElementById(field.id);
-            const wrapper = input ? input.closest('.file-upload-wrapper') : null;
+            if (!input) return;
+            input.value = '';
+            if (field.id === 'passportPhoto') {
+                const box = document.getElementById('passportBox');
+                const placeholder = document.getElementById('passportPlaceholder');
+                const previewImg = document.getElementById('passportPreviewImg');
+                const changeOverlay = document.getElementById('passportChangeOverlay');
+                if (box) box.classList.remove('has-photo');
+                if (placeholder) placeholder.style.display = 'flex';
+                if (previewImg) { previewImg.style.display = 'none'; previewImg.src = ''; }
+                if (changeOverlay) changeOverlay.style.display = 'none';
+                return;
+            }
+            const wrapper = input.closest('.file-upload-wrapper');
             if (!wrapper) return;
             wrapper.classList.remove('has-file');
             const icon = wrapper.querySelector('.file-upload-design i');
             const span = wrapper.querySelector('.file-upload-design span');
             if (icon) icon.className = 'fas fa-cloud-upload-alt';
             if (span) span.textContent = 'Click to upload or drag and drop';
+            const previewContainer = wrapper.nextElementSibling;
+            if (previewContainer && previewContainer.classList.contains('document-preview-container')) {
+                previewContainer.style.display = 'none';
+            }
         });
     }
 
@@ -278,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function () {
         admissionForm.addEventListener('submit', function(e) {
             e.preventDefault();
 
-            // Validate: all 6 document fields must have a file
+            // 1. Validate: all 7 document fields must have a file
             const missingDocs = ADMISSION_DOC_FIELDS.filter(function(field) {
                 const input = document.getElementById(field.id);
                 return !input || !input.files || input.files.length === 0;
@@ -287,6 +349,36 @@ document.addEventListener('DOMContentLoaded', function () {
             if (missingDocs.length > 0) {
                 showToast('Please upload: ' + missingDocs.map(f => f.label).join(', '), 'error', 6000);
                 return;
+            }
+
+            // 2. Validate Passport Photograph is strictly an image
+            const passportInput = document.getElementById('passportPhoto');
+            if (passportInput && passportInput.files[0]) {
+                const pFile = passportInput.files[0];
+                const validImgTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                const hasValidExt = /\.(jpe?g|png)$/i.test(pFile.name);
+                if (!validImgTypes.includes(pFile.type.toLowerCase()) && !hasValidExt) {
+                    showToast('Passport Photograph must be a JPG, JPEG, or PNG image. PDF files are not allowed.', 'error', 6000);
+                    return;
+                }
+            }
+
+            // 3. Client-side duplicate check (compare size and name across all 7 uploaded documents)
+            const chosenFiles = [];
+            for (const field of ADMISSION_DOC_FIELDS) {
+                const input = document.getElementById(field.id);
+                if (input && input.files[0]) {
+                    chosenFiles.push({ field: field.label, name: input.files[0].name, size: input.files[0].size });
+                }
+            }
+
+            for (let i = 0; i < chosenFiles.length; i++) {
+                for (let j = i + 1; j < chosenFiles.length; j++) {
+                    if (chosenFiles[i].name === chosenFiles[j].name && chosenFiles[i].size === chosenFiles[j].size) {
+                        showToast(`Duplicate file detected: "${chosenFiles[i].name}" was selected for both ${chosenFiles[i].field} and ${chosenFiles[j].field}. Please provide unique documents.`, 'error', 7000);
+                        return;
+                    }
+                }
             }
             
             // Populate the Review Modal checklist
@@ -307,13 +399,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             
             if (reviewPassportImg) {
-                const passportInput = document.getElementById('passportPhoto');
                 if (passportInput && passportInput.files[0]) {
                     reviewPassportImg.src = URL.createObjectURL(passportInput.files[0]);
                 }
             }
 
-            // Build FormData manually — append all files under 'documents' key
+            // Build FormData manually — append all files under 'documents' key in strict documented order
             pendingFormData = new FormData();
             pendingFormData.append('fullName', document.getElementById('fullName').value.trim());
             pendingFormData.append('email',    document.getElementById('email').value.trim());
@@ -554,9 +645,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const DOC_LABELS = [
             'SSCE (WAEC/NECO/NABTEB)',
             'Certificate of State of Origin',
-            'Birth Certificate',
+            'Birth Certificate / Declaration of Age',
             'NIN (National Identification Number)',
-            'JAMB Result / Admission Slip',
+            'JAMB Result',
+            'Medical Fitness Report',
             'Passport Photograph'
         ];
 
@@ -573,7 +665,7 @@ document.addEventListener('DOMContentLoaded', function () {
             docsList.innerHTML = '<p style="color:var(--text-light); text-align:center; padding:2rem;">No documents uploaded for this application.</p>';
         } else {
             docsList.innerHTML = docs.map(function(doc, i) {
-                const label = DOC_LABELS[i] || ('Document ' + (i + 1));
+                const label = doc.docCategory || DOC_LABELS[i] || ('Document ' + (i + 1));
                 const originalName = doc.originalName || '';
                 const mimeType = doc.mimeType || '';
                 const isImage = mimeType.startsWith('image/');

@@ -215,16 +215,33 @@
                                 </div>
                             </div>
 
-                            <div class="form-group full-width">
-                                <label for="passportPhoto">PASSPORT PHOTOGRAPHS (WHITE BACKGROUND) <span class="label-info">JPG, PNG only (Max 5MB)</span></label>
-                                <div class="file-upload-wrapper" id="passportPhotoWrapper">
-                                    <input type="file" id="passportPhoto" name="passportPhoto" accept=".jpg,.jpeg,.png" required>
-                                    <div class="file-upload-design">
-                                        <i class="fas fa-cloud-upload-alt"></i>
-                                        <span>Click to upload or drag and drop</span>
+                            <div class="form-group full-width passport-form-group">
+                                <label for="passportPhoto">PASSPORT PHOTOGRAPH (WHITE BACKGROUND) <span class="label-info">JPG, JPEG, PNG only (Max 5MB)</span></label>
+                                <div class="passport-upload-container">
+                                    <div class="passport-box" id="passportBox">
+                                        <input type="file" id="passportPhoto" name="passportPhoto" accept="image/jpeg,image/png,image/jpg" required>
+                                        <div class="passport-box-placeholder" id="passportPlaceholder">
+                                            <div class="passport-silhouette">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <span class="passport-action-text"><i class="fas fa-camera"></i> Upload Photo</span>
+                                            <span class="passport-dim-text">White background</span>
+                                        </div>
+                                        <img id="passportPreviewImg" src="" alt="Passport Preview" style="display: none;">
+                                        <div class="passport-change-overlay" id="passportChangeOverlay" style="display: none;">
+                                            <i class="fas fa-sync-alt"></i> Change
+                                        </div>
+                                    </div>
+                                    <div class="passport-instructions">
+                                        <h4><i class="fas fa-id-badge"></i> Passport Photo Requirements</h4>
+                                        <ul>
+                                            <li>Clear, recent passport photograph taken on a <strong>plain white background</strong>.</li>
+                                            <li>Face must be centered, sharp, and clearly visible looking directly forward.</li>
+                                            <li>Strictly <strong>JPG, JPEG, or PNG</strong> format (PDF documents are not permitted).</li>
+                                            <li>Maximum file size: <strong>5MB</strong>.</li>
+                                        </ul>
                                     </div>
                                 </div>
-                                <!-- Live preview containers will be generated dynamically by JS here -->
                             </div>
 
                             <div class="form-footer">

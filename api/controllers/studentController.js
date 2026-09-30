@@ -139,14 +139,19 @@ const registerStudent = async (req, res, next) => {
 
         // Validate each uploaded document for size (<= 5MB) and true file signature (magic bytes)
         const allowedMimeTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-        for (const file of req.files) {
+        const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        const fileHashes = new Set();
+
+        for (let i = 0; i < req.files.length; i++) {
+            const file = req.files[i];
+
             // Check size (5MB = 5 * 1024 * 1024 bytes)
             if (file.size > 5 * 1024 * 1024) {
                 await cleanupFiles(req.files);
                 return res.status(400).json({ success: false, message: 'File too large. Each document must not exceed 5 MB.' });
             }
 
-            // Check mime type
+            // Check mime type against general allowed pool
             if (!allowedMimeTypes.includes(file.mimetype.toLowerCase())) {
                 await cleanupFiles(req.files);
                 return res.status(400).json({ success: false, message: 'Invalid file type. Please upload a valid PDF, JPG, JPEG, or PNG file.' });
@@ -158,6 +163,33 @@ const registerStudent = async (req, res, next) => {
                 await cleanupFiles(req.files);
                 return res.status(400).json({ success: false, message: 'Invalid file content. Uploaded file signature does not match its claimed type.' });
             }
+
+            // Enforce Document Slot 7 (Passport Photograph) must be strictly an image (not a PDF)
+            if (i === 6) {
+                if (!allowedImageTypes.includes(file.mimetype.toLowerCase())) {
+                    await cleanupFiles(req.files);
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Invalid document for Passport Photograph. Passport photo must strictly be a JPG, JPEG, or PNG image (PDFs are not accepted).'
+                    });
+                }
+            }
+
+            // Cryptographic SHA-256 duplicate content detection
+            try {
+                const fileBuffer = fs.readFileSync(file.path);
+                const fileHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
+                if (fileHashes.has(fileHash)) {
+                    await cleanupFiles(req.files);
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Duplicate documents detected. You cannot upload identical file content into multiple document fields. Please provide distinct, authentic documents.'
+                    });
+                }
+                fileHashes.add(fileHash);
+            } catch (hashErr) {
+                console.error('Error computing document hash:', hashErr);
+            }
         }
 
         // Check for existing pending application (prevent duplicate submissions)
@@ -167,13 +199,25 @@ const registerStudent = async (req, res, next) => {
             return res.status(409).json({ success: false, message: 'An application with this email is already pending.' });
         }
 
+        // Define authoritative category labels for the 7 admission documents
+        const DOC_CATEGORIES = [
+            'SSCE (WAEC/NECO/NABTEB)',
+            'Certificate of State of Origin',
+            'Birth Certificate / Declaration of Age',
+            'NIN (National Identification Number)',
+            'JAMB Result',
+            'Medical Fitness Report',
+            'Passport Photograph'
+        ];
+
         // Strip path traversal characters from originalName before storing metadata
-        const documentsMetadata = req.files.map(file => ({
+        const documentsMetadata = req.files.map((file, idx) => ({
             originalName: path.basename(file.originalname).replace(/[^a-zA-Z0-9._\-]/g, '_'),
             storedName: file.filename,
             mimeType: file.mimetype.toLowerCase(),
             size: file.size,
-            storagePath: file.path
+            storagePath: file.path,
+            docCategory: DOC_CATEGORIES[idx] || `Document ${idx + 1}`
         }));
 
         const applicationNumber = await generateApplicationNumber();

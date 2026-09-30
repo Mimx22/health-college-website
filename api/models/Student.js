@@ -10,7 +10,8 @@ const documentSchema = new mongoose.Schema({
     storedName: { type: String, required: true },
     mimeType: { type: String, required: true },
     size: { type: Number, required: true },
-    storagePath: { type: String, required: true }
+    storagePath: { type: String, required: true },
+    docCategory: { type: String, default: null }
 }, { _id: false });
 
 const studentSchema = new mongoose.Schema({
