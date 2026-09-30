@@ -23,7 +23,7 @@ const createTransporter = () => {
 };
 
 const getSenderEmail = () => {
-    return process.env.SMTP_FROM || '"Jos Medical College" <admissions@medicalcareeracademy.ng>';
+    return process.env.SMTP_FROM || '"Medical Career College" <admissions@medicalcareeracademy.ng>';
 };
 
 const sendConfirmationEmail = async (toEmail, fullName, applicationNumber) => {
@@ -40,14 +40,14 @@ const sendConfirmationEmail = async (toEmail, fullName, applicationNumber) => {
                 </div>
                 <p>Please keep this number safe as you will need it to track your admission status on our portal.</p>
                 <br>
-                <p>Best Regards,<br><strong>Admissions Team</strong><br>Jos Medical College</p>
+                <p>Best Regards,<br><strong>Admissions Office</strong><br>Medical Career College of Health Science and Technology</p>
             </div>
         `;
         
         await transporter.sendMail({
             from: getSenderEmail(),
             to: toEmail,
-            subject: 'Application Received - Jos Medical College',
+            subject: 'Application Received - Medical Career College',
             html
         });
         console.log(`Confirmation email sent to ${toEmail}`);
@@ -58,7 +58,7 @@ const sendConfirmationEmail = async (toEmail, fullName, applicationNumber) => {
     }
 };
 
-const sendApprovalEmail = async (toEmail, fullName, applicationNumber, program, activationLink) => {
+const sendApprovalEmail = async (toEmail, fullName, studentId, applicationNumber, program, activationLink) => {
     try {
         const transporter = createTransporter();
         const setupButton = activationLink ? `
@@ -71,26 +71,36 @@ const sendApprovalEmail = async (toEmail, fullName, applicationNumber, program, 
             <p style="font-size: 0.85rem; color: #888;">Note: This setup link is valid for 24 hours.</p>
         ` : '';
 
+        const studentIdBlock = studentId ? `
+            <div style="background: #e8f5e9; border: 1.5px solid #2e7d32; border-radius: 6px; padding: 14px 18px; margin: 20px 0;">
+                <div style="font-size: 0.85rem; color: #2e7d32; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">Your Official Student ID (Required for Login)</div>
+                <div style="font-size: 1.35rem; font-weight: bold; color: #1b5e20; margin-top: 4px; letter-spacing: 1px;">
+                    ${studentId}
+                </div>
+            </div>
+        ` : '';
+
         const html = `
             <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px;">
                 <h2 style="color: #1b5e20; border-bottom: 2px solid #1b5e20; padding-bottom: 10px;">🎉 Congratulations! You have been Admitted</h2>
                 <p>Dear <strong>${fullName}</strong>,</p>
                 <p>We are delighted to inform you that your application (<strong>${applicationNumber}</strong>) for the <strong>${program}</strong> program has been <strong style="color: #1b5e20;">APPROVED</strong>.</p>
-                <p>Welcome to the <strong>Medical Career College of Health Science and Technology, Jos</strong>.</p>
+                <p>Welcome to <strong>Medical Career College of Health Science and Technology, Jos</strong>.</p>
+                ${studentIdBlock}
                 <p>To access your Student Portal, download your admission letter, and view your academic schedule, please activate your student account below:</p>
                 ${setupButton}
                 <br>
-                <p>Best Regards,<br><strong>Admissions Team</strong><br>Jos Medical College</p>
+                <p>Best Regards,<br><strong>Admissions Board</strong><br>Medical Career College of Health Science and Technology</p>
             </div>
         `;
         
         await transporter.sendMail({
             from: getSenderEmail(),
             to: toEmail,
-            subject: 'Admission Approved & Account Setup - Jos Medical College',
+            subject: 'Admission Approved & Student ID - Medical Career College',
             html
         });
-        console.log(`Approval email with activation link sent to ${toEmail}`);
+        console.log(`Approval email with activation link and student ID sent to ${toEmail}`);
         return true;
     } catch (error) {
         console.error('Failed to send approval email:', error.message);
@@ -109,14 +119,14 @@ const sendRejectionEmail = async (toEmail, fullName, applicationNumber) => {
                 <p>After careful review of your application, we regret to inform you that we are unable to offer you admission at this time.</p>
                 <p>We appreciate your interest in our institution and wish you the best in your future academic endeavors.</p>
                 <br>
-                <p>Best Regards,<br><strong>Admissions Team</strong><br>Jos Medical College</p>
+                <p>Best Regards,<br><strong>Admissions Board</strong><br>Medical Career College of Health Science and Technology</p>
             </div>
         `;
         
         await transporter.sendMail({
             from: getSenderEmail(),
             to: toEmail,
-            subject: 'Application Status Update - Jos Medical College',
+            subject: 'Application Status Update - Medical Career College',
             html
         });
         console.log(`Rejection email sent to ${toEmail}`);
@@ -143,14 +153,14 @@ const sendPasswordResetEmail = async (toEmail, fullName, resetLink) => {
                 <p style="font-size: 0.85rem; color: #666;">Or copy and paste this link into your browser:<br><a href="${resetLink}">${resetLink}</a></p>
                 <p style="font-size: 0.85rem; color: #888;">Note: This link is valid for 1 hour. If you did not request this, you can safely ignore this email.</p>
                 <br>
-                <p>Best Regards,<br><strong>ICT Support</strong><br>Jos Medical College</p>
+                <p>Best Regards,<br><strong>ICT Support</strong><br>Medical Career College of Health Science and Technology</p>
             </div>
         `;
         
         await transporter.sendMail({
             from: getSenderEmail(),
             to: toEmail,
-            subject: 'Password Reset Request - Jos Medical College',
+            subject: 'Password Reset Request - Medical Career College',
             html
         });
         console.log(`Password reset email sent to ${toEmail}`);
@@ -208,14 +218,14 @@ const sendStaffPasswordResetEmail = async (toEmail, fullName, resetLink) => {
                 <p style="font-size: 0.85rem; color: #666;">Or copy and paste this link into your browser:<br><a href="${resetLink}">${resetLink}</a></p>
                 <p style="font-size: 0.85rem; color: #888;">Note: This link is valid for 1 hour. If you did not request this, you can safely ignore this email.</p>
                 <br>
-                <p>Best Regards,<br><strong>ICT Support / Office of the Dean</strong><br>Jos Medical College</p>
+                <p>Best Regards,<br><strong>ICT Support / Office of the Dean</strong><br>Medical Career College of Health Science and Technology</p>
             </div>
         `;
         
         await transporter.sendMail({
             from: getSenderEmail(),
             to: toEmail,
-            subject: 'Staff Password Reset - Jos Medical College',
+            subject: 'Staff Password Reset - Medical Career College',
             html
         });
         console.log(`Staff password reset email sent to ${toEmail}`);

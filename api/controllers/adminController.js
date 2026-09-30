@@ -111,6 +111,7 @@ const updateApplicationStatus = async (req, res, next) => {
             emailSent = await sendApprovalEmail(
                 student.email,
                 student.fullName,
+                student.studentId,
                 student.applicationNumber,
                 student.program,
                 activationLink

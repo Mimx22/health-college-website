@@ -706,36 +706,57 @@ document.addEventListener('DOMContentLoaded', function () {
     function generatePDF(app) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.setFillColor(0, 168, 232);
-        doc.rect(0, 0, 210, 40, 'F');
+        doc.setFillColor(11, 32, 70); // Deep institutional navy
+        doc.rect(0, 0, 210, 42, 'F');
         doc.setTextColor(255, 255, 255);
-        doc.setFontSize(22);
-        doc.text('JOS MEDICAL COLLEGE', 105, 20, { align: 'center' });
-        doc.setFontSize(10);
-        doc.text('OF HEALTH SCIENCE AND TECHNOLOGY', 105, 28, { align: 'center' });
-        doc.setTextColor(40, 40, 40);
         doc.setFontSize(18);
-        doc.text('PROVISIONAL ADMISSION LETTER', 105, 60, { align: 'center' });
-        doc.setFontSize(12);
-        doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 80);
-        doc.text(`Student ID: ${app.studentId || 'Pending'}`, 20, 90);
         doc.setFont('helvetica', 'bold');
-        doc.text(`Dear ${app.fullName.toUpperCase()},`, 20, 110);
+        doc.text('MEDICAL CAREER COLLEGE', 105, 18, { align: 'center' });
+        doc.setFontSize(11);
         doc.setFont('helvetica', 'normal');
-        const message = `Congratulations! You have been offered provisional admission into JMC for the 2026 session.`;
-        doc.text(doc.splitTextToSize(message, 170), 20, 120);
+        doc.text('OF HEALTH SCIENCE AND TECHNOLOGY, JOS', 105, 27, { align: 'center' });
+        doc.setFontSize(9);
+        doc.text('Plateau State, Nigeria | admissions@medicalcareeracademy.ng', 105, 35, { align: 'center' });
+        
+        doc.setTextColor(40, 40, 40);
+        doc.setFontSize(16);
         doc.setFont('helvetica', 'bold');
-        doc.text('PROGRAM DETAILS:', 20, 145);
+        doc.text('OFFICIAL PROVISIONAL ADMISSION LETTER', 105, 58, { align: 'center' });
+        
+        doc.setFontSize(11);
         doc.setFont('helvetica', 'normal');
-        doc.text(`Program: ${app.program}`, 30, 155);
-        doc.text(`Academic Session: 2026/2027`, 30, 165);
+        doc.text(`Date: ${new Date().toLocaleDateString('en-GB')}`, 20, 75);
+        doc.text(`Application No: ${app.applicationNumber || 'N/A'}`, 20, 83);
         doc.setFont('helvetica', 'bold');
-        doc.text('PORTAL ACCESS:', 20, 185);
+        doc.text(`Student ID: ${app.studentId || 'Pending Assignment'}`, 20, 91);
+        
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Dear ${app.fullName.toUpperCase()},`, 20, 108);
         doc.setFont('helvetica', 'normal');
-        doc.text(`Portal Link: medicalcareer.netlify.app`, 30, 195);
-        doc.text(`Login ID: ${app.studentId || 'Check your approval email'}`, 30, 205);
-        doc.text(`Password: 5-digit number sent to your email`, 30, 215);
-        doc.save(`Admission_Letter_${app.fullName.replace(/\s+/g, '_')}.pdf`);
+        const sessionYear = new Date().getFullYear();
+        const message = `Congratulations! Following your successful application and screening, the Academic Board of Medical Career College of Health Science and Technology has offered you provisional admission for the ${sessionYear}/${sessionYear + 1} academic session.`;
+        doc.text(doc.splitTextToSize(message, 170), 20, 118);
+        
+        doc.setFont('helvetica', 'bold');
+        doc.text('PROGRAMME DETAILS:', 20, 142);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Programme: ${app.program}`, 30, 152);
+        doc.text(`Academic Session: ${sessionYear}/${sessionYear + 1}`, 30, 162);
+        doc.text(`Official Student ID: ${app.studentId || 'Pending Assignment'}`, 30, 172);
+        
+        doc.setFont('helvetica', 'bold');
+        doc.text('STUDENT PORTAL ACCESS:', 20, 192);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Portal URL: https://medicalcareeracademy.ng/student-login.html`, 30, 202);
+        doc.text(`Login Identifier: ${app.studentId || 'Official MCH Student ID (Check approval email)'}`, 30, 212);
+        doc.text(`Account Setup: Activate via the link sent to your registered email`, 30, 222);
+
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'italic');
+        doc.text('This is an official system-generated document from Medical Career College of Health Science and Technology.', 105, 260, { align: 'center' });
+        
+        const cleanName = (app.fullName || 'Student').replace(/\s+/g, '_');
+        doc.save(`Admission_Letter_${cleanName}.pdf`);
     }
 
     // --- STUDENT PORTAL LOGIC ---
@@ -745,7 +766,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (studentIdInput) {
         studentIdInput.addEventListener('input', function() {
             let val = this.value.toUpperCase();
-            if (val.startsWith('JMC')) return;
+            // Reject typing of legacy JMC prefix in input
+            if (val.startsWith('JMC')) {
+                showToast('Please use your official MCH Student ID (e.g. MCH/2026/NS/56). JMC prefix is retired.', 'warning');
+                this.value = '';
+                return;
+            }
             let clean = val.replace(/[^A-Z0-9]/g, '');
             if (clean.startsWith('MCH')) {
                 let parts = ['MCH'];
@@ -781,9 +807,14 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
 
             const rawId = document.getElementById('studentId').value.trim();
-            // Retain uppercase format directly supporting both MCH/2026/NS/56 and legacy JMC-2026-XXXX
             const studentId = rawId.toUpperCase();
             const password = document.getElementById('password').value;
+
+            // Reject legacy JMC IDs immediately at client form
+            if (studentId.startsWith('JMC')) {
+                showToast('Legacy JMC IDs are no longer accepted for login. Please enter your official MCH Student ID (e.g. MCH/2026/NS/56).', 'error');
+                return;
+            }
 
             try {
                 const response = await fetch(`${API_BASE_URL}/students/login`, {

@@ -274,20 +274,40 @@ const loginStudent = async (req, res, next) => {
         }
 
         const rawIdentifier = studentId.trim();
-        // Normalize both dashes and slashes for flexibility (e.g. JMC/2026/1550 -> JMC-2026-1550)
-        const dashFormatted = rawIdentifier.replace(/\//g, '-');
-        const slashFormatted = rawIdentifier.replace(/-/g, '/');
 
-        const escapedRaw = rawIdentifier.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const escapedDash = dashFormatted.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const escapedSlash = slashFormatted.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        // 1. Explicitly reject legacy JMC IDs with a clear, helpful message
+        if (/^JMC/i.test(rawIdentifier)) {
+            return res.status(401).json({
+                success: false,
+                message: 'Legacy JMC IDs are no longer supported for student login. Please use your official MCH Student ID (e.g. MCH/2026/NS/48).'
+            });
+        }
 
-        // Search strictly by applicationNumber or studentId with flexible formats and case-insensitivity
+        // 2. Reject application numbers if entered in the Student ID field
+        if (/^APP-/i.test(rawIdentifier)) {
+            return res.status(401).json({
+                success: false,
+                message: 'Application numbers cannot be used for portal login. Please use your official MCH Student ID (e.g. MCH/2026/NS/48).'
+            });
+        }
+
+        // 3. Normalize slashes and validate MCH format
+        // Supports input with dashes or slashes: MCH-2026-NS-48 or MCH/2026/NS/48
+        const normalizedMch = rawIdentifier.replace(/-/g, '/').toUpperCase();
+
+        if (!/^MCH\/\d{4}\/[A-Z0-9]+\/\d+$/i.test(normalizedMch)) {
+            return res.status(401).json({
+                success: false,
+                message: 'Invalid Student ID format. Please use your official MCH Student ID (e.g. MCH/2026/NS/48).'
+            });
+        }
+
+        const escapedNormalized = normalizedMch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const escapedDash = normalizedMch.replace(/\//g, '-').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+        // 4. Authenticate strictly against studentId field (case-insensitive)
         const student = await Student.findOne({
-            $or: [
-                { applicationNumber: { $regex: new RegExp(`^(${escapedRaw}|${escapedDash}|${escapedSlash})$`, 'i') } },
-                { studentId: { $regex: new RegExp(`^(${escapedRaw}|${escapedDash}|${escapedSlash})$`, 'i') } }
-            ]
+            studentId: { $regex: new RegExp(`^(${escapedNormalized}|${escapedDash})$`, 'i') }
         }).select('+password');
 
         if (!student) {
