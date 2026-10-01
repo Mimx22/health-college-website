@@ -38,13 +38,21 @@ const staffSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'Password is required'],
+        required: false,
         select: false
     },
     accountStatus: {
         type: String,
         enum: ['active', 'inactive', 'suspended'],
-        default: 'active'
+        default: 'inactive'
+    },
+    activationToken: {
+        type: String,
+        select: false
+    },
+    activationExpires: {
+        type: Date,
+        select: false
     },
     resetPasswordToken: {
         type: String,

@@ -9,6 +9,7 @@ const {
     changeStaffPassword,
     forgotStaffPassword,
     resetStaffPassword,
+    activateStaffAccount,
     getStaffApplications,
     viewStudentDocument
 } = require('../controllers/staffController');
@@ -17,6 +18,7 @@ const {
 router.post('/login', rateLimiter(10), loginStaff);
 router.post('/forgot-password', rateLimiter(5), forgotStaffPassword);
 router.post('/reset-password/:token', rateLimiter(10), resetStaffPassword);
+router.post('/activate-account', rateLimiter(10), activateStaffAccount);
 
 // Authenticated staff endpoints
 router.get('/me', protect, authorizeRoles('staff'), getStaffProfile);

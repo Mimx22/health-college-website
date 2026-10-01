@@ -353,6 +353,7 @@
                     <li><a href="news.html" class="nav-link">News & Events</a></li>
                     <li><a href="portal.html" class="nav-link">Portals</a></li>
                     <li><a href="#" class="nav-link active">Admin Dashboard</a></li>
+                    <li><a href="javascript:void(0)" onclick="logoutAdmin()" class="nav-link" style="color: #e53935; font-weight: 600;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                 </ul>
             </nav>
         </div>
@@ -814,9 +815,11 @@
                             <input type="text" id="newStaffId" placeholder="e.g. STF/2026/001">
                         </div>
                     </div>
-                    <div class="cms-form-group">
-                        <label for="newStaffPassword">Initial Login Password *</label>
-                        <input type="password" id="newStaffPassword" required minlength="6" placeholder="Enter staff initial password (min 6 characters)">
+                    <div style="background-color: var(--bg-light); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.85rem 1rem; margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-light); display: flex; align-items: flex-start; gap: 0.6rem;">
+                        <i class="fas fa-shield-alt" style="color: var(--primary-color); margin-top: 2px;"></i>
+                        <div>
+                            <strong style="color: var(--secondary-color);">Zero-Knowledge Security:</strong> A 24-hour single-use activation link will be automatically emailed to this address. The staff member will choose their own password.
+                        </div>
                     </div>
 
                     <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">

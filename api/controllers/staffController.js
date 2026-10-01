@@ -1,8 +1,10 @@
+const path = require('path');
+const fs = require('fs');
 const Staff = require('../models/Staff');
 const Student = require('../models/Student');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const fs = require('fs');
+const bcrypt = require('bcryptjs');
 const { sendStaffPasswordResetEmail } = require('../utils/emailService');
 
 // Generate JWT token for staff
@@ -35,10 +37,10 @@ const loginStaff = async (req, res, next) => {
             return res.status(401).json({ success: false, message: 'Invalid staff credentials or account not found' });
         }
 
-        if (staff.accountStatus !== 'active') {
+        if (staff.accountStatus !== 'active' || !staff.password) {
             return res.status(403).json({ 
                 success: false, 
-                message: `Staff account is ${staff.accountStatus}. Please contact the ICT Center or Office of the Dean.` 
+                message: `Staff account is ${staff.accountStatus || 'inactive'}. Please activate your account via the link sent to your email or contact the ICT Center.` 
             });
         }
 
@@ -297,6 +299,69 @@ const viewStudentDocument = async (req, res, next) => {
     }
 };
 
+// 8. Staff Account Activation (Single-use, atomic consumption against race conditions)
+const activateStaffAccount = async (req, res, next) => {
+    try {
+        const { token, password } = req.body;
+
+        if (!token || !password) {
+            return res.status(400).json({ success: false, message: 'Activation token and password are required' });
+        }
+
+        if (password.length < 6) {
+            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+        }
+
+        const hashedToken = crypto.createHash('sha256').update(token.trim()).digest('hex');
+
+        // Hash the password directly using the standard bcrypt rounds (same as pre-save hook)
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        // Atomic findOneAndUpdate ensures that if concurrent requests arrive with the same token,
+        // only the first one finds the token and unsets it; all subsequent requests immediately fail.
+        const staff = await Staff.findOneAndUpdate(
+            {
+                activationToken: hashedToken,
+                activationExpires: { $gt: new Date() }
+            },
+            {
+                $set: {
+                    password: hashedPassword,
+                    accountStatus: 'active'
+                },
+                $unset: {
+                    activationToken: 1,
+                    activationExpires: 1
+                }
+            },
+            {
+                new: true,
+                select: '_id fullName email staffId department role accountStatus'
+            }
+        );
+
+        if (!staff) {
+            return res.status(400).json({
+                success: false,
+                message: 'Activation link is invalid, expired, or has already been used.'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'Staff account successfully activated! You can now log in to the Staff Portal.',
+            staff: {
+                fullName: staff.fullName,
+                staffId: staff.staffId,
+                email: staff.email
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     loginStaff,
     getStaffProfile,
@@ -304,6 +369,7 @@ module.exports = {
     changeStaffPassword,
     forgotStaffPassword,
     resetStaffPassword,
+    activateStaffAccount,
     getStaffApplications,
     viewStudentDocument
 };

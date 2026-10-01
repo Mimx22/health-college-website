@@ -171,11 +171,12 @@
                 const data = await response.json();
                 
                 if (data.success && data.token) {
-                    localStorage.removeItem('jmc_logged_staff');
-                    localStorage.removeItem('jmc_staff_token');
-                    localStorage.removeItem('jmc_logged_student');
-                    localStorage.setItem('jmc_token', data.token);
-                    localStorage.setItem('adminToken', data.token);
+                    localStorage.setItem('mch_admin_token', data.token);
+                    localStorage.setItem('mch_logged_admin', JSON.stringify({
+                        _id: data._id,
+                        email: data.email,
+                        role: data.role
+                    }));
                     if (typeof showToast === 'function') {
                         showToast('Login successful! Redirecting...', 'success');
                     }

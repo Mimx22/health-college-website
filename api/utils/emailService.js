@@ -236,11 +236,57 @@ const sendStaffPasswordResetEmail = async (toEmail, fullName, resetLink) => {
     }
 };
 
+const sendStaffActivationEmail = async (toEmail, fullName, staffId, department, activationLink) => {
+    try {
+        const transporter = createTransporter();
+        const html = `
+            <div style="font-family: Arial, sans-serif; padding: 25px; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h2 style="color: #0b2046; margin: 0;">Medical Career College</h2>
+                    <p style="color: #666; font-size: 0.9rem; margin-top: 5px;">Of Health Sciences and Technology, Jos</p>
+                </div>
+                <hr style="border: none; border-top: 1px solid #e0e0e0; margin: 15px 0;">
+                <h3 style="color: #0b2046;">Welcome to the Academic Staff Portal</h3>
+                <p>Dear <strong>${fullName}</strong>,</p>
+                <p>An institutional staff account has been provisioned for you at Medical Career College of Health Sciences and Technology.</p>
+                <div style="background-color: #f7f9fc; padding: 15px; border-left: 4px solid #0b2046; border-radius: 4px; margin: 20px 0;">
+                    <p style="margin: 5px 0;"><strong>Staff ID:</strong> ${staffId}</p>
+                    <p style="margin: 5px 0;"><strong>Department:</strong> ${department || 'General Health Sciences'}</p>
+                    <p style="margin: 5px 0;"><strong>Official Email:</strong> ${toEmail}</p>
+                </div>
+                <p>To activate your account and securely set your login password, please click the link below:</p>
+                <div style="margin: 25px 0; text-align: center;">
+                    <a href="${activationLink}" style="background-color: #0b2046; color: #ffffff; padding: 12px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                        Activate Staff Account
+                    </a>
+                </div>
+                <p style="font-size: 0.85rem; color: #666;">Or copy and paste this link into your browser:<br><a href="${activationLink}">${activationLink}</a></p>
+                <p style="font-size: 0.85rem; color: #888;">Note: This single-use activation link is valid for 24 hours. For security reasons, college administrators do not set or know your password.</p>
+                <br>
+                <p>Best Regards,<br><strong>Office of the Dean & ICT Center</strong><br>Medical Career College of Health Sciences and Technology</p>
+            </div>
+        `;
+        
+        await transporter.sendMail({
+            from: getSenderEmail(),
+            to: toEmail,
+            subject: 'Staff Account Activation - Medical Career College',
+            html
+        });
+        console.log(`Staff activation email sent to ${toEmail}`);
+        return true;
+    } catch (error) {
+        console.error('Failed to send staff activation email:', error.message);
+        return false;
+    }
+};
+
 module.exports = {
     sendConfirmationEmail,
     sendApprovalEmail,
     sendRejectionEmail,
     sendPasswordResetEmail,
     sendStaffPasswordResetEmail,
+    sendStaffActivationEmail,
     sendContactEmail
 };

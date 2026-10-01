@@ -10,7 +10,7 @@ const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
 const Contact = require('../models/Contact');
-const { sendApprovalEmail, sendRejectionEmail } = require('../utils/emailService');
+const { sendApprovalEmail, sendRejectionEmail, sendStaffActivationEmail } = require('../utils/emailService');
 const { validateStudentPassword } = require('../utils/passwordValidator');
 const { generateStudentId } = require('../utils/idGenerator');
 
@@ -268,14 +268,10 @@ const getAllStaffAdmin = async (req, res, next) => {
 
 const createStaffAdmin = async (req, res, next) => {
     try {
-        const { fullName, email, phone, department, staffId, password } = req.body;
+        const { fullName, email, phone, department, staffId } = req.body;
 
-        if (!fullName || !email || !password) {
-            return res.status(400).json({ success: false, message: 'Full name, email, and password are required' });
-        }
-
-        if (password.length < 6) {
-            return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+        if (!fullName || !email) {
+            return res.status(400).json({ success: false, message: 'Full name and email are required' });
         }
 
         const cleanEmail = email.trim().toLowerCase();
@@ -297,6 +293,11 @@ const createStaffAdmin = async (req, res, next) => {
             assignedStaffId = `STF/${new Date().getFullYear()}/${Math.floor(1000 + Math.random() * 9000)}`;
         }
 
+        // Generate cryptographically secure activation token (24-hour expiry)
+        const rawToken = crypto.randomBytes(32).toString('hex');
+        const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
         const staff = new Staff({
             fullName: fullName.trim(),
             email: cleanEmail,
@@ -304,18 +305,41 @@ const createStaffAdmin = async (req, res, next) => {
             staffId: assignedStaffId,
             department: department ? department.trim() : 'General Health Sciences',
             role: 'staff',
-            password: password,
-            accountStatus: 'active'
+            accountStatus: 'inactive',
+            activationToken: hashedToken,
+            activationExpires: expiresAt
         });
 
         await staff.save();
 
+        const baseUrl = process.env.BASE_URL || 'https://medicalcareeracademy.ng';
+        const activationLink = `${baseUrl}/reset-password.html?token=${rawToken}&setup=true&portal=staff`;
+
+        const emailSent = await sendStaffActivationEmail(
+            staff.email,
+            staff.fullName,
+            staff.staffId,
+            staff.department,
+            activationLink
+        );
+
+        if (!emailSent) {
+            // Delete record so admin can retry without email or staffId collisions
+            await Staff.findByIdAndDelete(staff._id);
+            return res.status(502).json({
+                success: false,
+                message: 'Failed to send activation email to the staff member. Account creation was aborted. Please verify email server connectivity and try again.'
+            });
+        }
+
         const staffData = staff.toObject();
         delete staffData.password;
+        delete staffData.activationToken;
+        delete staffData.activationExpires;
 
         res.status(201).json({
             success: true,
-            message: `Staff account successfully created for ${staff.fullName}`,
+            message: `Staff record created. An activation link valid for 24 hours was sent to ${staff.email}.`,
             data: staffData
         });
     } catch (error) {

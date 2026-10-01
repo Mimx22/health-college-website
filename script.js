@@ -491,7 +491,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /** Fetch all applications from the API and render. Called once on page load. */
     async function fetchApplications() {
-        const token = localStorage.getItem('jmc_token');
+        const token = localStorage.getItem('mch_admin_token');
         if (!token) {
             showToast('You are not logged in. Redirecting...', 'error');
             setTimeout(() => window.location.href = 'admin-login.html', 1500);
@@ -504,6 +504,8 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             if (response.status === 401 || response.status === 403) {
+                localStorage.removeItem('mch_admin_token');
+                localStorage.removeItem('mch_logged_admin');
                 showToast('Session expired. Please login again.', 'error');
                 setTimeout(() => window.location.href = 'admin-login.html', 1500);
                 return;
@@ -690,7 +692,7 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     window.fetchSecureDocument = async function(appId, docIndex, fileName) {
-        const token = localStorage.getItem('jmc_token');
+        const token = localStorage.getItem('mch_admin_token');
         if (!token) {
             showToast('Unauthorized. Please login again.', 'error');
             return;
@@ -740,7 +742,7 @@ document.addEventListener('DOMContentLoaded', function () {
      * No full page reload. Buttons are disabled instantly to prevent double-clicks.
      */
     async function updateStatus(id, status) {
-        const token = localStorage.getItem('jmc_token');
+        const token = localStorage.getItem('mch_admin_token');
         if (!token) { showToast('Unauthorized. Please login again.', 'error'); return; }
 
         // Immediately disable the row's buttons to prevent double-click
@@ -920,10 +922,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (response.ok) {
                     if (data.role === 'admin' || data.role === 'staff') {
                         showToast('Access denied: This login is for students only.', 'error');
-                        localStorage.removeItem('jmc_token');
+                        localStorage.removeItem('mch_student_token');
+                        localStorage.removeItem('mch_logged_student');
                     } else {
-                        localStorage.setItem('jmc_token', data.token);
-                        localStorage.setItem('jmc_logged_student', JSON.stringify(data));
+                        localStorage.setItem('mch_student_token', data.token);
+                        localStorage.setItem('mch_logged_student', JSON.stringify(data));
                         showToast('Login successful! Redirecting...', 'success');
                         setTimeout(() => window.location.href = 'student-dashboard.html', 1000);
                     }
@@ -939,7 +942,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Dashboard Initialization - FULL API INTEGRATION
     if (window.location.pathname.includes('student-dashboard.html')) {
-        const token = localStorage.getItem('jmc_token');
+        const token = localStorage.getItem('mch_student_token');
 
         if (!token) {
             window.location.href = 'student-login.html';
@@ -993,13 +996,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(student => {
-                localStorage.setItem('jmc_logged_student', JSON.stringify(student));
+                localStorage.setItem('mch_logged_student', JSON.stringify(student));
                 updateUI(student);
             })
             .catch(err => {
                 console.error('Dashboard Auth Error:', err);
-                localStorage.removeItem('jmc_token');
-                localStorage.removeItem('jmc_logged_student');
+                localStorage.removeItem('mch_student_token');
+                localStorage.removeItem('mch_logged_student');
                 window.location.href = 'student-login.html';
             });
 
@@ -1010,7 +1013,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         window.exitEditMode = function () {
             document.getElementById('tab-profile').classList.remove('editing');
-            const s = JSON.parse(localStorage.getItem('jmc_logged_student'));
+            const s = JSON.parse(localStorage.getItem('mch_logged_student'));
             if (s) updateUI(s);
         };
 
@@ -1035,7 +1038,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     const data = await response.json();
 
                     if (response.ok) {
-                        localStorage.setItem('jmc_logged_student', JSON.stringify(data.student));
+                        localStorage.setItem('mch_logged_student', JSON.stringify(data.student));
                         showToast('Profile updated successfully!', 'success');
                         exitEditMode();
                         updateUI(data.student);
@@ -1158,8 +1161,8 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     window.logoutStudent = function () {
-        localStorage.removeItem('jmc_logged_student');
-        localStorage.removeItem('jmc_token');
+        localStorage.removeItem('mch_logged_student');
+        localStorage.removeItem('mch_student_token');
         window.location.href = 'student-login.html';
     };
 
@@ -1179,7 +1182,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     return;
                 }
 
-                const email = emailEl.value.trim().toLowerCase();
+                const rawIdentifier = emailEl.value.trim();
+                const email = rawIdentifier.includes('@') ? rawIdentifier.toLowerCase() : rawIdentifier;
                 const password = passEl.value;
 
                 try {
@@ -1192,8 +1196,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     const data = await response.json();
 
                     if (response.ok) {
-                        localStorage.setItem('jmc_logged_staff', JSON.stringify(data));
-                        localStorage.setItem('jmc_staff_token', data.token);
+                        localStorage.setItem('mch_logged_staff', JSON.stringify(data));
+                        localStorage.setItem('mch_staff_token', data.token);
                         showToast('Staff login successful! Redirecting...', 'success');
                         setTimeout(() => window.location.href = 'staff-dashboard.html', 1000);
                     } else {
@@ -1208,7 +1212,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Staff Dashboard Initialization
         if (window.location.pathname.includes('staff-dashboard.html')) {
-            const token = localStorage.getItem('jmc_staff_token');
+            const token = localStorage.getItem('mch_staff_token');
             if (!token) {
                 window.location.href = 'staff-login.html';
                 return;
@@ -1253,21 +1257,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     return response.json();
                 })
                 .then(staff => {
-                    localStorage.setItem('jmc_logged_staff', JSON.stringify(staff));
+                    localStorage.setItem('mch_logged_staff', JSON.stringify(staff));
                     updateStaffUI(staff);
                 })
                 .catch(err => {
                     console.error('Staff Auth Error:', err);
-                    localStorage.removeItem('jmc_staff_token');
-                    localStorage.removeItem('jmc_logged_staff');
+                    localStorage.removeItem('mch_staff_token');
+                    localStorage.removeItem('mch_logged_staff');
                     window.location.href = 'staff-login.html';
                 });
 
             // Staff Logout
             document.getElementById('staffLogoutBtn')?.addEventListener('click', function (e) {
                 e.preventDefault();
-                localStorage.removeItem('jmc_staff_token');
-                localStorage.removeItem('jmc_logged_staff');
+                localStorage.removeItem('mch_staff_token');
+                localStorage.removeItem('mch_logged_staff');
                 window.location.href = 'staff-login.html';
             });
 
@@ -1297,7 +1301,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         const data = await response.json();
 
                         if (response.ok) {
-                            localStorage.setItem('jmc_logged_staff', JSON.stringify(data.staff));
+                            localStorage.setItem('mch_logged_staff', JSON.stringify(data.staff));
                             showToast('Staff contact updated successfully!', 'success');
                             updateStaffUI(data.staff);
                         } else {
@@ -1371,6 +1375,150 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                 });
             }
+            // Load Student Applications for Staff Academic Review
+            let staffApplicationsList = [];
+            const staffAppsBody = document.getElementById('staffAppsBody');
+
+            const renderStaffApplications = (apps) => {
+                if (!staffAppsBody) return;
+                if (!apps || apps.length === 0) {
+                    staffAppsBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-light);">No student applications found.</td></tr>';
+                    return;
+                }
+
+                staffAppsBody.innerHTML = apps.map(app => {
+                    const statusClass = app.admissionStatus === 'Approved' ? 'status-approved' : 
+                                        app.admissionStatus === 'Rejected' ? 'status-rejected' : 'status-pending';
+                    const docsCount = (app.documents && Array.isArray(app.documents)) ? app.documents.length : 0;
+                    const docBtn = docsCount > 0 
+                        ? `<button type="button" class="btn btn-sm btn-view-doc" onclick="openStaffDocsModal('${app._id}')"><i class="fas fa-file-alt"></i> View (${docsCount})</button>`
+                        : `<span style="color: var(--text-light); font-size: 0.85rem;">None</span>`;
+
+                    return `
+                        <tr>
+                            <td style="font-weight: 600; color: var(--secondary-color);">${app.fullName || 'Unknown'}</td>
+                            <td>${app.program || 'N/A'}</td>
+                            <td><span class="status-badge ${statusClass}">${app.admissionStatus || 'Pending'}</span></td>
+                            <td>${docBtn}</td>
+                        </tr>
+                    `;
+                }).join('');
+            };
+
+            const fetchStaffApplications = async () => {
+                if (!staffAppsBody) return;
+                try {
+                    const res = await fetch(`${API_BASE_URL}/staff/applications`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res.ok) {
+                        staffApplicationsList = await res.json();
+                        renderStaffApplications(staffApplicationsList);
+                    } else {
+                        staffAppsBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem; color: #d32f2f;">Unable to load applications.</td></tr>';
+                    }
+                } catch (e) {
+                    console.error('Error fetching staff applications:', e);
+                    staffAppsBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem; color: #d32f2f;">Connection error loading applications.</td></tr>';
+                }
+            };
+
+            fetchStaffApplications();
+
+            // Staff View Student Documents
+            window.openStaffDocsModal = function (appId) {
+                const app = staffApplicationsList.find(a => a._id === appId);
+                if (!app) return;
+
+                const modal = document.getElementById('staffDocsModal');
+                const modalTitle = document.getElementById('staffDocsModalTitle');
+                const docsList = document.getElementById('staffDocsModalList');
+
+                if (!modal || !docsList) return;
+
+                if (modalTitle) modalTitle.textContent = `${app.fullName} — Documents`;
+
+                const docs = app.documents || [];
+                if (docs.length === 0) {
+                    docsList.innerHTML = '<p style="color:var(--text-light); text-align:center; padding:2rem;">No documents uploaded for this applicant.</p>';
+                } else {
+                    docsList.innerHTML = docs.map((doc, idx) => {
+                        const label = doc.docCategory || `Document ${idx + 1}`;
+                        const originalName = doc.originalName || '';
+                        const mimeType = doc.mimeType || '';
+                        const isPdf = mimeType === 'application/pdf';
+                        const isImage = mimeType.startsWith('image/');
+                        const icon = isPdf ? 'fa-file-pdf' : isImage ? 'fa-file-image' : 'fa-file';
+
+                        return `
+                            <div class="doc-item">
+                                <div class="doc-item-info" title="${originalName}">
+                                    <i class="fas ${icon} doc-icon"></i>
+                                    <span class="doc-label">${label}</span>
+                                </div>
+                                <button type="button" onclick="fetchStaffDocument('${app._id}', ${idx}, '${originalName}')" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-download"></i> View / Download
+                                </button>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('active'), 10);
+            };
+
+            window.closeStaffDocsModal = function () {
+                const modal = document.getElementById('staffDocsModal');
+                if (modal) {
+                    modal.classList.remove('active');
+                    setTimeout(() => modal.style.display = 'none', 300);
+                }
+            };
+
+            window.fetchStaffDocument = async function (appId, docIndex, fileName) {
+                const staffToken = localStorage.getItem('mch_staff_token');
+                if (!staffToken) {
+                    showToast('Staff session expired. Please login again.', 'error');
+                    return;
+                }
+
+                try {
+                    showToast('Retrieving document...', 'info');
+                    const response = await fetch(`${API_BASE_URL}/staff/applications/${appId}/documents/${docIndex}`, {
+                        headers: { 'Authorization': `Bearer ${staffToken}` }
+                    });
+
+                    if (!response.ok) {
+                        const err = await response.json().catch(() => ({}));
+                        showToast(err.message || 'Unable to retrieve document.', 'error');
+                        return;
+                    }
+
+                    const blob = await response.blob();
+                    let downloadName = fileName || `document-${docIndex + 1}`;
+                    const disposition = response.headers.get('content-disposition');
+                    if (disposition && disposition.includes('filename=')) {
+                        const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
+                        if (matches && matches[1]) {
+                            downloadName = matches[1].replace(/['"]/g, '');
+                        }
+                    }
+
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = downloadName;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    showToast('Document downloaded successfully!', 'success');
+                } catch (e) {
+                    console.error('Staff document download error:', e);
+                    showToast('Error downloading document.', 'error');
+                }
+            };
         }
     } catch (e) {
         console.error('General failure in Staff Portal logic:', e);
@@ -1387,19 +1535,29 @@ document.addEventListener('DOMContentLoaded', function () {
         if (modal) modal.style.display = 'none';
     };
 
-    // --- ADMIN LOGIN LOGIC ---
+    // Admin Logout Handler
+    window.logoutAdmin = function () {
+        localStorage.removeItem('mch_admin_token');
+        localStorage.removeItem('mch_logged_admin');
+
+        // Remove legacy Admin token keys only
+        localStorage.removeItem('adminToken');
+
+        // Do NOT remove student or staff session keys
+        window.location.href = 'admin-login.html';
+    };
 
     // RBAC - Access Restrictions (Student Protection)
     function enforceRBAC() {
         const path = window.location.pathname;
-        const student = localStorage.getItem('jmc_logged_student');
+        const student = localStorage.getItem('mch_logged_student');
 
         // Protect student dashboard from unauthorized cross-role confusion if needed
     }
     enforceRBAC();
 
     window.downloadLetterPortal = function () {
-        const student = JSON.parse(localStorage.getItem('jmc_logged_student'));
+        const student = JSON.parse(localStorage.getItem('mch_logged_student'));
         if (student) generatePDF(student);
     };
 
@@ -1628,7 +1786,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Admin News Logic ---
     let allAdminNews = [];
     async function loadAdminNews() {
-        const token = localStorage.getItem('jmc_token');
+        const token = localStorage.getItem('mch_admin_token');
         if (!token) return;
 
         const body = document.getElementById('adminNewsBody');
@@ -1769,7 +1927,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Helper: Upload file (image or video) to /api/admin/upload-image
     async function uploadMediaFile(fileInput) {
         if (!fileInput || !fileInput.files || fileInput.files.length === 0) return null;
-        const token = localStorage.getItem('jmc_token');
+        const token = localStorage.getItem('mch_admin_token');
         const formData = new FormData();
         formData.append('image', fileInput.files[0]);
 
@@ -1836,7 +1994,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         newsEditorForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const token = localStorage.getItem('jmc_token');
+            const token = localStorage.getItem('mch_admin_token');
             const saveBtn = document.getElementById('saveNewsBtn');
             const editId = document.getElementById('newsEditId').value;
             const fileInput = document.getElementById('newsImageFileInput');
@@ -1905,7 +2063,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.toggleNewsStatus = async function(id, newStatus) {
-        const token = localStorage.getItem('jmc_token');
+        const token = localStorage.getItem('mch_admin_token');
         try {
             const res = await fetch(`${API_BASE_URL}/admin/news/${id}`, {
                 method: 'PUT',
@@ -1932,7 +2090,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showConfirm(
             `Are you sure you want to delete the article "${item ? item.title : 'this item'}"?`,
             async () => {
-                const token = localStorage.getItem('jmc_token');
+                const token = localStorage.getItem('mch_admin_token');
                 try {
                     const res = await fetch(`${API_BASE_URL}/admin/news/${id}`, {
                         method: 'DELETE',
@@ -1957,7 +2115,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Admin Events Logic ---
     let allAdminEvents = [];
     async function loadAdminEvents() {
-        const token = localStorage.getItem('jmc_token');
+        const token = localStorage.getItem('mch_admin_token');
         if (!token) return;
 
         const body = document.getElementById('adminEventsBody');
@@ -2148,7 +2306,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         eventEditorForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const token = localStorage.getItem('jmc_token');
+            const token = localStorage.getItem('mch_admin_token');
             const saveBtn = document.getElementById('saveEventBtn');
             const editId = document.getElementById('eventEditId').value;
             const fileInput = document.getElementById('eventImageFileInput');
@@ -2225,7 +2383,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let allAdminStaff = [];
 
     async function loadAdminStaff() {
-        const token = localStorage.getItem('jmc_token');
+        const token = localStorage.getItem('mch_admin_token');
         if (!token) return;
 
         const body = document.getElementById('adminStaffBody');
@@ -2335,7 +2493,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const token = localStorage.getItem('jmc_token');
+        const token = localStorage.getItem('mch_admin_token');
         try {
             const res = await fetch(`${API_BASE_URL}/admin/staff/${staffId}`, {
                 method: 'DELETE',
@@ -2359,7 +2517,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (createStaffForm) {
         createStaffForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const token = localStorage.getItem('jmc_token');
+            const token = localStorage.getItem('mch_admin_token');
             const submitBtn = document.getElementById('saveStaffBtn');
 
             const fullName = document.getElementById('newStaffName').value.trim();
@@ -2367,12 +2525,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const phone = document.getElementById('newStaffPhone').value.trim();
             const department = document.getElementById('newStaffDept').value;
             const staffId = document.getElementById('newStaffId').value.trim();
-            const password = document.getElementById('newStaffPassword').value;
-
-            if (password.length < 6) {
-                showToast('Password must be at least 6 characters long.', 'error');
-                return;
-            }
 
             submitBtn.disabled = true;
             submitBtn.innerText = 'Creating Staff...';
@@ -2384,7 +2536,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ fullName, email, phone, department, staffId, password })
+                    body: JSON.stringify({ fullName, email, phone, department, staffId })
                 });
 
                 const data = await res.json();
@@ -2411,7 +2563,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (adminResetStaffPassForm) {
         adminResetStaffPassForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            const token = localStorage.getItem('jmc_token');
+            const token = localStorage.getItem('mch_admin_token');
             const submitBtn = document.getElementById('adminSaveStaffPassBtn');
             const staffId = document.getElementById('resetStaffIdHidden').value;
             const newPassword = document.getElementById('adminNewStaffPassword').value;
@@ -2730,7 +2882,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.toggleEventStatus = async function(id, newStatus) {
-        const token = localStorage.getItem('jmc_token');
+        const token = localStorage.getItem('mch_admin_token');
         try {
             const res = await fetch(`${API_BASE_URL}/admin/events/${id}`, {
                 method: 'PUT',
@@ -2757,7 +2909,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showConfirm(
             `Are you sure you want to delete the event "${item ? item.title : 'this event'}"?`,
             async () => {
-                const token = localStorage.getItem('jmc_token');
+                const token = localStorage.getItem('mch_admin_token');
                 try {
                     const res = await fetch(`${API_BASE_URL}/admin/events/${id}`, {
                         method: 'DELETE',

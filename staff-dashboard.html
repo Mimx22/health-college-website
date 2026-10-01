@@ -197,30 +197,135 @@
             margin-bottom: 1rem;
         }
 
-        .students-table {
-            width: 100%;
-            border-collapse: collapse;
+        /* Applications & Review Styles */
+        .staff-table-wrapper {
+            background: var(--white);
+            border-radius: 8px;
+            overflow-x: auto;
             margin-top: 1.5rem;
+            border: 1px solid var(--border-color);
         }
 
-        .students-table th,
-        .students-table td {
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status-pending {
+            background: #fff8e1;
+            color: #e65100;
+        }
+
+        .status-approved {
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+
+        .status-rejected {
+            background: #ffebee;
+            color: #b71c1c;
+        }
+
+        .btn-view-doc {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Documents Modal */
+        .docs-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            z-index: 9000;
+            align-items: center;
+            justify-content: center;
             padding: 1rem;
-            text-align: left;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .docs-modal-overlay.active { opacity: 1; }
+        
+        .docs-modal {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            width: 100%;
+            max-width: 600px;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        .docs-modal-overlay.active .docs-modal { transform: translateY(0); }
+
+        .docs-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 1.5rem;
             border-bottom: 1px solid var(--border-color);
         }
-
-        .students-table th {
-            background: var(--bg-light);
+        .docs-modal-header h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
             color: var(--secondary-color);
-            font-weight: 600;
+            margin: 0;
         }
-
-        .mark-input {
-            width: 80px;
-            padding: 0.5rem;
+        .docs-modal-close {
+            background: var(--bg-light);
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .docs-modal-close:hover { background: #e0e0e0; }
+        .docs-modal-body {
+            overflow-y: auto;
+            padding: 1.5rem;
+            flex: 1;
+        }
+        .doc-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 1rem;
+            border-radius: 8px;
             border: 1px solid var(--border-color);
-            border-radius: 4px;
+            margin-bottom: 0.75rem;
+            background: #fafafa;
+        }
+        .doc-item-info {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            min-width: 0;
+        }
+        .doc-icon {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+        }
+        .doc-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            text-overflow: ellipsis;
         }
 
         @media (max-width: 900px) {
@@ -254,18 +359,7 @@
     </header>
 
     <main class="dashboard-container">
-        <div class="container" style="max-width: 700px; margin: 4rem auto; text-align: center; background: var(--white); padding: 3rem; border-radius: 12px; box-shadow: var(--shadow-md);">
-            <div style="font-size: 3.5rem; color: #e65100; margin-bottom: 1.5rem;">
-                <i class="fas fa-tools"></i>
-            </div>
-            <h2 style="color: var(--secondary-color); margin-bottom: 1rem;">Staff Portal Maintenance</h2>
-            <p style="color: var(--text-light); line-height: 1.6; margin-bottom: 2rem;">
-                The Teaching Staff Portal is temporarily offline for scheduled administrative upgrades. Internal staff tools will be restored shortly.
-            </p>
-            <a href="index.html" class="btn btn-primary" style="display: inline-block; padding: 0.85rem 1.75rem; border-radius: 6px;">Return to Main Website</a>
-        </div>
-        <!-- Temporarily Disabled Staff Dashboard Layout
-        <div class="container dashboard-grid" style="display: none;">
+        <div class="container dashboard-grid">
             <aside class="sidebar-nav">
                 <div class="staff-short-info">
                     <div class="staff-avatar" id="staffAvatarInitial">T</div>
@@ -273,14 +367,13 @@
                     <p id="staffSidebarDept">Department</p>
                 </div>
                 <ul class="sidebar-menu">
-                    <li><a href="#" class="active" onclick="switchStaffTab('profile')"><i class="fas fa-id-card"></i> My
-                            Profile</a></li>
-                    <li><a href="#" onclick="switchStaffTab('courses')"><i class="fas fa-book-reader"></i> Assigned
-                            Courses</a></li>
-                    <li><a href="#" onclick="switchStaffTab('results')"><i class="fas fa-upload"></i> Upload Results</a>
+                    <li><a href="#" class="active" onclick="switchStaffTab('profile')"><i class="fas fa-id-card"></i> My Profile</a></li>
+                    <li><a href="#" onclick="switchStaffTab('applications')"><i class="fas fa-user-graduate"></i> Student Applications</a></li>
+                    <li>
+                        <a href="#" style="opacity: 0.55; cursor: not-allowed;" title="Gradebook & Results module will be enabled in Academic Session Phase 2" onclick="return false;">
+                            <i class="fas fa-book-reader"></i> Gradebook <span style="font-size: 0.7rem; background: #e0e0e0; color: #555; padding: 2px 6px; border-radius: 4px; margin-left: auto;">Soon</span>
+                        </a>
                     </li>
-                    <li><a href="#" onclick="switchStaffTab('notifications')"><i class="fas fa-bell"></i>
-                            Notifications</a></li>
                 </ul>
             </aside>
 
@@ -300,16 +393,16 @@
                             </div>
                             <div class="profile-item">
                                 <label>Department</label>
-                                <p id="dispStaffDept">Nursing Sciences</p>
+                                <p id="dispStaffDept">General Health Sciences</p>
                             </div>
                             <div class="profile-item">
                                 <label>Email Address</label>
-                                <p id="dispStaffEmail">staff@josmed.edu.ng</p>
+                                <p id="dispStaffEmail">staff@medicalcareeracademy.ng</p>
                             </div>
                             <div class="profile-item full-width">
                                 <label>Phone Number</label>
                                 <input type="tel" id="staffUpdatePhone" class="form-control"
-                                    placeholder="Update your phone">
+                                    placeholder="Update your phone" style="width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px;">
                             </div>
                         </div>
                         <div style="display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap;">
@@ -321,113 +414,48 @@
                     </form>
                 </div>
 
-                <!-- Assigned Courses Tab -->
-                <div id="staff-tab-courses" class="dashboard-content content-card">
-                    <h2><i class="fas fa-graduation-cap"></i> Assigned Courses</h2>
-                    <div class="course-list" id="assignedCoursesList">
-                        <div class="course-item">
-                            <div class="course-info">
-                                <h4>NSG 301 - Medical-Surgical Nursing</h4>
-                                <p>Students Enrolled: 45 | Schedule: Tue/Thu 10:00 AM</p>
-                            </div>
-                            <button class="btn btn-secondary btn-sm" onclick="switchStaffTab('results')">Manage
-                                Marks</button>
-                        </div>
-                        <div class="course-item">
-                            <div class="course-info">
-                                <h4>ANA 201 - Advanced Human Anatomy</h4>
-                                <p>Students Enrolled: 38 | Schedule: Mon/Wed 1:00 PM</p>
-                            </div>
-                            <button class="btn btn-secondary btn-sm" onclick="switchStaffTab('results')">Manage
-                                Marks</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Results Upload Tab -->
-                <div id="staff-tab-results" class="dashboard-content content-card">
-                    <h2><i class="fas fa-file-excel"></i> Result Management</h2>
-                    <div class="form-group">
-                        <label>Select Course</label>
-                        <select class="form-control" id="resultCourseSelect">
-                            <option value="">-- Choose Course --</option>
-                            <option value="NSG301">NSG 301 - Medical-Surgical Nursing</option>
-                            <option value="ANA201">ANA 201 - Advanced Human Anatomy</option>
-                        </select>
-                    </div>
-
-                    <div class="result-entry-section">
-                        <div class="file-upload-box" id="dropZone">
-                            <i class="fas fa-cloud-upload-alt"></i>
-                            <p>Drag & Drop CSV/Excel file here or click to browse</p>
-                            <input type="file" id="fileUploadInput" style="display: none;" accept=".csv, .xlsx, .xls">
-                            <button class="btn btn-secondary"
-                                onclick="document.getElementById('fileUploadInput').click()">Browse Files</button>
-                        </div>
-
-                        <div id="manualEntrySection">
-                            <h3><i class="fas fa-keyboard"></i> Manual Mark Entry</h3>
-                            <table class="students-table">
-                                <thead>
-                                    <tr>
-                                        <th>Student ID</th>
-                                        <th>Full Name</th>
-                                        <th>Mark (100)</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="marksTableBody">
-                                    <tr>
-                                        <td>JMC/2026/105</td>
-                                        <td>MUSA IBRAHIM</td>
-                                        <td><input type="number" class="mark-input" min="0" max="100" placeholder="0">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>JMC/2026/212</td>
-                                        <td>SARAH OBINNA</td>
-                                        <td><input type="number" class="mark-input" min="0" max="100" placeholder="0">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>JMC/2026/088</td>
-                                        <td>JOHN ODEH</td>
-                                        <td><input type="number" class="mark-input" min="0" max="100" placeholder="0">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <button class="btn btn-primary" style="margin-top: 1.5rem;" id="saveResultsBtn">Save & Sync
-                                Results</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Notifications Tab -->
-                <div id="staff-tab-notifications" class="dashboard-content content-card">
-                    <h2><i class="fas fa-broadcast-tower"></i> Staff Announcements</h2>
-                    <div class="course-list">
-                        <div class="course-item" style="border-left-color: var(--secondary-color);">
-                            <div class="course-info">
-                                <h4>Academic Board Meeting</h4>
-                                <p>Date: Feb 20, 2026 | Location: Conference Room A</p>
-                            </div>
-                            <span class="badge"
-                                style="background: var(--primary-light); color: var(--primary-color);">Admin</span>
-                        </div>
-                        <div class="course-item" style="border-left-color: var(--secondary-color);">
-                            <div class="course-info">
-                                <h4>New Grading Policy</h4>
-                                <p>Please review the updated grading guidelines for the 2026 session.</p>
-                            </div>
-                            <span class="badge"
-                                style="background: var(--primary-light); color: var(--primary-color);">Admin</span>
-                        </div>
+                <!-- Verified Student Applications Tab -->
+                <div id="staff-tab-applications" class="dashboard-content content-card">
+                    <h2><i class="fas fa-user-graduate"></i> Student Applications (Academic Review)</h2>
+                    <p style="color: var(--text-light); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                        View enrolled student applications and academic admission records. Staff members have read-only access to verify student credentials and documentation.
+                    </p>
+                    <div class="staff-table-wrapper">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <th>Applicant Name</th>
+                                    <th>Program</th>
+                                    <th>Status</th>
+                                    <th>Documents</th>
+                                </tr>
+                            </thead>
+                            <tbody id="staffAppsBody">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; padding: 2rem; color: var(--text-light);">Loading applications...</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>
         </div>
-        -->
     </main>
+
+    <!-- Staff Documents Modal -->
+    <div id="staffDocsModal" class="docs-modal-overlay" onclick="if(event.target===this)closeStaffDocsModal()">
+        <div class="docs-modal">
+            <div class="docs-modal-header">
+                <h3 id="staffDocsModalTitle">Student Documents</h3>
+                <button class="docs-modal-close" onclick="closeStaffDocsModal()" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="docs-modal-body" id="staffDocsModalList">
+                <!-- Populated by script.js -->
+            </div>
+        </div>
+    </div>
 
     <!-- Staff Change Password Modal -->
     <div id="staffChangePasswordModal" class="modal-overlay" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000;">
@@ -491,14 +519,12 @@
                 link.classList.remove('active');
             });
 
-            document.getElementById(`staff-tab-${tabId}`).classList.add('active');
-            event.currentTarget.classList.add('active');
+            const targetTab = document.getElementById(`staff-tab-${tabId}`);
+            if (targetTab) targetTab.classList.add('active');
+            if (window.event && window.event.currentTarget) {
+                window.event.currentTarget.classList.add('active');
+            }
         }
-
-        // Mock Result Saving
-        document.getElementById('saveResultsBtn')?.addEventListener('click', function () {
-            alert('Results saved successfully to the institutional database (Simulated MongoDB Sync).');
-        });
     </script>
 </body>
 

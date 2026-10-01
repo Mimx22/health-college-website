@@ -136,48 +136,32 @@
         <section class="login-section">
             <div class="login-card">
                 <div class="login-header">
-                    <h1>Staff Portal</h1>
-                    <p style="color: #e65100; background: #fff3e0; padding: 0.75rem; border-radius: 8px; margin-top: 1rem; font-weight: 500;">
-                        <i class="fas fa-tools"></i> The Staff Portal is temporarily undergoing scheduled maintenance. Please check back shortly or contact the College Administration.
-                    </p>
+                    <h1>Staff Portal Login</h1>
+                    <p>Enter your Email or Staff ID and Password to access the staff portal.</p>
                 </div>
 
-                <div style="text-align: center; margin: 2rem 0;">
-                    <a href="index.html" class="btn btn-secondary" style="display: inline-block; padding: 0.85rem 1.75rem; border-radius: 6px;">Return to Home</a>
-                </div>
+                <form id="staffLoginForm" class="login-form">
+                    <div class="form-group">
+                        <label for="staffEmail">Email or Staff ID</label>
+                        <input type="text" id="staffEmail" name="staffEmail" placeholder="e.g. staff@medicalcareeracademy.ng or STF/2026/001"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="staffPassword">Password</label>
+                        <input type="password" id="staffPassword" name="staffPassword" placeholder="••••••••" required>
+                    </div>
+
+                    <a href="staff-forgot-password.html" class="forgot-password">Forgot Password?</a>
+
+                    <button type="submit" class="btn btn-primary login-btn">Login to Staff Portal</button>
+                </form>
 
                 <div class="login-footer">
-                    <p>Teaching accounts are provisioned by the College Administration.</p>
-                    <p style="margin-top: 0.5rem;"><a href="contact.html">Contact Administration / Support</a></p>
+                    <p>New staff member? Use the activation link sent to your email to set up your password.</p>
+                    <p style="margin-top: 0.5rem;">Issues with access? <a href="contact.html">Contact Administration / Support</a></p>
                 </div>
             </div>
         </section>
-
-        <!-- Initial Password Setup Modal -->
-        <div id="staffPasswordSetupModal" class="modal-overlay">
-            <div class="modal-card">
-                <span class="modal-close-x" onclick="closeModal('staffPasswordSetupModal')">&times;</span>
-                <div class="modal-header">
-                    <h2>Welcome, Colleague!</h2>
-                    <p>This is your first login. Please set a secure password for your staff account.</p>
-                </div>
-                <form id="staffPasswordSetupForm">
-                    <div class="form-group">
-                        <label for="staffNewPassword">New Password</label>
-                        <input type="password" id="staffNewPassword" required minlength="6">
-                    </div>
-                    <div class="form-group">
-                        <label for="staffConfirmPassword">Confirm Password</label>
-                        <input type="password" id="staffConfirmPassword" required minlength="6">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-cancel"
-                            onclick="closeModal('staffPasswordSetupModal')">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Set Password & Login</button>
-                    </div>
-                </form>
-            </div>
-        </div>
     </main>
 
     <footer class="main-footer">

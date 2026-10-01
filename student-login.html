@@ -350,8 +350,8 @@
                         const data = await response.json();
 
                         if (response.ok && data.token) {
-                            localStorage.setItem('jmc_token', data.token);
-                            localStorage.setItem('jmc_logged_student', JSON.stringify(data));
+                            localStorage.setItem('mch_student_token', data.token);
+                            localStorage.setItem('mch_logged_student', JSON.stringify(data));
                             if (typeof showToast === 'function') showToast('Login successful! Redirecting...', 'success');
                             setTimeout(() => {
                                 window.location.href = 'student-dashboard.html';
